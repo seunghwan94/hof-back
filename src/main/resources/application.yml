@@ -1,0 +1,40 @@
+spring:
+  # servlet:
+  #   multipart:
+  #     max-request-size: 10MB
+  #     max-file-size: 10MB
+  application:
+    name: hof_backend
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mariadb://hof-rds.cxaew4qaobla.ap-northeast-2.rds.amazonaws.com:3306/hof_rds_db
+    username: admin
+    password: rkrn1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update # 배포할땐 이렇게하면 망할수 있으니 조심 (배포할때 끄기)
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+    show-sql: true # SQL 로그 출력
+    database-platform: org.hibernate.dialect.MariaDBDialect
+
+
+  # security:
+  #   user:
+  #     name: user1
+  #     password: $2a$10$bQPImkdTdIXi7e1TwyP83e0WIZBpHqUXqUYfc0tp8KMDGq8ZJBZ72
+  #     roles:
+  #     - USER
+
+
+
+
+  # profiles:
+  #   include:
+  #   - oauth
+  #   - s3
+
+
