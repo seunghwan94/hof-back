@@ -5,7 +5,7 @@ FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
 # 애플리케이션 jar 파일 복사
-COPY build/libs/*.jar app.jar
+COPY build/libs/hof_backend-0.0.1-SNAPSHOT.jar app.jar
 
 # Step 4: Expose the port your Spring Boot app will run on
 EXPOSE 8080
