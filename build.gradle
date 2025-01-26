@@ -2,7 +2,24 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.2-SNAPSHOT'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco' // JaCoCo 플러그인 추가
 }
+
+test {
+    useJUnitPlatform() // JUnit5 사용 시 추가
+    finalizedBy jacocoTestReport // 테스트 실행 후 JaCoCo 리포트 생성
+}
+
+jacocoTestReport {
+    dependsOn test // 테스트 실행 후 리포트 생성
+    reports {
+        html {
+            enabled true
+            destination file("$buildDir/reports/jacoco/test/html") // HTML 리포트 출력 폴더 지정
+        }
+    }
+}
+
 
 configurations {
 	all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
@@ -48,6 +65,9 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
+	
+	// swagger
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
 }
 
 tasks.named('test') {
