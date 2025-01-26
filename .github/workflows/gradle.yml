@@ -57,12 +57,19 @@ jobs:
         key: ${{ env.PRIVATE_KEY }}
         script: |
           CONTAINER_NAME="hof-container"
-          CONTAINER_ID=$(sudo docker ps -q --filter "publish=80-8080")
+          CONTAINER_ID=$(sudo docker ps -q --filter "publish=8081-8080")
 
-          if [ ! -z "$CONTAINER_ID" ]; then
-            sudo docker stop $CONTAINER_ID
-            sudo docker rm $CONTAINER_ID
+          # Check if container with the same name is running and stop/remove it
+          if sudo docker ps -a --format "{{.Names}}" | grep -w "$CONTAINER_NAME"; then
+            echo "Stopping and removing existing container: $CONTAINER_NAME"
+            sudo docker stop $CONTAINER_NAME
+            sudo docker rm $CONTAINER_NAME
           fi
-
+  
+          # Pull the latest image
+          echo "Pulling the latest Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
           sudo docker pull ${{ env.DOCKER_IMAGE_NAME }}
+  
+          # Run the new container
+          echo "Starting a new container: $CONTAINER_NAME"
           sudo docker run --name $CONTAINER_NAME -d -p 8081:8080 -e TZ=Asia/Seoul ${{ env.DOCKER_IMAGE_NAME }}
