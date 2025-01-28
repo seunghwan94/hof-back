@@ -26,7 +26,11 @@ spring:
     show-sql: true # SQL 로그 출력
     database-platform: org.hibernate.dialect.MariaDBDialect
 
-
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.lshwan.hof_backend.domain.entity
+  configuration:
+    map-underscore-to-camel-case: true
   # security:
   #   user:
   #     name: user1
