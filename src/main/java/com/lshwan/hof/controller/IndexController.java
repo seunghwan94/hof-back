@@ -1,6 +1,5 @@
 package com.lshwan.hof.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("/")
 @AllArgsConstructor
 public class IndexController {
   private MemberService service;

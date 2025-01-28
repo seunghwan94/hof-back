@@ -1,3 +1,6 @@
+server:
+  servlet:
+    context-path: /api/v1
 spring:
   # servlet:
   #   multipart:
@@ -21,8 +24,8 @@ spring:
       ddl-auto: update # 배포할땐 이렇게하면 망할수 있으니 조심 (배포할때 끄기)
     properties:
       hibernate:
-        format_sql: true
-        use_sql_comments: true
+        '[format_sql]': true
+        '[use_sql_comments]': true
     show-sql: true # SQL 로그 출력
     database-platform: org.hibernate.dialect.MariaDBDialect
 
@@ -31,15 +34,14 @@ mybatis:
   type-aliases-package: com.lshwan.hof.domain.entity
   configuration:
     map-underscore-to-camel-case: true
+
+
   # security:
   #   user:
   #     name: user1
   #     password: $2a$10$bQPImkdTdIXi7e1TwyP83e0WIZBpHqUXqUYfc0tp8KMDGq8ZJBZ72
   #     roles:
   #     - USER
-
-
-
 
   # profiles:
   #   include:
