@@ -1,4 +1,4 @@
-package com.lshwan.hof_backend.repository;
+package com.lshwan.hof.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

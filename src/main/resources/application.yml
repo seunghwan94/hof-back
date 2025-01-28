@@ -28,7 +28,7 @@ spring:
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.lshwan.hof_backend.domain.entity
+  type-aliases-package: com.lshwan.hof.domain.entity
   configuration:
     map-underscore-to-camel-case: true
   # security:

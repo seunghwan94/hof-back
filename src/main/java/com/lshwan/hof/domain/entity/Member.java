@@ -1,4 +1,4 @@
-package com.lshwan.hof_backend.domain.entity;
+package com.lshwan.hof.domain.entity;
 
 
 import jakarta.persistence.Entity;

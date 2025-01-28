@@ -1,4 +1,4 @@
-package com.lshwan.hof_backend.mapper;
+package com.lshwan.hof.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

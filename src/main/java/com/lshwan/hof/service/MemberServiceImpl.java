@@ -1,11 +1,11 @@
-package com.lshwan.hof_backend.service;
+package com.lshwan.hof.service;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import com.lshwan.hof_backend.domain.entity.Member;
-import com.lshwan.hof_backend.repository.MemberRepository;
+import com.lshwan.hof.domain.entity.Member;
+import com.lshwan.hof.repository.MemberRepository;
 
 @Service
 @AllArgsConstructor

@@ -1,11 +1,11 @@
-package com.lshwan.hof_backend.mapper;
+package com.lshwan.hof.mapper;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
-import com.lshwan.hof_backend.domain.entity.Member;
+import com.lshwan.hof.domain.entity.Member;
 
 @Mapper
 public interface MemberMapper {
