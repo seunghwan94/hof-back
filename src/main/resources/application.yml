@@ -6,21 +6,20 @@ spring:
     multipart:
       max-request-size: 10MB
       max-file-size: 10MB
+
   application:
     name: hof
+
+  profiles:
+    include:
+      - db
+      - s3
+
   datasource:
-    # driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    # url: jdbc:log4jdbc:mariadb://hof-rds.cxaew4qaobla.ap-northeast-2.rds.amazonaws.com:3306/hof_rds_db
-    # username: admin
-    # password: rkrn1234
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-
-    # url: jdbc:log4jdbc:mariadb://15.164.103.52:3306/todo
-    # username: todo
-    # password: 123
 
   jpa:
     hibernate:
@@ -37,7 +36,6 @@ mybatis:
   type-aliases-package: com.lshwan.hof.domain.entity
   configuration:
     map-underscore-to-camel-case: true
-
 
 aws:
   s3:

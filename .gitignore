@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+application-s3.yml
+application-db.yml
