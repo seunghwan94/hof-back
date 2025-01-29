@@ -32,6 +32,7 @@ public class FileController {
     @Value("${aws.s3.region}")
     private String region;
 
+    @SuppressWarnings("null")
     @PostMapping("upload")
     public ResponseEntity<?> upload(@RequestParam("file") List<MultipartFile> files) {
         for (MultipartFile file : files) {
