@@ -14,9 +14,13 @@ spring:
     # username: admin
     # password: rkrn1234
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mariadb://15.164.103.52:3306/todo
-    username: todo
-    password: 123
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+    # url: jdbc:log4jdbc:mariadb://15.164.103.52:3306/todo
+    # username: todo
+    # password: 123
 
   jpa:
     hibernate:
