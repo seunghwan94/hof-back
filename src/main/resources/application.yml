@@ -2,13 +2,12 @@ server:
   servlet:
     context-path: /api/v1
 spring:
-  # servlet:
-  #   multipart:
-  #     max-request-size: 10MB
-  #     max-file-size: 10MB
-  
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
   application:
-    name: hof_backend
+    name: hof
   datasource:
     # driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     # url: jdbc:log4jdbc:mariadb://hof-rds.cxaew4qaobla.ap-northeast-2.rds.amazonaws.com:3306/hof_rds_db
@@ -35,6 +34,12 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
+aws:
+  s3:
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
+    bucket-name: ${AWS_S3_BUCKET_NAME}
+    region: ${AWS_REGION}
 
   # security:
   #   user:
@@ -43,9 +48,5 @@ mybatis:
   #     roles:
   #     - USER
 
-  # profiles:
-  #   include:
-  #   - oauth
-  #   - s3
 
 
