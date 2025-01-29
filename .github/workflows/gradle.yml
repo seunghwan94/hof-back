@@ -11,6 +11,10 @@ env:
   AWS_REGION: ap-northeast-2
   EC2_SSH_USER: ubuntu
   PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+  
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
 
 jobs:
   build-and-push-docker:
@@ -72,4 +76,10 @@ jobs:
   
           # Run the new container
           echo "Starting a new container: $CONTAINER_NAME"
-          sudo docker run --name $CONTAINER_NAME -d -p 8081:8080 -e TZ=Asia/Seoul ${{ env.DOCKER_IMAGE_NAME }}
+          sudo docker run --name $CONTAINER_NAME -d -p 8081:8080 \
+            -e TZ=Asia/Seoul \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -e AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
+            ${{ env.DOCKER_IMAGE_NAME }}
