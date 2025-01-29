@@ -35,7 +35,7 @@ jobs:
         export DB_URL=${{ secrets.DB_URL }}
         export DB_USERNAME=${{ secrets.DB_USERNAME }}
         export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-        ./gradlew build -Dspring.profiles.active=prod
+        ./gradlew build
 
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ${{ env.DOCKER_IMAGE_NAME }}:latest
