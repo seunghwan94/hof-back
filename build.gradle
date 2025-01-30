@@ -76,6 +76,10 @@ dependencies {
 	implementation 'software.amazon.awssdk:s3:2.20.112'  // 버전 명시적으로 추가
 	implementation 'software.amazon.awssdk:core:2.20.112'  // core 의존성 추가
 	implementation platform('software.amazon.awssdk:bom:2.20.112')  // BOM 관리
+
+	// Crawlling
+	implementation 'org.seleniumhq.selenium:selenium-java:4.28.1'
+	implementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.28.1'
 }
 
 tasks.named('test') {
