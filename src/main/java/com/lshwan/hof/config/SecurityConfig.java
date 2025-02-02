@@ -14,6 +14,7 @@ public class SecurityConfig {
         http
           .csrf(csrf -> csrf.disable())
           .authorizeHttpRequests(auth -> auth
+            .requestMatchers("index/**").permitAll()           
             .requestMatchers("file/**").permitAll()
             .anyRequest().authenticated() // 인증이 필요한 경우 설정
           );
