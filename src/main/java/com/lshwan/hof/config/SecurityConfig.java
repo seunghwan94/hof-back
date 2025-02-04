@@ -16,6 +16,7 @@ public class SecurityConfig {
           .authorizeHttpRequests(auth -> auth
             .requestMatchers("index/**").permitAll()           
             .requestMatchers("file/**").permitAll()
+            .requestMatchers("swagger-ui/**").permitAll()
             .anyRequest().authenticated() // 인증이 필요한 경우 설정
           );
         return http.build();
