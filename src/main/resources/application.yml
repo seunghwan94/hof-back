@@ -49,8 +49,8 @@ management:
     web:
       cors:
           allowed-origins:
-            - http://localhost:9090
             - http://hof.lshwan.com
+            - https://hof.lshwan.com
       exposure:
         include: prometheus
       base-path: /actuator
