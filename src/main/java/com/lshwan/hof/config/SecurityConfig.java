@@ -18,6 +18,7 @@ public class SecurityConfig {
             .requestMatchers("file/**").permitAll()
             .requestMatchers("swagger-ui/**").permitAll()
             .requestMatchers("/actuator/**").permitAll()
+            .requestMatchers("/grafana/**").permitAll()
             .anyRequest().authenticated() // 인증이 필요한 경우 설정
           );
         return http.build();
