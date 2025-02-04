@@ -47,12 +47,18 @@ aws:
 management:
   endpoints:
     web:
+      cors:
+          allowed-origins:
+            - http://localhost:9090
+            - http://hof.lshwan.com
       exposure:
         include: prometheus
       base-path: /actuator
   metrics:
     tags:
       application: my-spring-boot-app
+
+
   # security:
   #   user:
   #     name: user1
