@@ -80,6 +80,10 @@ dependencies {
 	// Crawlling
 	implementation 'org.seleniumhq.selenium:selenium-java:4.28.1'
 	implementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.28.1'
+
+	// Prometheus & Actuator 
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {

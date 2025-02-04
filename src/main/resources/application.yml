@@ -44,6 +44,15 @@ aws:
     bucket-name: ${AWS_S3_BUCKET_NAME}
     region: ${AWS_REGION}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+      base-path: /actuator
+  metrics:
+    tags:
+      application: my-spring-boot-app
   # security:
   #   user:
   #     name: user1
