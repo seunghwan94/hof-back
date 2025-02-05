@@ -1,6 +1,12 @@
 server:
   servlet:
     context-path: /api/v1
+
+  tomcat: #  tomcat 메트릭 설정 on. 톰캣 메트릭은 tomcat. 으로 시작
+    mbeanregistry: # 톰캣 메트릭을 모두 사용하려면 다음 옵션을 켜야하며, 옵션을 켜지 않으면 tomcat.session. 관련정보만 노출됩니다
+      enabled: true
+
+
 spring:
   servlet:
     multipart:
@@ -47,16 +53,12 @@ aws:
 management:
   endpoints:
     web:
-      cors:
-          allowed-origins:
-            - http://hof.lshwan.com
-            - https://hof.lshwan.com
       exposure:
-        include: '*' 
+        include: "*"
       base-path: /actuator
   metrics:
     tags:
-      application: my-spring-boot-app
+      application: hof-spring-boot-app
 
 
   # security:
