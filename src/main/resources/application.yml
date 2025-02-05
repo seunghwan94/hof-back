@@ -52,7 +52,7 @@ management:
             - http://hof.lshwan.com
             - https://hof.lshwan.com
       exposure:
-        include: '*'
+        include: '*' 
       base-path: /actuator
   metrics:
     tags:
