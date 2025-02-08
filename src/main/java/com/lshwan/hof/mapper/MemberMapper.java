@@ -9,8 +9,4 @@ import com.lshwan.hof.domain.entity.Member;
 @Mapper
 public interface MemberMapper {
   List<Member> findAll();
-
-  // @Select("select * from tbl_todo where id = #{id}")
-  // Todo selectByOne(int id);
-
 }
