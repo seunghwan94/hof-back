@@ -8,6 +8,7 @@ import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.common.ToastEntity;
 
 import com.lshwan.hof.repository.common.ToastRepository;
+import com.lshwan.hof.repository.member.MemberRepository;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -17,7 +18,7 @@ public class ToastRepositoryTests {
   @Autowired
   private ToastRepository repository;
   @Autowired
-  MemberRepository memberRepository;
+  private MemberRepository memberRepository;
   @Test
   public void insertTest(){
     ToastEntity entity = ToastEntity.builder()
