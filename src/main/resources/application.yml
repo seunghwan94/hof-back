@@ -23,8 +23,8 @@ spring:
       - s3
 
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: ${DB_URL}
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:mariadb://${DB_URL}:3306/hof?connectTimeout=5000&socketTimeout=10000  # ✅ Timeout 설정 추가
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
