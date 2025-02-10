@@ -46,13 +46,6 @@ jobs:
       if: failure()
       run: cat /home/runner/work/hof-back/hof-back/build/reports/tests/test/index.html || echo "No test report found"
 
-    # 🔥 build 이후 RDS 연결 확인 (빌드가 실패할 경우 실행)
-    - name: Test RDS Connection on Failure
-      if: failure()
-      run: |
-        sudo apt-get install -y mariadb-client
-        mysql -h ${{ secrets.DB_URL }} -u ${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }} -e "SHOW DATABASES;"
-
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ${{ env.DOCKER_IMAGE_NAME }}:latest
 
@@ -68,29 +61,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploy to EC2
+    - name: Deploy to EC2 and Connect to RDS
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_PUBLIC_IP }}
         username: ubuntu
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
+          echo "Stopping any existing container..."
           CONTAINER_NAME="hof-container"
-          CONTAINER_ID=$(sudo docker ps -q --filter "publish=8081-8080")
-
-          # Check if container with the same name is running and stop/remove it
           if sudo docker ps -a --format "{{.Names}}" | grep -w "$CONTAINER_NAME"; then
-            echo "Stopping and removing existing container: $CONTAINER_NAME"
             sudo docker stop $CONTAINER_NAME
             sudo docker rm $CONTAINER_NAME
           fi
           
-          # Pull the latest image
-          echo "Pulling the latest Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
+          echo "Pulling the latest Docker image..."
           sudo docker pull ${{ env.DOCKER_IMAGE_NAME }}
+
+          echo "Installing MariaDB Client on EC2..."
+          sudo apt-get update && sudo apt-get install -y mariadb-client
           
-          # Run the new container
-          echo "Starting a new container: $CONTAINER_NAME"
+          echo "Testing RDS Connection from EC2..."
+          mysql -h ${{ secrets.DB_URL }} -u ${{ secrets.DB_USERNAME }} -p'${{ secrets.DB_PASSWORD }}' -e "SHOW DATABASES;"
+
+          echo "Starting the container..."
           sudo docker run --name $CONTAINER_NAME -d -p 8081:8080 \
             -e TZ=Asia/Seoul \
             -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
