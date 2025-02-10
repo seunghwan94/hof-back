@@ -41,7 +41,10 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.lshwan.hof.domain.entity
   configuration:
+    lazy-loading-enabled: true
     map-underscore-to-camel-case: true
+    aggressive-lazy-loading: false
+    default-statement-timeout: 30   
 
 aws:
   s3:
