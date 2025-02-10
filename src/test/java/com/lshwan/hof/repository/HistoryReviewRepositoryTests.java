@@ -4,15 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.lshwan.hof.repository.history.SearchHistoryRepository;
+import com.lshwan.hof.repository.history.HistoryReviewRepository;
 
 import lombok.extern.log4j.Log4j2;
 
 @SpringBootTest
 @Log4j2
-public class SearchHistoryRepositoryTests {
+public class HistoryReviewRepositoryTests {
   @Autowired
-  private SearchHistoryRepository repository;
+  private HistoryReviewRepository repository;
 
   @Test
   public void findAll() {

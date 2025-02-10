@@ -1,8 +1,7 @@
-package com.lshwan.hof.domain.entity;
+package com.lshwan.hof.domain.entity.prod;
 
+import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.member.Member;
-import com.lshwan.hof.domain.entity.prod.Prod;
-import com.lshwan.hof.domain.entity.prod.ProdOption;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

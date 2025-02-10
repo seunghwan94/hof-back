@@ -17,23 +17,23 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayHistory extends BaseEntityRegDate{
+public class HistoryPay extends BaseEntityRegDate{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long no;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mno", nullable = false, foreignKey = @ForeignKey(name = "fk_pay_history_member"))
+    @JoinColumn(name = "mno", nullable = false)
     private Member member; 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pno", nullable = false, foreignKey = @ForeignKey(name = "fk_pay_history_prod"))
+    @JoinColumn(name = "pno", nullable = false)
     private Prod prod; 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "search_history_no", nullable = false, foreignKey = @ForeignKey(name = "fk_pay_history_search_history"))
-    private SearchHistory searchHistory; 
+    @JoinColumn(name = "search_history_no", nullable = false)
+    private HistorySearch searchHistory; 
 
     @Column(name = "search_session_id")
     private UUID searchSessionId; 

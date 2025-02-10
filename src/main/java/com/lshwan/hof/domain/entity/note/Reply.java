@@ -1,6 +1,7 @@
-package com.lshwan.hof.domain.entity;
+package com.lshwan.hof.domain.entity.note;
+import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.member.Member;
-import com.lshwan.hof.domain.entity.note.Note;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

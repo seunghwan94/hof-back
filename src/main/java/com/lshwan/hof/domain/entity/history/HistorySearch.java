@@ -18,7 +18,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchHistory extends BaseEntityRegDate{
+public class HistorySearch extends BaseEntityRegDate{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
