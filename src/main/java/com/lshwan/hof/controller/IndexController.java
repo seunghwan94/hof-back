@@ -3,7 +3,8 @@ package com.lshwan.hof.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
-import com.lshwan.hof.domain.entity.Member;
+
+import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.service.MemberService;
 
 import org.springframework.http.ResponseEntity;

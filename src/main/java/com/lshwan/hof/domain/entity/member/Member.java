@@ -1,5 +1,7 @@
-package com.lshwan.hof.domain.entity;
+package com.lshwan.hof.domain.entity.member;
 
+
+import com.lshwan.hof.domain.entity.BaseEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
