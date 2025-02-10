@@ -4,10 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.lshwan.hof.domain.entity.common.PushMsg;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.member.MemberHistory;
-import com.lshwan.hof.domain.entity.prod.ProdCategory;
 import com.lshwan.hof.repository.member.MemberHistoryRepository;
 
 @SpringBootTest

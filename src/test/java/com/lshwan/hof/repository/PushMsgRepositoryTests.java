@@ -5,11 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.lshwan.hof.domain.entity.common.PushMsg;
-import com.lshwan.hof.domain.entity.common.ToastEntity;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.prod.ProdCategory;
 import com.lshwan.hof.repository.common.PushMsgRepository;
-import com.lshwan.hof.repository.prod.ProdCategoryRepository;
 
 @SpringBootTest
 public class PushMsgRepositoryTests {
