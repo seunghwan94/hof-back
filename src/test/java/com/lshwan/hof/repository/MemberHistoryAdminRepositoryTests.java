@@ -4,11 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.lshwan.hof.domain.entity.history.MemberHistoryAdmin;
+import com.lshwan.hof.domain.entity.history.MemberHistoryAdmin.AdminAction;
 import com.lshwan.hof.domain.entity.member.Member;
-import com.lshwan.hof.domain.entity.member.MemberHistoryAdmin;
-
-import com.lshwan.hof.domain.entity.member.MemberHistoryAdmin.AdminAction;
-import com.lshwan.hof.repository.member.MemberHistoryAdminRepository;
+import com.lshwan.hof.repository.history.MemberHistoryAdminRepository;
 
 @SpringBootTest
 public class MemberHistoryAdminRepositoryTests {

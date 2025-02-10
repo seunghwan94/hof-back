@@ -1,7 +1,8 @@
-package com.lshwan.hof.domain.entity.member;
+package com.lshwan.hof.domain.entity.history;
 
 
 import com.lshwan.hof.domain.entity.common.BaseEntityRegDate;
+import com.lshwan.hof.domain.entity.member.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

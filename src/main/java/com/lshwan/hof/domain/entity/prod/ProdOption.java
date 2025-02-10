@@ -1,6 +1,6 @@
 package com.lshwan.hof.domain.entity.prod;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 import com.lshwan.hof.domain.entity.BaseEntity;
@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Builder.Default;
+
 
 @Entity
 @Getter

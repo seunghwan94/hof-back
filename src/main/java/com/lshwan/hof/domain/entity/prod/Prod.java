@@ -1,6 +1,5 @@
 package com.lshwan.hof.domain.entity.prod;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import com.lshwan.hof.domain.entity.BaseEntity;
@@ -20,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 @Entity
 @Getter
@@ -45,6 +45,7 @@ public class Prod extends BaseEntity{
 
     @Column(nullable = false)
     private int price = 0; // 가격 (기본값 0)
+    
 
     @Column(nullable = false)
     private int stock = 0; // 재고 (기본값 0)

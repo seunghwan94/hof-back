@@ -1,8 +1,8 @@
-package com.lshwan.hof.repository.member;
+package com.lshwan.hof.repository.history;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.lshwan.hof.domain.entity.member.MemberHistoryAdmin;
+import com.lshwan.hof.domain.entity.history.MemberHistoryAdmin;
 
 public interface MemberHistoryAdminRepository extends JpaRepository<MemberHistoryAdmin,Long>{
   

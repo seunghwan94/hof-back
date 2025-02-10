@@ -2,7 +2,7 @@ package com.lshwan.hof.domain.entity.member;
 
 import java.time.LocalDateTime;
 
-import com.lshwan.hof.domain.entity.BaseEntity;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
