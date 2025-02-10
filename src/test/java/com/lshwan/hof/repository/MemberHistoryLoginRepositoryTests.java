@@ -4,23 +4,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.lshwan.hof.domain.entity.history.MemberHistory;
+import com.lshwan.hof.domain.entity.history.MemberHistoryLogin;
 import com.lshwan.hof.domain.entity.member.Member;
-import com.lshwan.hof.repository.history.MemberHistoryRepository;
-
+import com.lshwan.hof.repository.history.MemberHistoryLoginRepository;
 
 @SpringBootTest
-public class MemberHistoryRepositoryTests {
+public class MemberHistoryLoginRepositoryTests {
   @Autowired
-  private MemberHistoryRepository repository;
+  private MemberHistoryLoginRepository repository;
   @Test
   public void insertTest(){
-    MemberHistory entity = MemberHistory.builder()
+    MemberHistoryLogin login = MemberHistoryLogin.builder()
     .member(Member.builder().mno(5L).build())
-    .action(MemberHistory.MemberAction.LOGIN)
-    .description("테스트입니다")
+    .success(true)
+    .ipAddress("503-17-97489-4")
+    .userAgent("Chrome")
+    .failReason(null)
     .build();
-    repository.save(entity);
+    repository.save(login);
   }
   @Test
   public void findAll(){
