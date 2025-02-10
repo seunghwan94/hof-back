@@ -17,6 +17,7 @@ spring:
     name: hof
 
   profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local} 
     include:
       - db
       - s3
