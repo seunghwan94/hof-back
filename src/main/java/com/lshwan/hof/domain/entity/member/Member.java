@@ -53,6 +53,9 @@ public class Member extends BaseEntity {
   @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
   private MemberDeleted memberDeleted;
 
+  @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+  private Remember remember;
+
   @Default
   @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)
   private List<Note> notes = new ArrayList<>();

@@ -13,9 +13,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tbl_pw_changed")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Builder
 public class PwChanged {
 
   @Id
