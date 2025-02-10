@@ -4,19 +4,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.lshwan.hof.repository.member.MemberDetailRepository;
+import com.lshwan.hof.repository.member.MemberDeletedRepository;
 
 import lombok.extern.log4j.Log4j2;
 
 @SpringBootTest
 @Log4j2
-public class MemberDetailRepositoryTests {
-  @Autowired
-  private MemberDetailRepository repository;
+public class MemberDeletedRepositoryTests {
   
+  @Autowired
+  private MemberDeletedRepository repository;
+
   @Test
-  public void findAll(){
+  public void findAll() {
     log.info(repository.findAll());
   }
-
 }
