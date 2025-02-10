@@ -1,6 +1,6 @@
 package com.lshwan.hof.domain.entity.common;
 
-import com.lshwan.hof.domain.entity.Member;
+import com.lshwan.hof.domain.entity.member.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
