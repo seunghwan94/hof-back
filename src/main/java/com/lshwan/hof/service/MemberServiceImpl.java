@@ -6,7 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import com.lshwan.hof.domain.entity.member.Member;
-import com.lshwan.hof.repository.MemberRepository;
+import com.lshwan.hof.repository.member.MemberRepository;
 
 @Service
 @AllArgsConstructor
