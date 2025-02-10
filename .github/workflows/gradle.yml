@@ -49,15 +49,15 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           export AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
           export AWS_REGION=${{ secrets.AWS_REGION }}
-          export DB_URL=hof-rds.cxaew4qaobla.ap-northeast-2.rds.amazonaws.com
-          export DB_USERNAME=admin
+          export DB_URL=${{ secrets.DB_URL }}
+          export DB_USERNAME=${{ secrets.DB_USERNAME }}
           export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
 
           echo "Installing MariaDB Client on EC2..."
           sudo apt-get update && sudo apt-get install -y mariadb-client
           
           echo "Testing RDS Connection from EC2..."
-          mysql -h hof-rds.cxaew4qaobla.ap-northeast-2.rds.amazonaws.com -u admin -p'${{ secrets.DB_PASSWORD }}' -e "SHOW DATABASES;"
+          mysql -h ${{ secrets.DB_URL }} -u ${{ secrets.DB_USERNAME }} -p'${{ secrets.DB_PASSWORD }}' -e "SHOW DATABASES;"
 
           echo "Building application on EC2..."
           chmod +x ./gradlew
@@ -80,7 +80,7 @@ jobs:
             -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             -e AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }} \
             -e AWS_REGION=${{ secrets.AWS_REGION }} \
-            -e DB_URL=hof-rds.cxaew4qaobla.ap-northeast-2.rds.amazonaws.com \
-            -e DB_USERNAME=admin \
+            -e DB_URL=${{ secrets.DB_URL }} \
+            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             ${{ env.DOCKER_IMAGE_NAME }}
