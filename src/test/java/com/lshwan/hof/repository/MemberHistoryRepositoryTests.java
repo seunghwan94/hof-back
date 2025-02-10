@@ -8,6 +8,7 @@ import com.lshwan.hof.domain.entity.common.PushMsg;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.member.MemberHistory;
 import com.lshwan.hof.domain.entity.prod.ProdCategory;
+import com.lshwan.hof.repository.member.MemberHistoryRepository;
 
 @SpringBootTest
 public class MemberHistoryRepositoryTests {
