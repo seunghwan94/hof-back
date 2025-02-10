@@ -1,6 +1,10 @@
-package com.lshwan.hof.domain.entity.member;
+package com.lshwan.hof.domain.entity.social;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.lshwan.hof.domain.entity.BaseEntity;
+import com.lshwan.hof.domain.entity.member.Member;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,20 +18,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tbl_addr")
+@Table(name = "tbl_mfa")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Builder
-public class MemberAddr extends BaseEntity{
-
+public class MFA extends BaseEntity{
+  
   @Id
   private Long mno;
-  private String zipcode;
-  private String roadAddr;
-  private String detailAddr;
-  private boolean isDefault;  
-  
+  private boolean isEnabled;
+  private String secretKey;
+  private String backupCodes;
+  private LocalDateTime lastVerifiedAt;
+  private String lastLoginIp;
+
   @ManyToOne(fetch = FetchType.LAZY)  
   @JoinColumn(name = "mno", insertable = false, updatable = false)
   private Member member;
