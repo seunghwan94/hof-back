@@ -1,10 +1,5 @@
 package com.lshwan.hof.domain.entity.prod;
 
-import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
 import com.lshwan.hof.domain.entity.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -28,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProdCategory extends BaseEntity{
-   @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cno;  // 카테고리 번호 (Primary Key)
 

@@ -1,4 +1,4 @@
-package com.lshwan.hof.repository;
+package com.lshwan.hof.repository.note;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
