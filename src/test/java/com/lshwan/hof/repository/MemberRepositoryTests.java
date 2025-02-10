@@ -15,7 +15,7 @@ public class MemberRepositoryTests {
 
   @Test
   public void findAll(){
-    log.info(repository.findAll());
+    log.info(repository.findAll()); 
   }
   
 }

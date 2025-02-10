@@ -21,6 +21,6 @@ public class IndexController {
   @GetMapping("/")
   public ResponseEntity<?> index() {
     return ResponseEntity.ok().body(service.write(Member.builder().build()));
-  }
+  } 
   
 }

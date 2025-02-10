@@ -32,5 +32,5 @@ public class Member extends BaseEntity {
   private String name;
   
   @Enumerated(EnumType.STRING)  // ENUM 타입 매핑
-  private MemberRole role;
+  private MemberRole role; 
 }

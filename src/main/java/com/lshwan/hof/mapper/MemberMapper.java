@@ -8,5 +8,5 @@ import com.lshwan.hof.domain.entity.member.Member;
 
 @Mapper
 public interface MemberMapper {
-  List<Member> findAll();
+  List<Member> findAll(); 
 }

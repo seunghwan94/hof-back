@@ -15,7 +15,7 @@ public class MemberServiceImpl implements MemberService{
   private MemberRepository repository;
 
   @Override
-  public Long write(Member member) {
+  public Long write(Member member) { 
     return repository.save(Member.builder().name("sssss").build()).getMno();
   }
   
