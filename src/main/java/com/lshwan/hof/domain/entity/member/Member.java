@@ -50,6 +50,15 @@ public class Member extends BaseEntity {
   @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
   private MemberDetail memberDetail;
   
+  @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+  private MemberDeleted memberDeleted;
+
+  @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+  private Remember remember;
+
+  @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+  private Company company;
+
   @Default
   @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)
   private List<Note> notes = new ArrayList<>();
