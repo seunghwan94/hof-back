@@ -1,4 +1,4 @@
-package com.lshwan.hof.domain.entity.qna;
+package com.lshwan.hof.domain.entity.common;
 
 import com.lshwan.hof.domain.entity.member.Member;
 
