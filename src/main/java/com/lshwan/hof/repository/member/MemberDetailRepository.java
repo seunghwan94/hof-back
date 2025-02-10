@@ -2,8 +2,8 @@ package com.lshwan.hof.repository.member;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.lshwan.hof.domain.entity.member.Member;
+import com.lshwan.hof.domain.entity.member.MemberDetail;
 
-public interface MemberDetailRepository extends JpaRepository<Member, Long>{
+public interface MemberDetailRepository extends JpaRepository<MemberDetail, Long>{
   
 }
