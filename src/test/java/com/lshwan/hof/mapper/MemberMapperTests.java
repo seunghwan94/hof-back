@@ -14,6 +14,6 @@ public class MemberMapperTests {
 
   @Test
   public void findAll(){
-    log.info(mapper.findAll());
+    log.info(mapper.findAll()); 
   }
 }
