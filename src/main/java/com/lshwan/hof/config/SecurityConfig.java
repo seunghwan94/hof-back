@@ -2,6 +2,8 @@ package com.lshwan.hof.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,19 +25,26 @@ public class SecurityConfig implements WebMvcConfigurer{
     this.jwtTokenProvider = jwtTokenProvider;
   }
 
-   @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")  // 모든 경로에 대해
-            .allowedOrigins("http://localhost:3000")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
-            .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
-            .allowedHeaders("*")  // 모든 헤더를 허용
-            .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
-    }
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+      registry.addMapping("/**")  // 모든 경로에 대해
+          .allowedOrigins("http://localhost:3000")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
+          .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
+          .allowedHeaders("*")  // 모든 헤더를 허용
+          .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // BCryptPasswordEncoder 사용
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+      return new BCryptPasswordEncoder();  // BCryptPasswordEncoder 사용
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+      AuthenticationManagerBuilder authenticationManagerBuilder = 
+          http.getSharedObject(AuthenticationManagerBuilder.class);
+      return authenticationManagerBuilder.build();
+  }
 
 
   @Bean
@@ -59,6 +68,7 @@ public class SecurityConfig implements WebMvcConfigurer{
           .logoutUrl("/logout")
           .logoutSuccessUrl("/login")
         );
+        // filter적용
       return http.build();
   }
 }
