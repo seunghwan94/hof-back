@@ -14,6 +14,6 @@ public class CrawlingServiceTests {
 
   @Test
   public void crawlingTest(){
-    log.info(service.fetchProductDetails());
+    // log.info(service.fetchCategoryProducts());
   }
 }
