@@ -9,4 +9,6 @@ import com.lshwan.hof.domain.entity.member.Member;
 @Mapper
 public interface MemberMapper {
   List<Member> findAll(); 
+
+  Member selectOne(String id);
 }

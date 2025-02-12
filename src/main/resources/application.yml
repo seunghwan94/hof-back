@@ -64,6 +64,18 @@ management:
     tags:
       application: hof-spring-boot-app
 
+  security:
+    user:
+      name: user
+      password: password
+  cors:
+    allowed-origins: "http://localhost:3000"
+    allowed-methods: "GET, POST, PUT, DELETE"
+    allowed-headers: "*"
+    allow-credentials: true
+
+jwt:
+  secret: "your-secret-key-here"
 
   # security:
   #   user:
