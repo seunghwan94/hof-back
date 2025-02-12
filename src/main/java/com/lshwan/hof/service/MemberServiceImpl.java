@@ -1,5 +1,7 @@
 package com.lshwan.hof.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -30,6 +32,12 @@ public class MemberServiceImpl implements MemberService{
   public boolean login(String id, String pw) {
     Member m = findBy(id);
     return m != null && m.getPw().equals(pw);
+  }
+
+  @Override
+  public List<Member> findList() {
+    // TODO Auto-generated method stub
+    return repository.findAll();
   }
 
   

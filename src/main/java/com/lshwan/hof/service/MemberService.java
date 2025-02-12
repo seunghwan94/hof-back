@@ -1,5 +1,7 @@
 package com.lshwan.hof.service;
 
+import java.util.List;
+
 import com.lshwan.hof.domain.entity.member.Member;
 
 public interface MemberService {
@@ -8,4 +10,6 @@ public interface MemberService {
   boolean login(String id, String pw);
 
   Member findBy(String id);
+
+  List<Member> findList();
 }
