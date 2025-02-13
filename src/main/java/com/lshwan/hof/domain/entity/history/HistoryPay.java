@@ -1,6 +1,7 @@
 package com.lshwan.hof.domain.entity.history;
 
 import com.lshwan.hof.domain.entity.common.BaseEntityRegDate;
+import com.lshwan.hof.domain.entity.history.mongo.HistorySearch;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.prod.Prod;
 import jakarta.persistence.*;
@@ -30,10 +31,9 @@ public class HistoryPay extends BaseEntityRegDate{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pno", nullable = false)
     private Prod prod; 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "search_history_no", nullable = false)
-    private HistorySearch searchHistory; 
+    
+    @Column(name = "searchHistoryNo", length = 24, nullable = false)
+    private String searchHistoryNo; // ✅ MongoDB `_id`(ObjectId)를 String으로 저장
 
     @Column(name = "search_session_id")
     private UUID searchSessionId; 

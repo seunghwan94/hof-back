@@ -88,10 +88,19 @@ dependencies {
 	// Jakarta Servlet api
 	compileOnly 'jakarta.servlet:jakarta.servlet-api:6.1.0'
 
-	// Jwt lib
+
 	// implementation 'io.jsonwebtoken:jjwt:0.12.6'
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
+	// thumbnailator 이미지
+	implementation 'net.coobird:thumbnailator:0.4.8'
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:3.4.2'
+	// implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
+	implementation 'org.glassfish:jakarta.el:4.0.2'
+
+	// Jwt lib
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 
@@ -100,7 +109,7 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
-	
+
 }
 
 tasks.named('test') {

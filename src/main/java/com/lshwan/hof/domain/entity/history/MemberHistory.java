@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class MemberHistory extends BaseEntityRegDate{
-  @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long no; // 히스토리 번호 (Primary Key)
 
