@@ -21,6 +21,7 @@ spring:
     include:
       - db
       - s3
+      - mongo
 
   datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
