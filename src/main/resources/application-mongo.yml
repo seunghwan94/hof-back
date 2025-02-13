@@ -1,0 +1,5 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://54.180.100.36:27017/sample
+      username: chating         # MongoDB 사용자 이름 (선택 사항)
