@@ -14,5 +14,5 @@ public interface ProdService {
 
   Long modify(Prod prod);
 
-  Long remove(Long pno);
+  boolean remove(Long pno);
 }
