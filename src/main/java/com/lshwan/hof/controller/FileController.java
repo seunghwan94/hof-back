@@ -25,41 +25,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class FileController {
     @Autowired
     private S3Service s3Service;
-    
-    @Value("${aws.s3.bucket-name}")
-    private String bucketName;
-    
-    @Value("${aws.s3.region}")
-    private String region;
 
     @SuppressWarnings("null")
     @PostMapping("upload")
     public ResponseEntity<?> upload(@RequestParam("file") List<MultipartFile> files) {
         for (MultipartFile file : files) {
-            try {
-                String origin = file.getOriginalFilename();
-                String path = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
-                String uuid = UUID.randomUUID().toString();
-                String ext = "";
-                int idx = origin.lastIndexOf(".");
-                if (idx > 0) {
-                    ext = origin.substring(idx + 1);
-                }
-                String fileName = uuid + "." + ext;
-                String key = "uploads/" + path + "/" + fileName;
-                String mimeType = file.getContentType();
-                byte[] content = file.getBytes();
-                
-                // S3 업로드
-                s3Service.uploadFile(key, content, mimeType);
-                
-                String fileUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key);
-                log.info("File uploaded successfully: {}", fileUrl);
-            } catch (Exception e) {
-                log.error("File upload failed: {}", e.getMessage());
-            }
+            // S3 업로드
+            s3Service.settingFile(file,"uploads");
         }
-        
         return ResponseEntity.ok().body("File(s) uploaded successfully");
     }
 }

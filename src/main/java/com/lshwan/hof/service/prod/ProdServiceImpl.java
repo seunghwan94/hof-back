@@ -17,13 +17,19 @@ public class ProdServiceImpl implements ProdService {
 
   @Override
   @Transactional
-  public Long add(Prod prod) {
-    return repository.save(prod).getPno();
+  public Prod add(Prod prod) {
+    return repository.save(prod);
   }
 
   @Override
   public Prod findBy(Long pno) {
     return repository.findById(pno).orElse(null);
+  }
+  
+
+  @Override
+  public Prod findByTitle(String title) {
+    return repository.findByTitle(title).orElse(null);
   }
 
   @Override

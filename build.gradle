@@ -91,6 +91,8 @@ dependencies {
 	// Jakarta Servlet api
 	compileOnly 'jakarta.servlet:jakarta.servlet-api:6.1.0'
 
+	// thumbnailator 이미지
+	implementation 'net.coobird:thumbnailator:0.4.8'
 
 }
 

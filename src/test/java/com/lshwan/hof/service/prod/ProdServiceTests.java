@@ -1,6 +1,7 @@
 package com.lshwan.hof.service.prod;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.domain.entity.prod.ProdCategory;
-import com.lshwan.hof.domain.entity.prod.ProdCategory.CategoryType;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
@@ -38,9 +38,9 @@ public class ProdServiceTests {
         .stock(10)
       .build();
     // when
-    Long pno = service.add(prod);
+    Prod prod2 = service.add(prod);
     // then
-    assertTrue(pno > 0);
+    assertNotNull(prod2);
   }
 
   @Test
@@ -75,9 +75,9 @@ public class ProdServiceTests {
         .stock(10)
       .build();
     // when
-    Long pno = service.add(prod);
+    Prod prod2 = service.add(prod);
     // then
-    assertNotNull(pno);
+    assertNotNull(prod2);
 
     // when
     Prod modiProd = Prod.builder()
@@ -108,11 +108,11 @@ public class ProdServiceTests {
         .price(10000)
         .stock(10)
       .build();
-    Long pno = service.add(prod);
-    assertNotNull(pno);
+    Prod prod2 = service.add(prod);
+    assertNotNull(prod2);
 
     // when
-    boolean isRemove = service.remove(pno);
+    boolean isRemove = service.remove(prod2.getPno());
 
     // then
     assertTrue(isRemove);
