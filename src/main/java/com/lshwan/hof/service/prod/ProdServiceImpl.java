@@ -12,18 +12,18 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-@Transactional
 public class ProdServiceImpl implements ProdService {
   private ProdRepository repository;
 
   @Override
+  @Transactional
   public Long add(Prod prod) {
     return repository.save(prod).getPno();
   }
 
   @Override
   public Prod findBy(Long pno) {
-    return repository.findById(pno).get();
+    return repository.findById(pno).orElse(null);
   }
 
   @Override
@@ -32,14 +32,19 @@ public class ProdServiceImpl implements ProdService {
   }
 
   @Override
+  @Transactional
   public Long modify(Prod prod) {
     return repository.save(prod).getPno();
   }
 
   @Override
-  public Long remove(Long pno) {
-    repository.delete(findBy(pno));
-    return pno;
+  @Transactional
+  public boolean remove(Long pno) {
+    if (repository.existsById(pno)) {
+      repository.delete(findBy(pno));
+      return true;
+    }
+    return false;
   }
 
 }
