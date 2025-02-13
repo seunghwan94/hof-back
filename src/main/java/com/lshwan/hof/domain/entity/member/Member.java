@@ -22,11 +22,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Builder.Default;
 
 @Entity
 @Table(name = "tbl_member")  // 테이블 명 명시
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

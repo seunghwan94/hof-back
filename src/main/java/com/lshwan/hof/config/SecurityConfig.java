@@ -1,74 +1,105 @@
 package com.lshwan.hof.config;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.lshwan.hof.security.JwtAuthenticationFilter;
-import com.lshwan.hof.config.JwtTokenProvider;
+
+import lombok.extern.log4j.Log4j2;
+
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @Configuration
 @EnableWebSecurity
+@ConfigurationProperties(prefix = "custom") // application.yml에서 "custom"으로 시작하는 설정을 매핑
+@Log4j2
 public class SecurityConfig implements WebMvcConfigurer{
-  private JwtTokenProvider jwtTokenProvider;
-
-  public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
-    this.jwtTokenProvider = jwtTokenProvider;
+  @Bean
+  public JwtTokenProvider jwtTokenProvider() {
+      return new JwtTokenProvider();
   }
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-      registry.addMapping("/**")  // 모든 경로에 대해
-          .allowedOrigins("http://localhost:3000")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
-          .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
-          .allowedHeaders("*")  // 모든 헤더를 허용
-          .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
+    registry.addMapping("/**")  // 모든 경로에 대해
+        .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
+        .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
+        .allowedHeaders("*")  // 모든 헤더를 허용
+        .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
   }
 
+  // 비밀번호 암호화
   @Bean
   public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();  // BCryptPasswordEncoder 사용
+    return new BCryptPasswordEncoder();
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-      AuthenticationManagerBuilder authenticationManagerBuilder = 
-          http.getSharedObject(AuthenticationManagerBuilder.class);
-      return authenticationManagerBuilder.build();
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+      return authenticationConfiguration.getAuthenticationManager();
   }
-
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-      http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-          .requestMatchers("index/**").permitAll()           
-          .requestMatchers("file/**").permitAll()
-          .requestMatchers("swagger-ui/**").permitAll()
-          .requestMatchers("/actuator/**").permitAll()            
-          // .requestMatchers("/actuator/prometheus").permitAll() 
-          .anyRequest().authenticated() // 인증이 필요한 경우 설정
-        )
-        .formLogin(form -> form
-          .loginPage("/login").permitAll()
-          .defaultSuccessUrl("/intro", true)
-          .failureUrl("/login?error=true")
-        )
-        .logout(logout -> logout
-          .logoutUrl("/logout")
-          .logoutSuccessUrl("/login")
-        );
-        // filter적용
-      return http.build();
+  public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    http
+      .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (JWT 사용 시 필요 없음)
+        .sessionManagement(session -> session
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
+      )
+      .authorizeHttpRequests(auth -> auth
+        .requestMatchers("index/**").permitAll()           
+        .requestMatchers("file/**").permitAll()
+        .requestMatchers("/swagger-ui/**").permitAll()
+        .requestMatchers("/actuator/**").permitAll()
+        .requestMatchers("/api/v1/login", "/").permitAll()
+        // .requestMatchers("/actuator/prometheus").permitAll() 
+        // .anyRequest().authenticated() // 인증이 필요한 경우 설정
+        .anyRequest().authenticated()
+      )
+      .formLogin(form -> form.disable()) // 폼 로그인 비활성화 (JWT만 사용)
+      .logout(logout -> logout.disable()) // 로그아웃 비활성화 (JWT만 사용)
+      .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider(), userDetailsService(passwordEncoder())), UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
+    log.info("SecurityFilterChain 설정 완료!!!");
+    return http.build();
   }
+
+  // In-Memory 사용자 인증 설정 (테스트용)
+  @Bean
+  public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+    UserDetails user1 = User.builder()
+        .username("admin") // 관리자 계정
+        .password(passwordEncoder.encode("admin123")) // 암호화된 비밀번호
+        .roles("ADMIN") // ADMIN 권한 부여
+        .build();
+
+    UserDetails user2 = User.builder()
+        .username("user") // 일반 사용자 계정
+        .password(passwordEncoder.encode("user123")) // 암호화된 비밀번호
+        .roles("USER") // USER 권한 부여
+        .build();
+
+    return new InMemoryUserDetailsManager(user1, user2); // In-Memory 저장소에 사용자 정보 저장
+  }
+
+  @Bean
+  public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
+      return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
+  }
+
 }
