@@ -1,5 +1,6 @@
 package com.lshwan.hof.domain.entity.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lshwan.hof.domain.entity.BaseEntity;
 
 import jakarta.persistence.Entity;
@@ -34,6 +35,7 @@ public class MemberDetail extends BaseEntity{
 
   @OneToOne
   @JoinColumn(name = "mno", nullable = false)
+   @JsonIgnore  // 🚀 MemberDetail에서 Member 직렬화 제외
   private Member member;
 
   public enum MemberGender {

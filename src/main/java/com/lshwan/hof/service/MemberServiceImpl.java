@@ -35,6 +35,7 @@ public class MemberServiceImpl implements MemberService{
   }
 
   @Override
+  @Transactional
   public List<Member> findList() {
     // TODO Auto-generated method stub
     return repository.findAll();

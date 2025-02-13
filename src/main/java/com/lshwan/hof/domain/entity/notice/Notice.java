@@ -40,5 +40,4 @@ public class Notice extends BaseEntity{
   @Column(name = "background_color", length = 7, nullable = false)
   private String backgroundColor;
 
-
 }
