@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lshwan.hof.mapper.util.SearchMapper">
+
+    <select id="search" resultType="map">
+        SELECT * FROM ${request.tableName}
+        <where>
+            <!-- category 값이 존재하면 cno = category 조건 추가 -->
+            <if test="request.category != null">
+                cno = #{request.category}
+            </if>
+
+            <!-- 일반 검색 조건 -->
+            <if test="request.keyword != null and request.searchColumns != null">
+                <trim prefix="AND (" suffix=")" prefixOverrides="OR">
+                    <foreach collection="request.searchColumns" item="column">
+                        OR ${column} LIKE CONCAT('%', #{request.keyword}, '%')
+                    </foreach>
+                </trim>
+            </if>
+        </where>
+        
+        <if test="request.sortColumn != null and request.sortOrder != null">
+            ORDER BY ${request.sortColumn} ${request.sortOrder}
+        </if>
+    </select>
+
+</mapper>
