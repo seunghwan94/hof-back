@@ -252,6 +252,7 @@ public class CrawlingService {
   /**
    * 크롤링한 데이터를 DB에 저장
    */
+  @SuppressWarnings("unchecked")
   private void saveProductToDB(Map<String, Object> productDetails,Long cno) {
     String title = (String) productDetails.get("title");
     int price = Integer.parseInt(((String) productDetails.get("price")).replaceAll("[^0-9]", ""));
