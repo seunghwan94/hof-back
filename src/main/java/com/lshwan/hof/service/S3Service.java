@@ -1,6 +1,5 @@
 package com.lshwan.hof.service;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnails;
 

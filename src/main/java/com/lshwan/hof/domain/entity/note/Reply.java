@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 @Entity
 @Getter
@@ -31,7 +32,8 @@ public class Reply extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_no")
     private Reply parentReply; 
-
+    
+    @Default
     @Column(nullable = false, columnDefinition = "int default 0")
     private int depth = 0; 
 

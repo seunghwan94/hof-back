@@ -1,6 +1,6 @@
 package com.lshwan.hof.domain.entity.social;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 import com.lshwan.hof.domain.entity.BaseEntity;

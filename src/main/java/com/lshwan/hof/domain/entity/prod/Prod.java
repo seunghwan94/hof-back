@@ -20,6 +20,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder.Default;
 
 @Entity
 @Getter
@@ -43,11 +44,12 @@ public class Prod extends BaseEntity{
 
     @Column(columnDefinition = "LONGTEXT")
     private String content; // 상품 내용
-
+    
+    @Default
     @Column(nullable = false)
     private int price = 0; // 가격 (기본값 0)
     
-
+    @Default
     @Column(nullable = false)
     private int stock = 0; // 재고 (기본값 0)
 
