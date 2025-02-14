@@ -4,13 +4,14 @@ import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.domain.entity.prod.ProdCategory;
 import com.lshwan.hof.domain.entity.prod.ProdOption;
 import com.lshwan.hof.domain.entity.prod.ProdOptionMap;
-import com.lshwan.hof.domain.entity.prod.ProdCategory.CategoryType;
 import com.lshwan.hof.service.prod.ProdCategoryService;
 import com.lshwan.hof.service.prod.ProdOptionMapService;
 import com.lshwan.hof.service.prod.ProdOptionService;
 import com.lshwan.hof.service.prod.ProdService;
 
-import lombok.AllArgsConstructor;
+import org.apache.commons.io.IOUtils;
+import org.springframework.mock.web.MockMultipartFile;
+
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,7 +20,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.time.Duration;
 import java.util.*;
 import java.util.NoSuchElementException;
@@ -36,6 +41,8 @@ public class CrawlingService {
   private ProdOptionService optionService;
   @Autowired
   private ProdOptionMapService optionMapService;
+  @Autowired
+  private S3Service s3Service;
 
   private static final String TARGET_URL = "https://www.coupang.com/np/categories/416250?listSize=60&sorter=bestAsc";
   private static final String BASE_URL = "https://www.coupang.com";
@@ -224,7 +231,7 @@ public class CrawlingService {
   private void saveProductToDB(Map<String, Object> productDetails) {
     String title = (String) productDetails.get("title");
     int price = Integer.parseInt(((String) productDetails.get("price")).replaceAll("[^0-9]", ""));
-    String imageUrl = (String) productDetails.get("image_url");
+    List<String> imageUrls = (List<String>) productDetails.get("image_urls");
     List<Map<String, Object>> optionsList = (List<Map<String, Object>>) productDetails.get("options");
     
     Prod existProd = prodService.findByTitle(title);
@@ -233,6 +240,26 @@ public class CrawlingService {
       return;
     }
     
+
+    StringBuilder contentBuilder = new StringBuilder();
+    contentBuilder.append("<div class='product-images'>");
+
+    for (String imageUrl : imageUrls) {
+      String s3Img = "";
+      try {
+        MultipartFile file = convertUrlToMultipartFile(imageUrl);
+        s3Img = s3Service.settingFile(file,"prodDetail");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      contentBuilder.append("<img src='").append(s3Img).append("' alt='상품 이미지' style='max-width:100%;'>");
+    }
+
+    contentBuilder.append("</div>");
+
+    // 최종 HTML 문자열로 변환
+    String content = contentBuilder.toString();
+
     // ProdCategory 침대(cno)
     ProdCategory prodCategory = categoryService.findBy(1L);
 
@@ -240,7 +267,7 @@ public class CrawlingService {
     Prod prod = Prod.builder()
       .cno(prodCategory)
       .title(title)
-      .content("content test") // 값 가져와야됨
+      .content(content) // 값 가져와야됨
       .price(price)
       .stock(10)
     .build();
@@ -283,4 +310,18 @@ public class CrawlingService {
       return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
   }
 
+  private MultipartFile convertUrlToMultipartFile(String imageUrl) throws Exception {
+    URL url = new URL(imageUrl);
+    URLConnection connection = url.openConnection();
+    InputStream inputStream = connection.getInputStream();
+
+    // 파일 이름 설정 (URL의 마지막 경로를 파일명으로 사용)
+    String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+
+    // InputStream을 바이트 배열로 변환
+    byte[] bytes = IOUtils.toByteArray(inputStream);
+
+    // MultipartFile 변환 (MockMultipartFile 사용)
+    return new MockMultipartFile(fileName, fileName, "image/jpeg", bytes);
+  }
 }

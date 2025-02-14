@@ -33,7 +33,8 @@ public class S3Service {
     this.s3Client = s3Client;
   }
 
-  public void settingFile(MultipartFile file, String folder) {
+  public String settingFile(MultipartFile file, String folder) {
+    String fileUrl = "";
     try {
       String origin = file.getOriginalFilename();
       String path = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
@@ -49,7 +50,7 @@ public class S3Service {
 
       byte[] content = file.getBytes();
       uploadFile(key, content, mimeType);
-      String fileUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key);
+      fileUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key);
       log.info("원본 파일 업로드 완료: {}", fileUrl);
 
       // **썸네일 생성 및 업로드 (JPG, PNG만 가능)**
@@ -60,10 +61,10 @@ public class S3Service {
         String thumbnailUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, thumbnailKey);
         log.info("썸네일 업로드 완료: {}", thumbnailUrl);
       }
-
     } catch (IOException e) {
       log.error("파일 업로드 실패: {}", e.getMessage());
     }
+    return fileUrl;
   }
 
   public String uploadFile(String key, byte[] content, String mimeType) {
@@ -85,14 +86,13 @@ public class S3Service {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
          ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-      BufferedImage originalImage = ImageIO.read(bais);
-
-      Thumbnails.of(originalImage)
-        .size(200, 200)
-        .outputFormat(format)
-        .toOutputStream(baos);
+      Thumbnails.of(bais)
+                .size(200, 200)
+                .outputFormat(format) // 기본값을 JPG로 설정 (변경 가능)
+                .toOutputStream(baos);
 
       return baos.toByteArray();
     }
   }
+
 }
