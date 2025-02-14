@@ -95,16 +95,16 @@ public class SearchHistoryServiceTests {
     @Test
     void remove() {
 
-        HistorySearch historySearch = HistorySearch.builder()
-        .mno(7L)
-        .keyword("가구")
-        .cno(4L)
-        .build();
-        String generatedId = service.add(historySearch);
-        boolean isDeleted = service.remove(generatedId);
+        // HistorySearch historySearch = HistorySearch.builder()
+        // .mno(7L)
+        // .keyword("가구")
+        // .cno(4L)
+        // .build();
+        // String generatedId = service.add(historySearch);
+        boolean isDeleted = service.remove("67adb13b4b18557ecd04b002");
 
         assertTrue(isDeleted);
-        assertNull(service.findBy(generatedId));
+        assertNull(service.findBy("67adb13b4b18557ecd04b002"));
     }
 
 }

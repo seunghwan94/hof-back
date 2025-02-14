@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,6 +42,7 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = "prod_option_no")
     private ProdOption prodOption;
 
+    @Default
     @Column(nullable = false, columnDefinition = "int default 1")
     private int count = 1;
 }

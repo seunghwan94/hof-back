@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,6 +39,7 @@ public class ProdOptionMap extends BaseEntity{
   @JoinColumn(name = "option_no", nullable = false)
   private ProdOption option; // 옵션 번호 (Foreign Key)
 
+  @Default
   @Column(nullable = false)
   private int stock = 0; // 옵션 별 재고
 
