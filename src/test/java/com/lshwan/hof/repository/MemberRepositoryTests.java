@@ -20,5 +20,6 @@ public class MemberRepositoryTests {
   public void findAll(){
     log.info(repository.findAll()); 
   }
+
   
 }

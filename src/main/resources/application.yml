@@ -28,7 +28,12 @@ spring:
     url: jdbc:mariadb://${DB_URL}:3306/hof?connectTimeout=5000&socketTimeout=10000  # ✅ Timeout 설정 추가
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-
+  security:
+    user:
+      name: admin
+      password: admin123
+      roles: ADMIN
+      
   jpa:
     hibernate:
       ddl-auto: none
@@ -65,18 +70,15 @@ management:
     tags:
       application: hof-spring-boot-app
 
-  security:
-    user:
-      name: user
-      password: password
+
   cors:
     allowed-origins: "http://localhost:3000"
     allowed-methods: "GET, POST, PUT, DELETE"
     allowed-headers: "*"
     allow-credentials: true
 
-jwt:
-  secret: "your-secret-key-here"
+# jwt:
+#   secret: "your-secret-key-here"
 
   # security:
   #   user:
