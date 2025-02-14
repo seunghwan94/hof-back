@@ -3,13 +3,8 @@ package com.lshwan.hof.controller;
 import com.lshwan.hof.config.JwtTokenProvider;
 import com.lshwan.hof.domain.dto.AuthRequest;
 import com.lshwan.hof.domain.dto.AuthResponse;
-import com.lshwan.hof.domain.entity.member.Member;
-
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

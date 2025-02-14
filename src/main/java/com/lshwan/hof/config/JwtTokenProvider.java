@@ -4,8 +4,6 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 
-import com.lshwan.hof.domain.entity.member.Member.MemberRole;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -13,8 +11,6 @@ import io.jsonwebtoken.security.Keys;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.List;
-
 import javax.crypto.SecretKey;
 
 @Component
