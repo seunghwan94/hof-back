@@ -44,87 +44,91 @@ public class CrawlingService {
   @Autowired
   private S3Service s3Service;
 
-  // private static final String TARGET_URL = "https://www.coupang.com/np/categories/416250?listSize=60&sorter=bestAsc"; // 침대
-  // private Long cno = 1L;
-  // private static final String TARGET_URL = "https://www.coupang.com/np/categories/416342?listSize=60&sorter=bestAsc&page=3"; // 의자
-  // private Long cno = 2L;
-  // private static final String TARGET_URL = "https://www.coupang.com/np/categories/416328?listSize=60&sorter=bestAsc&page=3"; // 책상
-  // private Long cno = 3L;
-  // private static final String TARGET_URL = "https://www.coupang.com/np/categories/416289?listSize=60&sorter=bestAsc&page=3"; // 수납장
-  // private Long cno = 4L;
-  private static final String TARGET_URL = "https://www.coupang.com/np/categories/434929?listSize=60&sorter=bestAsc&page=3"; // 옷장
-  private Long cno = 5L;
+  private static final List<Map<String, Object>> CATEGORY_LIST = Arrays.asList(
+    Map.of("url", "https://www.coupang.com/np/categories/416250?listSize=60&sorter=bestAsc", "cno", 1L), // 침대
+    Map.of("url", "https://www.coupang.com/np/categories/416342?listSize=60&sorter=bestAsc&page=4", "cno", 2L), // 의자
+    Map.of("url", "https://www.coupang.com/np/categories/416328?listSize=60&sorter=bestAsc&page=4", "cno", 3L), // 책상
+    Map.of("url", "https://www.coupang.com/np/categories/416289?listSize=60&sorter=bestAsc&page=4", "cno", 4L), // 수납장
+    Map.of("url", "https://www.coupang.com/np/categories/434929?listSize=60&sorter=bestAsc&page=4", "cno", 5L)  // 옷장
+  );
+
   private static final String BASE_URL = "https://www.coupang.com";
   private int timeoutCount = 0;
 
   public void crawling() {
-    ChromeOptions options = new ChromeOptions();
 
-    options.addArguments("--headless");
-    options.addArguments("--disable-blink-features=AutomationControlled");
-    options.addArguments("--disable-gpu");
-    options.addArguments("--no-sandbox");
-    options.addArguments("--disable-dev-shm-usage");
-    options.addArguments("--window-size=1920,1080");
-    options.addArguments("--user-agent=" + getRandomUserAgent());
+    for (Map<String, Object> category : CATEGORY_LIST) {
+      String targetUrl = (String) category.get("url");
+      Long cno = (Long) category.get("cno");
 
-    WebDriver driver = null;
+      ChromeOptions options = new ChromeOptions();
 
-    try {
-      driver = new ChromeDriver(options);
-      WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+      options.addArguments("--headless");
+      options.addArguments("--disable-blink-features=AutomationControlled");
+      options.addArguments("--disable-gpu");
+      options.addArguments("--no-sandbox");
+      options.addArguments("--disable-dev-shm-usage");
+      options.addArguments("--window-size=1920,1080");
+      options.addArguments("--user-agent=" + getRandomUserAgent());
 
-      // 상품 url
-      driver.get(TARGET_URL);
-      wait.until(webDriver -> ((JavascriptExecutor) webDriver)
-        .executeScript("return document.readyState").equals("complete"));
+      WebDriver driver = null;
 
-      // prodUrl list 추출
-      List<WebElement> prodUrls = wait.until(
-        ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("/html/body/div[3]/section/form/div/div/div[1]/div[1]/ul/li/a"))
-      );
+      try {
+        driver = new ChromeDriver(options);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-      List<String> prodUrlList = new ArrayList<>();
-      for (WebElement link : prodUrls) {
-        String href = link.getAttribute("href");
-        if (href != null && !href.isEmpty()) {
-          if (!href.startsWith("http")) {
-            href = BASE_URL + href;
+        // 상품 url
+        driver.get(targetUrl);
+        wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+          .executeScript("return document.readyState").equals("complete"));
+
+        // prodUrl list 추출
+        List<WebElement> prodUrls = wait.until(
+          ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("/html/body/div[3]/section/form/div/div/div[1]/div[1]/ul/li/a"))
+        );
+
+        List<String> prodUrlList = new ArrayList<>();
+        for (WebElement link : prodUrls) {
+          String href = link.getAttribute("href");
+          if (href != null && !href.isEmpty()) {
+            if (!href.startsWith("http")) {
+              href = BASE_URL + href;
+            }
+            prodUrlList.add(href);
           }
-          prodUrlList.add(href);
         }
+
+        log.info("리스트 : " + prodUrlList);
+        log.info("상품 목록 개수: " + prodUrlList.size());
+
+        // 각 상품 목록 크롤링
+        for (String productUrl : prodUrlList) {
+          // 상품 상세 정보 크롤링 및 DB 저장
+          if (timeoutCount >= 7) {
+            log.error("타임아웃 오류 7회 발생. 크롤링 중단!");
+            return;
+          }
+
+          try {
+            Map<String, Object> productDetails = CrawlingProdDetails(driver, productUrl);
+            if (productDetails.isEmpty()) continue;
+            log.info("상품 데이터 : " + productDetails);
+            saveProductToDB(productDetails, cno);
+            // break;
+          } catch (Exception e) {
+            log.error("상품 크롤링 중 오류 발생: " + e.getMessage());
+          }
+        }
+
+      } catch (TimeoutException e) {
+          log.error("페이지 로딩 시간 초과: " + e.getMessage());
+      } catch (Exception e) {
+          log.error("크롤링 오류 발생: " + e.getMessage());
+      } finally {
+          if (driver != null) {
+              driver.quit();
+          }
       }
-
-      log.info("리스트 : " + prodUrlList);
-      log.info("상품 목록 개수: " + prodUrlList.size());
-
-      // 각 상품 목록 크롤링
-      for (String productUrl : prodUrlList) {
-        // 상품 상세 정보 크롤링 및 DB 저장
-        if (timeoutCount >= 7) {
-          log.error("타임아웃 오류 7회 발생. 크롤링 중단!");
-          return;
-        }
-
-        try {
-          Map<String, Object> productDetails = CrawlingProdDetails(driver, productUrl);
-          if (productDetails.isEmpty()) continue;
-          log.info("상품 데이터 : " + productDetails);
-          saveProductToDB(productDetails);
-          // break;
-        } catch (Exception e) {
-          log.error("상품 크롤링 중 오류 발생: " + e.getMessage());
-        }
-      }
-
-    } catch (TimeoutException e) {
-        log.error("페이지 로딩 시간 초과: " + e.getMessage());
-    } catch (Exception e) {
-        log.error("크롤링 오류 발생: " + e.getMessage());
-    } finally {
-        if (driver != null) {
-            driver.quit();
-        }
     }
   }
   /**
@@ -248,7 +252,7 @@ public class CrawlingService {
   /**
    * 크롤링한 데이터를 DB에 저장
    */
-  private void saveProductToDB(Map<String, Object> productDetails) {
+  private void saveProductToDB(Map<String, Object> productDetails,Long cno) {
     String title = (String) productDetails.get("title");
     int price = Integer.parseInt(((String) productDetails.get("price")).replaceAll("[^0-9]", ""));
     List<String> imageUrls = (List<String>) productDetails.get("image_urls");
