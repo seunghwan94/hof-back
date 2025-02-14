@@ -73,29 +73,30 @@ public class SecurityConfig implements WebMvcConfigurer{
         .anyRequest().authenticated()
       )
       .formLogin(form -> form.disable()) // 폼 로그인 비활성화 (JWT만 사용)
-      .logout(logout -> logout.disable()) // 로그아웃 비활성화 (JWT만 사용)
-      .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider(), userDetailsService(passwordEncoder())), UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
+      .logout(logout -> logout.disable())
+      ; // 로그아웃 비활성화 (JWT만 사용)
+      // .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider(), userDetailsService(passwordEncoder())), UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
     log.info("SecurityFilterChain 설정 완료!!!");
     return http.build();
   }
 
   // In-Memory 사용자 인증 설정 (테스트용)
-  @Bean
-  public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-    UserDetails user1 = User.builder()
-        .username("admin") // 관리자 계정
-        .password(passwordEncoder.encode("admin123")) // 암호화된 비밀번호
-        .roles("ADMIN") // ADMIN 권한 부여
-        .build();
+  // @Bean
+  // public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+  //   UserDetails user1 = User.builder()
+  //       .username("admin") // 관리자 계정
+  //       .password(passwordEncoder.encode("admin123")) // 암호화된 비밀번호
+  //       .roles("ADMIN") // ADMIN 권한 부여
+  //       .build();
 
-    UserDetails user2 = User.builder()
-        .username("user") // 일반 사용자 계정
-        .password(passwordEncoder.encode("user123")) // 암호화된 비밀번호
-        .roles("USER") // USER 권한 부여
-        .build();
+  //   UserDetails user2 = User.builder()
+  //       .username("user") // 일반 사용자 계정
+  //       .password(passwordEncoder.encode("user123")) // 암호화된 비밀번호
+  //       .roles("USER") // USER 권한 부여
+  //       .build();
 
-    return new InMemoryUserDetailsManager(user1, user2); // In-Memory 저장소에 사용자 정보 저장
-  }
+  //   return new InMemoryUserDetailsManager(user1, user2); // In-Memory 저장소에 사용자 정보 저장
+  // }
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {

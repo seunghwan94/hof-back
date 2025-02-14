@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Log4j2
 public class Info {
   @GetMapping("/")
-  public String requestMethodName(@AuthenticationPrincipal UserDetails userDetails) {
-    log.info(userDetails);
+  public String requestMethodName(@AuthenticationPrincipal UserDetails userDetails, Principal principal) {
+    log.info("요청된 사용자 정보: {}", userDetails);
+    log.info("요청된 Principal 정보: {}", principal);
     return "success";
   }
 }
