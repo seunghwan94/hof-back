@@ -28,6 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
+        
+    log.info("JwtAuthenticationFilter 실행됨!!! 요청 URL: {}", request.getRequestURI());
 
     // 1️⃣ 요청 헤더에서 Authorization 값을 가져옴
     String token = getTokenFromRequest(request);
@@ -65,5 +67,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
     return null;
   }
+
 
 }
