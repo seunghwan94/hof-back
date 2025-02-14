@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 @Entity
 @Getter
@@ -33,9 +34,11 @@ public class OrderItem extends BaseEntity {
     @JoinColumn(name = "prod_option_no")
     private ProdOption prodOption;
 
+    @Default
     @Column(nullable = false, columnDefinition = "int default 1")
     private int count = 1;
 
+    @Default
     @Column(nullable = false, columnDefinition = "int default 0")
     private int basePrice = 0;
 

@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,6 +37,8 @@ public class ProdOption extends BaseEntity{
 
   @Column(nullable = false)
   private String value; // 옵션 값 (빨강,XL,나무 등)
+
+  @Default
   @Column(nullable = false,name = "add_price")
   private int addPrice = 0; // 추가 가격 (기본값 : 0)
 

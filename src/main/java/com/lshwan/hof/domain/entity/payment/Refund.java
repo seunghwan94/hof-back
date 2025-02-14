@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +29,7 @@ public class Refund extends BaseEntity {
     @Column
     private String reason; 
 
+    @Default
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean status = false; 
 

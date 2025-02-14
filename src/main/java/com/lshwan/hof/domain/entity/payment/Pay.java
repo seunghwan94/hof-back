@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 @Entity
 @Getter
@@ -28,6 +29,7 @@ public class Pay extends BaseEntity {
     @Column(nullable = false)
     private PaymentMethod method;
 
+    @Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(10) default '실패'")
     private PaymentStatus status = PaymentStatus.실패;

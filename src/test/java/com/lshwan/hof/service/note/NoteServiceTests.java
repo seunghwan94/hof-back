@@ -11,10 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.note.Note;
-import com.lshwan.hof.domain.entity.prod.ProdCategory;
-import com.lshwan.hof.domain.entity.prod.ProdCategory.CategoryType;
 
-import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 
 @SpringBootTest
