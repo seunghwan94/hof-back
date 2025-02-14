@@ -46,12 +46,11 @@ public String modify(HistorySearch search) {
 
   @Override
   public boolean remove(String id) {
-    return historySearchRepository.findById(id)
-    .map(existingHistory -> {
-        historySearchRepository.delete(existingHistory);
-        return true;
-    })
-    .orElse(false);
+    if (historySearchRepository.existsById(id)) {
+      historySearchRepository.deleteById(id);
+      return true;
+    }
+    return false;
   }
   
 }
