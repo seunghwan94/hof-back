@@ -44,7 +44,16 @@ public class CrawlingService {
   @Autowired
   private S3Service s3Service;
 
-  private static final String TARGET_URL = "https://www.coupang.com/np/categories/416250?listSize=60&sorter=bestAsc";
+  // private static final String TARGET_URL = "https://www.coupang.com/np/categories/416250?listSize=60&sorter=bestAsc"; // 침대
+  // private Long cno = 1L;
+  // private static final String TARGET_URL = "https://www.coupang.com/np/categories/416342?listSize=60&sorter=bestAsc&page=3"; // 의자
+  // private Long cno = 2L;
+  // private static final String TARGET_URL = "https://www.coupang.com/np/categories/416328?listSize=60&sorter=bestAsc&page=3"; // 책상
+  // private Long cno = 3L;
+  // private static final String TARGET_URL = "https://www.coupang.com/np/categories/416289?listSize=60&sorter=bestAsc&page=3"; // 수납장
+  // private Long cno = 4L;
+  private static final String TARGET_URL = "https://www.coupang.com/np/categories/434929?listSize=60&sorter=bestAsc&page=3"; // 옷장
+  private Long cno = 5L;
   private static final String BASE_URL = "https://www.coupang.com";
   private int timeoutCount = 0;
 
@@ -101,12 +110,11 @@ public class CrawlingService {
           Map<String, Object> productDetails = CrawlingProdDetails(driver, productUrl);
           if (productDetails.isEmpty()) continue;
           log.info("상품 데이터 : " + productDetails);
-          // saveProductToDB(productDetails);
-          break;
+          saveProductToDB(productDetails);
+          // break;
         } catch (Exception e) {
           log.error("상품 크롤링 중 오류 발생: " + e.getMessage());
         }
-          // }
       }
 
     } catch (TimeoutException e) {
@@ -136,11 +144,23 @@ public class CrawlingService {
       ));
       productDetails.put("title", titleElement.getText());
 
-      // 상품 이미지
-      WebElement imageElement = wait.until(ExpectedConditions.presenceOfElementLocated(
-        By.xpath("//img[contains(@class, 'prod-image__detail')]")
-      ));
-      productDetails.put("image_url", imageElement.getAttribute("src"));
+
+      // 썸네일 이미지 크롤링 (원본 변환)
+      List<WebElement> thumbnailElements = driver.findElements(By.xpath("//div[contains(@class, 'prod-image__item')]//img"));
+      List<String> thumbnailOriginalUrls = new ArrayList<>();
+
+      for (WebElement thumb : thumbnailElements) {
+        String thumbnailUrl = thumb.getAttribute("data-src") != null ? thumb.getAttribute("data-src") : thumb.getAttribute("src");
+
+        if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
+            String originalUrl = thumbnailUrl.replace("thumbnails/remote/48x48ex/", "thumbnails/remote/492x492ex/");
+          thumbnailOriginalUrls.add(originalUrl);
+        }
+      }
+
+      productDetails.put("image_url", thumbnailOriginalUrls);
+
+
 
       // 상품 가격
       try {
@@ -239,8 +259,21 @@ public class CrawlingService {
       log.info("이미 존재하는 상품: " + title);
       return;
     }
-    
 
+    // ProdCategory 침대(cno)
+    ProdCategory prodCategory = categoryService.findBy(cno);
+
+    // Prod 생성 (pno)
+    Prod prod = Prod.builder()
+      .cno(prodCategory)
+      .title(title)
+      .price(price)
+      .stock(10)
+    .build();
+    prod = prodService.add(prod);
+
+
+    // 상세 정보 저장
     StringBuilder contentBuilder = new StringBuilder();
     contentBuilder.append("<div class='product-images'>");
 
@@ -248,7 +281,7 @@ public class CrawlingService {
       String s3Img = "";
       try {
         MultipartFile file = convertUrlToMultipartFile(imageUrl);
-        s3Img = s3Service.settingFile(file,"prodDetail");
+        s3Img = s3Service.settingFile(file,"prodDetail",prod);
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -257,21 +290,10 @@ public class CrawlingService {
 
     contentBuilder.append("</div>");
 
-    // 최종 HTML 문자열로 변환
     String content = contentBuilder.toString();
 
-    // ProdCategory 침대(cno)
-    ProdCategory prodCategory = categoryService.findBy(1L);
-
-    // Prod 생성 (pno)
-    Prod prod = Prod.builder()
-      .cno(prodCategory)
-      .title(title)
-      .content(content) // 값 가져와야됨
-      .price(price)
-      .stock(10)
-    .build();
-    prod = prodService.add(prod);
+    prod.setContent(content);
+    prodService.modify(prod);
 
     // ProdOption (no)
     for (Map<String, Object> optionData : optionsList) {
@@ -311,17 +333,17 @@ public class CrawlingService {
   }
 
   private MultipartFile convertUrlToMultipartFile(String imageUrl) throws Exception {
-    URL url = new URL(imageUrl);
-    URLConnection connection = url.openConnection();
-    InputStream inputStream = connection.getInputStream();
+      URL url = new URL(imageUrl);
+      URLConnection connection = url.openConnection();
+      InputStream inputStream = connection.getInputStream();
 
-    // 파일 이름 설정 (URL의 마지막 경로를 파일명으로 사용)
-    String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+      // 파일 이름 설정 (URL의 마지막 경로를 파일명으로 사용)
+      String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
-    // InputStream을 바이트 배열로 변환
-    byte[] bytes = IOUtils.toByteArray(inputStream);
+      // InputStream을 바이트 배열로 변환
+      byte[] bytes = IOUtils.toByteArray(inputStream);
 
-    // MultipartFile 변환 (MockMultipartFile 사용)
-    return new MockMultipartFile(fileName, fileName, "image/jpeg", bytes);
+      // MultipartFile 변환 (MockMultipartFile 사용)
+      return new MockMultipartFile(fileName, fileName, "image/jpeg", bytes);
+    }
   }
-}
