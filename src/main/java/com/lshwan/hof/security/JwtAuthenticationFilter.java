@@ -25,11 +25,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtTokenProvider jwtTokenProvider;
   private final UserDetailsService userDetailsService;
 
+  // @Override//=======================
+  // protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+  //   String path = request.getServletPath(); // getRequestURI() 대신 사용
+  //   boolean isLoginRequest = path.equals("/login"); // context-path 고려
+  //   log.info("🔍 ======JwtAuthenticationFilter 요청 URL: {}, 필터 적용 여부: {}", path, !isLoginRequest);
+  //   return isLoginRequest;
+  // }
+
+
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-        
+
     log.info("JwtAuthenticationFilter 실행됨!!! 요청 URL: {}", request.getRequestURI());
+
+    // 🔹 로그인 요청이면 필터 건너뛰기
+    // if (request.getRequestURI().equals("/api/v1/login")) {
+    //   log.info("로그인 요청이므로 JWT 필터를 건너뜁니다.");
+    //   filterChain.doFilter(request, response);
+    //   return;
+    // }    
+
 
     // 1️⃣ 요청 헤더에서 Authorization 값을 가져옴
     String token = getTokenFromRequest(request);
@@ -62,6 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private String getTokenFromRequest(HttpServletRequest request) {
     String bearerToken = request.getHeader("Authorization");
+    log.info("getTokenFromRequest 값:" + bearerToken);
     if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
       return bearerToken.substring(7);
     }

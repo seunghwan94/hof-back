@@ -20,6 +20,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.lshwan.hof.security.JwtAuthenticationFilter;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -30,9 +32,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConfigurationProperties(prefix = "custom") // application.yml에서 "custom"으로 시작하는 설정을 매핑
 @Log4j2
 public class SecurityConfig implements WebMvcConfigurer{
+
+  
   @Bean
   public JwtTokenProvider jwtTokenProvider() {
-      return new JwtTokenProvider();
+    return new JwtTokenProvider();
   }
 
   @Override
@@ -52,7 +56,8 @@ public class SecurityConfig implements WebMvcConfigurer{
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-      return authenticationConfiguration.getAuthenticationManager();
+    log.info("어던티케이션 빈 생성됨");
+    return authenticationConfiguration.getAuthenticationManager();
   }
 
   @Bean
@@ -63,40 +68,43 @@ public class SecurityConfig implements WebMvcConfigurer{
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
       )
       .authorizeHttpRequests(auth -> auth
-        .requestMatchers("index/**").permitAll()           
-        .requestMatchers("file/**").permitAll()
+        .requestMatchers("/index/**").permitAll()           
+        .requestMatchers("/file/**").permitAll()
         .requestMatchers("/swagger-ui/**").permitAll()
         .requestMatchers("/actuator/**").permitAll()
-        .requestMatchers("/api/v1/login", "/").permitAll()
+        .requestMatchers("/login").permitAll()
+        .requestMatchers("/api/v1/login").permitAll()
         // .requestMatchers("/actuator/prometheus").permitAll() 
         // .anyRequest().authenticated() // 인증이 필요한 경우 설정
         .anyRequest().authenticated()
       )
       .formLogin(form -> form.disable()) // 폼 로그인 비활성화 (JWT만 사용)
       .logout(logout -> logout.disable())
-      ; // 로그아웃 비활성화 (JWT만 사용)
-      // .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider(), userDetailsService(passwordEncoder())), UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
+      // 로그아웃 비활성화 (JWT만 사용)
+      .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider(), userDetailsService(passwordEncoder())), UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
     log.info("SecurityFilterChain 설정 완료!!!");
     return http.build();
   }
 
   // In-Memory 사용자 인증 설정 (테스트용)
-  // @Bean
-  // public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-  //   UserDetails user1 = User.builder()
-  //       .username("admin") // 관리자 계정
-  //       .password(passwordEncoder.encode("admin123")) // 암호화된 비밀번호
-  //       .roles("ADMIN") // ADMIN 권한 부여
-  //       .build();
+  @Bean
+  public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+    log.info("[SecurityConfig] 인메모리유저디테일매니저 생성 시작");
 
-  //   UserDetails user2 = User.builder()
-  //       .username("user") // 일반 사용자 계정
-  //       .password(passwordEncoder.encode("user123")) // 암호화된 비밀번호
-  //       .roles("USER") // USER 권한 부여
-  //       .build();
+    UserDetails user1 = User.builder()
+        .username("admin") // 관리자 계정
+        .password(passwordEncoder.encode("admin123")) // 암호화된 비밀번호
+        .roles("ADMIN") // ADMIN 권한 부여
+        .build();
 
-  //   return new InMemoryUserDetailsManager(user1, user2); // In-Memory 저장소에 사용자 정보 저장
-  // }
+    UserDetails user2 = User.builder()
+        .username("user") // 일반 사용자 계정
+        .password(passwordEncoder.encode("user123")) // 암호화된 비밀번호
+        .roles("USER") // USER 권한 부여
+        .build();
+    log.info("[SecurityConfig] 인메모리유저디테일매니저 생성 완료");
+    return new InMemoryUserDetailsManager(user1, user2); // In-Memory 저장소에 사용자 정보 저장
+  }
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {

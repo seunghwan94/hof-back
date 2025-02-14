@@ -9,6 +9,8 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,19 +20,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/")
 @RequiredArgsConstructor
 @Log4j2
 public class AuthController {
 
   private final AuthenticationManager authenticationManager;
   private final JwtTokenProvider jwtTokenProvider;
-
-
-  @PostConstruct
-  public void init() {
-    log.info("AuthController 초기화 완료!!!");
-  }
 
   /**
    * 로그인 API: 사용자 인증 후 JWT 토큰 발급
@@ -42,21 +38,24 @@ public class AuthController {
     log.info("로그인 요청 받음!!! username: {}", authRequest.getUsername());
     log.info(authRequest);
     try {
+      log.info("[AuthController] AuthenticationManager 실행 전: {}", authenticationManager);
       // 1️ 사용자를 인증 (Spring Security에서 자동으로 유효성 검사)
       Authentication authentication = authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-
+          log.info("어던티케이션 인증 성공: {}", authentication.getPrincipal());
+          log.info("[AuthController] AuthenticationManager 실행 완료, 결과: {}", authentication);
       // 2️ 인증 성공 시 UserDetails 가져오기
       UserDetails userDetails = (UserDetails) authentication.getPrincipal();
       log.info("인증 성공: {}", userDetails.getUsername());
 
       // 3️ JWT 토큰 생성
-      // String token = jwtTokenProvider.generateToken(userDetails.getUsername());
-      String token = jwtTokenProvider.generateToken(userDetails.getUsername(), ((Member) userDetails).getRole());
-      log.info("JWT 토큰 생성 완료!!!");
+      String token = jwtTokenProvider.generateToken(userDetails.getUsername());
+      // String token = jwtTokenProvider.generateToken(userDetails.getUsername(), ((Member) userDetails).getRole());
+      log.info("JWT 토큰 생성 완료!!!");      
+
       // 4️ 응답 객체 생성
       AuthResponse authResponse = new AuthResponse(token, "Bearer", userDetails.getUsername());
-
+      log.info("AuthResponse 생성 완료: {}", authResponse);
       // 5️ JSON 형태로 응답 반환
       return ResponseEntity.ok(authResponse);
 

@@ -51,19 +51,18 @@ public class MemberServiceImpl implements MemberService {
     return repository.findAll();
   }
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Member member = findBy(username);
-    if (member == null) {
-      throw new UsernameNotFoundException("회원 정보가 없습니다: " + username);
-    }
-    return User.builder()
-      .username(member.getId())
-      .password(member.getPw())
-      .roles("USER")
-      .build();
-
-  }
+  // @Override
+  // public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  //   Member member = findBy(username);
+  //   if (member == null) {
+  //     throw new UsernameNotFoundException("회원 정보가 없습니다: " + username);
+  //   }
+  //   return User.builder()
+  //     .username(member.getId())
+  //     .password(member.getPw())
+  //     .roles(member.getRole().name())
+  //     .build();
+  // }
 
   
   
