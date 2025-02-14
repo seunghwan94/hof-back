@@ -72,6 +72,7 @@ public class SecurityConfig implements WebMvcConfigurer{
         .requestMatchers("/actuator/**").permitAll()
         .requestMatchers("/login").permitAll()
         .requestMatchers("/api/v1/login").permitAll()
+        .requestMatchers("/prod/**").permitAll()
         // .requestMatchers("/actuator/prometheus").permitAll() 
         // .anyRequest().authenticated() // 인증이 필요한 경우 설정
         .anyRequest().authenticated()
