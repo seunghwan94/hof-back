@@ -1,5 +1,6 @@
 package com.lshwan.hof.domain.entity.common;
 
+import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.domain.entity.note.Note;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileMaster {
+public class FileMaster extends BaseEntity {
 
     @Id
     @Column(length = 255, nullable = false)
@@ -65,9 +66,11 @@ public class FileMaster {
     @Column(name = "url")
     private String url; // 실제 파일 URL
 
-    @Column(name = "reg_date")
-    private LocalDateTime regDate; // 생성일자
+    @Enumerated(EnumType.STRING)
+    @Column(name = "file_type")
+    private FileType fileType;
 
-    @Column(name = "mod_date")
-    private LocalDateTime modDate; // 수정일자
+    public enum FileType {
+        prod_main , prod_detail 
+    }
 }
