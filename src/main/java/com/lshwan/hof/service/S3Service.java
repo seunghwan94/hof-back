@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lshwan.hof.domain.entity.common.FileMaster;
+import com.lshwan.hof.domain.entity.common.FileMaster.FileType;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.note.Note;
 import com.lshwan.hof.domain.entity.order.Review;
@@ -21,7 +22,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -63,26 +63,35 @@ public class S3Service {
       String mimeType = file.getContentType();
       int size = (int) file.getSize();
       boolean image_ck = false;
+      FileType fileType = null;
 
       byte[] content = file.getBytes();
       uploadFile(key, content, mimeType);
       fileUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key);
       log.info("원본 파일 업로드 완료: {}", fileUrl);
 
+      Member member = entity instanceof Member ? (Member) entity : null;
+      Note note = entity instanceof Note ? (Note) entity : null;
+      Review review = entity instanceof Review ? (Review) entity : null;
+      Prod prod = entity instanceof Prod ? (Prod) entity : null;
+
+      if ("prodDetail".equals(folder)) {
+        log.info("prodDetail로 저장된다. " + folder);
+        fileType = FileType.prod_detail;
+      } else if ("prod".equals(folder)) {
+        log.info("prod로 저장된다. " + folder);
+        fileType = FileType.prod_main;
+      }
+
       // **썸네일 생성 및 업로드 (JPG, PNG만 가능)**
       if (!folder.equals("prodDetail") && (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("png"))) {
         byte[] thumbnailContent = createThumbnail(content, ext);
-        String thumbnailKey = "uploads/" + path + "/thumb_" + fileName;
+        String thumbnailKey = "prod/" + path + "/thumb_" + fileName;
         uploadFile(thumbnailKey, thumbnailContent, mimeType);
         String thumbnailUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, thumbnailKey);
         log.info("썸네일 업로드 완료: {}", thumbnailUrl);
         image_ck = true;
       }
-
-      Member member = entity instanceof Member ? (Member) entity : null;
-      Prod prod = entity instanceof Prod ? (Prod) entity : null;
-      Note note = entity instanceof Note ? (Note) entity : null;
-      Review review = entity instanceof Review ? (Review) entity : null;
 
       FileMaster fileMaster = FileMaster.builder()
                     .uuid(uuid)
@@ -98,8 +107,7 @@ public class S3Service {
                     .fileName(fileName)
                     .ext(ext)
                     .url(fileUrl)
-                    .regDate(LocalDateTime.now())
-                    .modDate(LocalDateTime.now())
+                    .fileType(fileType)
                   .build();
 
             fileMasterRepository.save(fileMaster);
@@ -130,7 +138,7 @@ public class S3Service {
          ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
       Thumbnails.of(bais)
-                .size(200, 200)
+                .size(300, 300)
                 .outputFormat(format) // 기본값을 JPG로 설정 (변경 가능)
                 .toOutputStream(baos);
 
