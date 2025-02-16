@@ -56,4 +56,26 @@ public class ProdControllerTests {
       .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
     .andDo(print());
   }
+
+  @Test
+  public void testGetProdDetail() throws Exception {
+    Long pno = 406L;
+
+    mockMvc.perform(get("/prod/{pno}", pno))
+      .andExpect(status().isOk()) // 200 OK 확인
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+      .andExpect(jsonPath("$.pno").value(pno)) // 응답 JSON에서 pno 값이 일치하는지 확인
+      .andExpect(jsonPath("$.title").exists()) // title 필드가 존재하는지 확인
+      .andExpect(jsonPath("$.content").exists()) // content 필드가 존재하는지 확인
+    .andDo(print());
+  }
+
+  @Test
+  public void testGetProdDetailNotFound() throws Exception {
+    Long nonExistentPno = 9999L; // 존재하지 않는 pno
+
+    mockMvc.perform(get("/prod/{pno}", nonExistentPno))
+      .andExpect(status().isNotFound()) // 404 상태 확인
+    .andDo(print());
+  }
 }

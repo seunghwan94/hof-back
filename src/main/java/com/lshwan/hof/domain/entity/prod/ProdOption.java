@@ -42,7 +42,7 @@ public class ProdOption extends BaseEntity{
   @Column(nullable = false,name = "add_price")
   private int addPrice = 0; // 추가 가격 (기본값 : 0)
 
-    // @OneToMany(mappedBy = "prod", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProdOptionMap> optionMaps; // 옵션 매핑 리스트
+  // @OneToMany(mappedBy = "prod", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ProdOptionMap> optionMaps; // 옵션 매핑 리스트
 }

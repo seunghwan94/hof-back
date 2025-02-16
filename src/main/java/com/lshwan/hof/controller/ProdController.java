@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lshwan.hof.domain.dto.prod.ProdDetailDto;
 import com.lshwan.hof.domain.entity.prod.view.ProdView;
+import com.lshwan.hof.service.prod.ProdDetailService;
 import com.lshwan.hof.service.prod.view.ProdViewService;
 
 import lombok.AllArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("prod")
 public class ProdController {
   private ProdViewService service;
+  private final ProdDetailService prodDetailService;
   
   @GetMapping
   public ResponseEntity<?> index() {
@@ -40,4 +44,14 @@ public class ProdController {
     return ResponseEntity.ok(products);
   }
   
+  @GetMapping("/{pno}")
+  public ResponseEntity<ProdDetailDto> getProdDetail(@PathVariable Long pno) {
+    ProdDetailDto prodDetail = prodDetailService.findBy(pno);
+    
+    if (prodDetail == null) {
+      return ResponseEntity.notFound().build();
+    }
+    
+    return ResponseEntity.ok(prodDetail);
+  }
 }

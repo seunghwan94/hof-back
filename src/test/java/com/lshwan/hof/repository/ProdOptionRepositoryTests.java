@@ -28,4 +28,10 @@ public class ProdOptionRepositoryTests {
   public void findAll(){
     repository.findAll();
   }
+
+  
+  @Test
+  public void findByPnoTest(){
+    repository.findByOptionMapsProdPno(406L);
+  }
 }

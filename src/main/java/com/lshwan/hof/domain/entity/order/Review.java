@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 @Entity
 @Getter
@@ -37,7 +38,7 @@ public class Review extends BaseEntity {
     private String content;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(nullable = false, columnDefinition = "int default 5")
+    @Default
     private StarRating star = StarRating.FIVE; 
 
     public enum StarRating {
@@ -47,6 +48,10 @@ public class Review extends BaseEntity {
 
         StarRating(int value) {
             this.value = value;
+        }
+        
+        public int getValue() { 
+            return value;
         }
     }
 }
