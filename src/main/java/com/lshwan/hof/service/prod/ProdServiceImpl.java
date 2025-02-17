@@ -1,9 +1,16 @@
 package com.lshwan.hof.service.prod;
 
 import java.util.List;
+import java.util.function.Function;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.lshwan.hof.domain.dto.PageRequestDto;
+import com.lshwan.hof.domain.dto.PageResultDto;
+import com.lshwan.hof.domain.dto.ProdDto;
 import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.repository.prod.ProdRepository;
 
@@ -31,11 +38,23 @@ public class ProdServiceImpl implements ProdService {
   public Prod findByTitle(String title) {
     return repository.findByTitle(title).orElse(null);
   }
-
   @Override
-  public List<Prod> findList() {
-    return repository.findAll();
+  public PageResultDto<ProdDto, Prod> findList(PageRequestDto dto) {
+      Pageable pageable = dto.getPageable(Sort.by(Sort.Direction.DESC, "pno"));
+  
+      Page<Prod> result = repository.findAll(pageable);
+  
+      Function<Prod, ProdDto> fn = (prod -> new ProdDto(
+              prod.getPno(),
+              prod.getTitle(),
+              prod.getPrice(),
+              prod.getStock(),
+              prod.getCno() != null ? prod.getCno().getType().name() : null 
+      ));
+  
+      return new PageResultDto<>(result, fn);
   }
+  
 
   @Override
   @Transactional

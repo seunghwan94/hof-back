@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.lshwan.hof.domain.dto.PageRequestDto;
+import com.lshwan.hof.domain.dto.PageResultDto;
+import com.lshwan.hof.domain.dto.ProdDto;
 import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.domain.entity.prod.ProdCategory;
 
@@ -53,14 +56,26 @@ public class ProdServiceTests {
     assertNotNull(prod.getCno());
   }
 
+  // @Test
+  // public void findList(){
+  // // when
+  //   List<Prod> list = service.findList();
+  //   // then
+  //   assertNotNull(list);
+  //   assertTrue(list.size() > 0);
+  // }
   @Test
-  public void findList(){
-  // when
-    List<Prod> list = service.findList();
-    // then
-    assertNotNull(list);
-    assertTrue(list.size() > 0);
-  }
+public void testFindList() {
+    PageRequestDto dto = PageRequestDto.builder()
+            .page(10)
+            .size(1)
+            .build();
+
+    PageResultDto<ProdDto, Prod> result = service.findList(dto);
+
+    assertNotNull(result);
+    System.out.println(result);
+}
 
   @Test
   public void modify(){

@@ -1,7 +1,9 @@
 package com.lshwan.hof.service.prod;
 
-import java.util.List;
 
+import com.lshwan.hof.domain.dto.PageRequestDto;
+import com.lshwan.hof.domain.dto.PageResultDto;
+import com.lshwan.hof.domain.dto.ProdDto;
 import com.lshwan.hof.domain.entity.prod.Prod;
 
 
@@ -12,7 +14,7 @@ public interface ProdService {
 
   Prod findByTitle(String title);
 
-  List<Prod> findList();
+  PageResultDto<ProdDto, Prod> findList(PageRequestDto dto);
 
   Long modify(Prod prod);
 

@@ -4,6 +4,7 @@ package com.lshwan.hof.domain.entity.member;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.note.Note;
 
