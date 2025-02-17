@@ -77,7 +77,7 @@ public class SecurityConfig implements WebMvcConfigurer{
       .cors(cors -> cors.configurationSource(corsConfigurationSource()))
       .authorizeHttpRequests(auth -> auth
         // .requestMatchers("/admin/**").permitAll()
-        // .requestMatchers("/main/**").permitAll()
+        .requestMatchers("/main/**").permitAll()
         .requestMatchers("/login/**","/api/v1/login").permitAll()
         // .requestMatchers("/file/**").permitAll()
         // .requestMatchers("/swagger-ui/**").permitAll()
