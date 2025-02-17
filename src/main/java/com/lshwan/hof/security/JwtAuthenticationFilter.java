@@ -24,15 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtTokenProvider jwtTokenProvider;
   private final UserDetailsService userDetailsService;
-
-  // @Override//=======================
-  // protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-  //   String path = request.getServletPath(); // getRequestURI() 대신 사용
-  //   boolean isLoginRequest = path.equals("/login"); // context-path 고려
-  //   log.info("🔍 ======JwtAuthenticationFilter 요청 URL: {}, 필터 적용 여부: {}", path, !isLoginRequest);
-  //   return isLoginRequest;
-  // }
-
+  // private final CustomUserDetailsService customUserDetailsService; //250217
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -40,25 +32,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     log.info("JwtAuthenticationFilter 실행됨!!! 요청 URL: {}", request.getRequestURI());
 
-    // 🔹 로그인 요청이면 필터 건너뛰기
-    // if (request.getRequestURI().equals("/api/v1/login")) {
-    //   log.info("로그인 요청이므로 JWT 필터를 건너뜁니다.");
-    //   filterChain.doFilter(request, response);
-    //   return;
-    // }    
-
-
-    // 1️⃣ 요청 헤더에서 Authorization 값을 가져옴
+    // 1 요청 헤더에서 Authorization 값을 가져옴
     String token = getTokenFromRequest(request);
     log.info("JWT 필터에서 받은 토큰: {}", token);
 
     if (token != null) {
       try {
-        // 2️⃣ 토큰 검증 및 사용자 정보 추출
+        // 2️ 토큰 검증 및 사용자 정보 추출
         String username = jwtTokenProvider.validateExtract(token);
         log.info("JWT 검증 완료!!! username: {}", username);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+          // UserDetails userDetails = userDetailsService.loadUserByUsername(username);
           UserDetails userDetails = userDetailsService.loadUserByUsername(username);
           log.info("UserDetailsService에서 조회한 사용자: {}", userDetails.getUsername());
 
@@ -71,6 +56,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
       } catch (Exception e) {
         log.error("JWT 검증 실패: {}", e.getMessage(), e);
+        //250217
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("Invalid or expired token");
+        return; // 이후 필터 체인 진행하지 않음
       }
     }
 

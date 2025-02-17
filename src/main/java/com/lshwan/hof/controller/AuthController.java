@@ -3,6 +3,10 @@ package com.lshwan.hof.controller;
 import com.lshwan.hof.config.JwtTokenProvider;
 import com.lshwan.hof.domain.dto.AuthRequest;
 import com.lshwan.hof.domain.dto.AuthResponse;
+import com.lshwan.hof.domain.entity.member.Member;
+import com.lshwan.hof.repository.member.MemberRepository;
+import com.lshwan.hof.service.login.MemberService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -22,6 +26,8 @@ public class AuthController {
 
   private final AuthenticationManager authenticationManager;
   private final JwtTokenProvider jwtTokenProvider;
+  private final MemberService memberService; 
+  private final MemberRepository memberRepository; 
 
   /**
    * 로그인 API: 사용자 인증 후 JWT 토큰 발급
@@ -59,5 +65,7 @@ public class AuthController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패: 아이디 또는 비밀번호 확인 필요!!!");
     }
   }
+
+
 
 }
