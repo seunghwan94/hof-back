@@ -2,8 +2,6 @@ package com.lshwan.hof.service.login;
 
 import java.util.List;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
-
 import com.lshwan.hof.domain.entity.member.Member;
 
 public interface MemberService {
