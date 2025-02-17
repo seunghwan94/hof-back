@@ -1,4 +1,4 @@
-package com.lshwan.hof.controller;
+package com.lshwan.hof.controller.main;
 
 import java.util.List;
 
@@ -19,33 +19,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("prod")
+@RequestMapping("main/prod")
 public class ProdController {
-  private ProdViewService service;
+  private final ProdViewService service;
   private final ProdDetailService prodDetailService;
-  
-  @GetMapping
-  public ResponseEntity<?> index() {
-    return ResponseEntity.ok().body(service.findList());
-  }
 
-  @GetMapping("/search")
-  public ResponseEntity<List<ProdView>> searchProd(@RequestParam(required = false) String title, @RequestParam(required = false) Long cno) {
-    List<ProdView> products;
+  @GetMapping
+  public ResponseEntity<List<ProdView>> searchProd(@RequestParam(name = "title", required = false) String title, @RequestParam(name = "cno",required = false) Long cno) {
+    List<ProdView> products; 
     
     if (title != null) {
       products = service.findByTitle(title);
     } else if (cno != null) {
       products = service.findByCno(cno);
     } else {
-      return ResponseEntity.badRequest().body(null);
+      products = service.findList();
     }
 
     return ResponseEntity.ok(products);
   }
   
   @GetMapping("/{pno}")
-  public ResponseEntity<ProdDetailDto> getProdDetail(@PathVariable Long pno) {
+  public ResponseEntity<ProdDetailDto> getProdDetail(@PathVariable("pno") Long pno) {
     ProdDetailDto prodDetail = prodDetailService.findBy(pno);
     
     if (prodDetail == null) {

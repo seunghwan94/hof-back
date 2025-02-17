@@ -26,7 +26,7 @@ public class ProdControllerTests {
   @Test
   public void testGetAllProd() throws Exception {
     // GET
-    mockMvc.perform(get("/prod")) 
+    mockMvc.perform(get("main/prod")) 
       // 응답 상태
       .andExpect(status().isOk()) 
       // 응답json인지 확인
@@ -37,7 +37,7 @@ public class ProdControllerTests {
 
   @Test
   public void testSearchByTitle() throws Exception {
-    mockMvc.perform(get("/prod/search")
+    mockMvc.perform(get("main/prod/search")
       // Query String 파라미터
       .param("title", "침대"))
       // 응답 상태태
@@ -50,7 +50,7 @@ public class ProdControllerTests {
 
   @Test
   public void testSearchByCno() throws Exception {
-    mockMvc.perform(get("/prod/search")
+    mockMvc.perform(get("main/prod/search")
         .param("cno", "1"))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -61,7 +61,7 @@ public class ProdControllerTests {
   public void testGetProdDetail() throws Exception {
     Long pno = 406L;
 
-    mockMvc.perform(get("/prod/{pno}", pno))
+    mockMvc.perform(get("main/prod/{pno}", pno))
       .andExpect(status().isOk()) // 200 OK 확인
       .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
       .andExpect(jsonPath("$.pno").value(pno)) // 응답 JSON에서 pno 값이 일치하는지 확인
@@ -74,7 +74,7 @@ public class ProdControllerTests {
   public void testGetProdDetailNotFound() throws Exception {
     Long nonExistentPno = 9999L; // 존재하지 않는 pno
 
-    mockMvc.perform(get("/prod/{pno}", nonExistentPno))
+    mockMvc.perform(get("main/prod/{pno}", nonExistentPno))
       .andExpect(status().isNotFound()) // 404 상태 확인
     .andDo(print());
   }
