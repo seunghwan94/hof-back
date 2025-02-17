@@ -82,7 +82,7 @@ public class CrawlingService {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
         // 상품 url
-        driver.get(BASE_URL + "/np/categories/" + targetCno + "?listSize=60&sorter=bestAsc&page=4");
+        driver.get(BASE_URL + "/np/categories/" + targetCno + "?listSize=60&sorter=bestAsc&page=5");
         wait.until(webDriver -> ((JavascriptExecutor) webDriver)
           .executeScript("return document.readyState").equals("complete"));
 

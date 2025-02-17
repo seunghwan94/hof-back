@@ -1,5 +1,6 @@
 package com.lshwan.hof.domain.entity.common;
 
+import com.lshwan.hof.domain.entity.BaseEntityRegDate;
 import com.lshwan.hof.domain.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

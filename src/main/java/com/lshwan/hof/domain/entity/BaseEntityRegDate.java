@@ -1,4 +1,4 @@
-package com.lshwan.hof.domain.entity.common;
+package com.lshwan.hof.domain.entity;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;

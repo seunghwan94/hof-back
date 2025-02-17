@@ -1,6 +1,6 @@
 package com.lshwan.hof.domain.entity.history;
 
-import com.lshwan.hof.domain.entity.common.BaseEntityRegDate;
+import com.lshwan.hof.domain.entity.BaseEntityRegDate;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.order.Review;
 
