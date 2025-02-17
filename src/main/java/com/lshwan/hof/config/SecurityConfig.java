@@ -32,23 +32,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@ConfigurationProperties(prefix = "custom") // application.yml에서 "custom"으로 시작하는 설정을 매핑
 @Log4j2
 public class SecurityConfig implements WebMvcConfigurer{
 
-  
   @Bean
   public JwtTokenProvider jwtTokenProvider() {
     return new JwtTokenProvider();
-  }
-
-  @Override
-  public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**")  // 모든 경로에 대해
-        .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
-        .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
-        .allowedHeaders("*")  // 모든 헤더를 허용
-        .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
   }
 
   // 비밀번호 암호화
@@ -56,11 +45,12 @@ public class SecurityConfig implements WebMvcConfigurer{
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
+
   @Bean
-public CorsConfigurationSource corsConfigurationSource() {
+  public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("https://hof.lshwan.com"));
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedOrigins(Arrays.asList("https://hof.lshwan.com","http://localhost:3000"));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setExposedHeaders(Arrays.asList("*"));
     configuration.setAllowCredentials(true);
@@ -69,7 +59,7 @@ public CorsConfigurationSource corsConfigurationSource() {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
-}
+  }
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
