@@ -74,6 +74,7 @@ public class SecurityConfig implements WebMvcConfigurer{
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
       )
       .authorizeHttpRequests(auth -> auth
+        .requestMatchers("/**").permitAll()  
         .requestMatchers("/admin/**").permitAll()
         .requestMatchers("/main/**").permitAll()
         .requestMatchers("/login/**").permitAll()
