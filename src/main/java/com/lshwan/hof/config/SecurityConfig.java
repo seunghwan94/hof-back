@@ -37,13 +37,21 @@ public class SecurityConfig implements WebMvcConfigurer{
     return new JwtTokenProvider();
   }
 
+  // @Override
+  // public void addCorsMappings(CorsRegistry registry) {
+  //   registry.addMapping("/**")  // 모든 경로에 대해
+  //       .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
+  //       .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
+  //       .allowedHeaders("*")  // 모든 헤더를 허용
+  //       .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
+  // }
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**")  // 모든 경로에 대해
-        .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
-        .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
-        .allowedHeaders("*")  // 모든 헤더를 허용
-        .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
+      registry.addMapping("/**")
+          .allowedOriginPatterns("*")  // 모든 도메인 허용
+          .allowedMethods("*")  // 모든 HTTP 메서드 허용
+          .allowedHeaders("*")  // 모든 헤더 허용
+          .allowCredentials(true);
   }
 
   // 비밀번호 암호화
@@ -65,6 +73,7 @@ public class SecurityConfig implements WebMvcConfigurer{
         .sessionManagement(session -> session
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
       )
+      .httpBasic(httpBasic -> httpBasic.disable())
       .authorizeHttpRequests(auth -> auth
         .requestMatchers("/admin/**").permitAll()
         .requestMatchers("/main/**").permitAll()
