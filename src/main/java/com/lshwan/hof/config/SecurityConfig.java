@@ -66,13 +66,12 @@ public class SecurityConfig implements WebMvcConfigurer{
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
       )
       .authorizeHttpRequests(auth -> auth
-        .requestMatchers("/index/**").permitAll()           
+        .requestMatchers("/admin/**").permitAll()
+        .requestMatchers("/main/**").permitAll()
+        .requestMatchers("/login/**").permitAll()
         .requestMatchers("/file/**").permitAll()
         .requestMatchers("/swagger-ui/**").permitAll()
         .requestMatchers("/actuator/**").permitAll()
-        .requestMatchers("/login").permitAll()
-        .requestMatchers("/api/v1/login").permitAll()
-        .requestMatchers("/prod/**").permitAll()
         // .requestMatchers("/actuator/prometheus").permitAll() 
         // .anyRequest().authenticated() // 인증이 필요한 경우 설정
         .anyRequest().authenticated()
