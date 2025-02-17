@@ -70,14 +70,17 @@ public class SecurityConfig implements WebMvcConfigurer{
   public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
     http
       .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (JWT 사용 시 필요 없음)
-        .sessionManagement(session -> session
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
-      )
+        // .sessionManagement(session -> session
+        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
+      // )
+      .sessionManagement(session -> session.disable())
       .authorizeHttpRequests(auth -> auth
         .requestMatchers("/**").permitAll()  
         .requestMatchers("/admin/**").permitAll()
         .requestMatchers("/main/**").permitAll()
         .requestMatchers("/login/**").permitAll()
+        .requestMatchers("/api/v1/login").permitAll()  // 정확한 경로 추가
+
         .requestMatchers("/file/**").permitAll()
         .requestMatchers("/swagger-ui/**").permitAll()
         .requestMatchers("/actuator/**").permitAll()
