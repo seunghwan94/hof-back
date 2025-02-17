@@ -10,11 +10,12 @@ env:
   DOCKER_IMAGE_NAME: sounghan94/hof-0.0.1-snapshot
 
 jobs:
-  build-and-deploy-to-ec2:
+  # 1️⃣ Spring Boot 빌드 및 Docker Hub에 이미지 푸시
+  build-and-push-docker:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
+    - name: Checkout 코드 가져오기
       uses: actions/checkout@v3
 
     - name: Set up JDK 17
@@ -22,33 +23,39 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        
+
     - name: Grant execute permission to Gradle wrapper
       run: chmod +x ./gradlew
 
     - name: Clean build cache
       run: ./gradlew clean
 
-    - name: Build Spring Boot application
-      run: ./gradlew build -x test # ✅ 테스트 제외하고 빌드 (필요하면 -x test 제거)
-
-
-    - name: Debug GitHub Secrets
+    - name: Set AWS environment variables and build with Gradle
       run: |
-        echo "DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}"
-        echo "DOCKER_HUB_PASSWORD length: ${#DOCKER_PASSWORD}"
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+        export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        export AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
+        export AWS_REGION=${{ secrets.AWS_REGION }}
+        export DB_URL=${{ secrets.DB_URL }}
+        export DB_USERNAME=${{ secrets.DB_USERNAME }}
+        export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+        ./gradlew build -x test  # ✅ 테스트 제외하고 빌드 (필요하면 -x test 제거)
 
-    - name: Build and push Docker image
-      run: |
-        echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-        docker build -t ${{ env.DOCKER_IMAGE_NAME }} .
-        docker push ${{ env.DOCKER_IMAGE_NAME }}
+    - name: Build the Docker image
+      run: docker build -t ${{ env.DOCKER_IMAGE_NAME }}:latest .
 
+    - name: Login to Docker Hub using Access Token
+      run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
+    - name: Push the Docker image to Docker Hub
+      run: docker push ${{ env.DOCKER_IMAGE_NAME }}:latest
 
+  # 2️⃣ EC2에 배포 및 컨테이너 교체
+  deploy-to-ec2:
+    needs: build-and-push-docker
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
@@ -56,34 +63,21 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
-          echo "Cloning Repository on EC2..."
-          if [ ! -d "hof-back" ]; then
-            git clone https://github.com/seunghwan94/hof-back.git
-          fi
-          cd hof-back
-          git pull
-
-          echo "Setting up environment variables..."
-          export SPRING_PROFILES_ACTIVE=ci
-          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          export AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
-          export AWS_REGION=${{ secrets.AWS_REGION }}
-          export DB_URL=${{ secrets.DB_URL }}
-          export DB_USERNAME=${{ secrets.DB_USERNAME }}
-          export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-
-          echo "Stopping and removing old container..."
           CONTAINER_NAME="hof-container"
+
+          # 실행 중인 컨테이너 확인 및 종료
           if sudo docker ps -a --format "{{.Names}}" | grep -w "$CONTAINER_NAME"; then
+            echo "Stopping and removing existing container: $CONTAINER_NAME"
             sudo docker stop $CONTAINER_NAME
             sudo docker rm $CONTAINER_NAME
           fi
 
-          echo "Pulling latest Docker image..."
-          sudo docker pull ${{ env.DOCKER_IMAGE_NAME }}
+          # 최신 이미지 가져오기
+          echo "Pulling the latest Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
+          sudo docker pull ${{ env.DOCKER_IMAGE_NAME }}:latest
 
-          echo "Starting new container..."
+          # 새로운 컨테이너 실행
+          echo "Starting a new container: $CONTAINER_NAME"
           sudo docker run --name $CONTAINER_NAME -d -p 8081:8080 \
             -e TZ=Asia/Seoul \
             -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
@@ -93,4 +87,4 @@ jobs:
             -e DB_URL=${{ secrets.DB_URL }} \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            ${{ env.DOCKER_IMAGE_NAME }}
+            ${{ env.DOCKER_IMAGE_NAME }}:latest
