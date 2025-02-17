@@ -10,6 +10,9 @@ logging:
     name: /app/logs/application.log
   level:
     root: info
+    org.springframework.security: DEBUG
+
+
 
 spring:
   servlet:
@@ -81,6 +84,7 @@ management:
   metrics:
     tags:
       application: hof-spring-boot-app
+
 
 
   # cors:
