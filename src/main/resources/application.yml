@@ -1,7 +1,6 @@
 server:
   servlet:
     context-path: /api/v1
-
   tomcat: 
     mbeanregistry:
       enabled: true
@@ -11,7 +10,10 @@ logging:
     name: /app/logs/application.log
   level:
     root: info
-    
+    org.springframework.security: DEBUG
+
+
+
 spring:
   servlet:
     multipart:
@@ -33,7 +35,7 @@ spring:
       - db
       - s3
       - mongo
-
+      - iamport
   datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     url: jdbc:mariadb://${DB_URL}:3306/hof?connectTimeout=5000&socketTimeout=10000 
@@ -82,6 +84,7 @@ management:
   metrics:
     tags:
       application: hof-spring-boot-app
+
 
 
   # cors:
