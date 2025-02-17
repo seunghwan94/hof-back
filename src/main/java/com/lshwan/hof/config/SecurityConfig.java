@@ -45,8 +45,7 @@ public class SecurityConfig implements WebMvcConfigurer{
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")  // 모든 경로에 대해
-        // .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
-        .allowedOrigins("https://hof.lshwan.com")
+        .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
         .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
         .allowedHeaders("*")  // 모든 헤더를 허용
         .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
@@ -87,12 +86,12 @@ public CorsConfigurationSource corsConfigurationSource() {
       )
       .cors(cors -> cors.configurationSource(corsConfigurationSource()))
       .authorizeHttpRequests(auth -> auth
-        .requestMatchers("/admin/**").permitAll()
-        .requestMatchers("/main/**").permitAll()
-        .requestMatchers("/login/**").permitAll()
-        .requestMatchers("/file/**").permitAll()
-        .requestMatchers("/swagger-ui/**").permitAll()
-        .requestMatchers("/actuator/**").permitAll()
+        // .requestMatchers("/admin/**").permitAll()
+        // .requestMatchers("/main/**").permitAll()
+        .requestMatchers("/login/**","/api/v1/login").permitAll()
+        // .requestMatchers("/file/**").permitAll()
+        // .requestMatchers("/swagger-ui/**").permitAll()
+        // .requestMatchers("/actuator/**").permitAll()
         // .requestMatchers("/actuator/prometheus").permitAll() 
         // .anyRequest().authenticated() // 인증이 필요한 경우 설정
         .anyRequest().authenticated()
