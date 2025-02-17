@@ -1,7 +1,6 @@
 server:
   servlet:
     context-path: /api/v1
-
   tomcat: 
     mbeanregistry:
       enabled: true
@@ -12,6 +11,7 @@ logging:
   level:
     root: info
     
+
 spring:
   servlet:
     multipart:
@@ -33,6 +33,7 @@ spring:
       - db
       - s3
       - mongo
+      - iamport
 
   datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
@@ -82,23 +83,3 @@ management:
   metrics:
     tags:
       application: hof-spring-boot-app
-
-
-  # cors:
-  #   allowed-origins: "http://localhost:3000"
-  #   allowed-methods: "GET, POST, PUT, DELETE"
-  #   allowed-headers: "*"
-  #   allow-credentials: true
-
-# jwt:
-#   secret: "your-secret-key-here"
-
-  # security:
-  #   user:
-  #     name: user1
-  #     password: $2a$10$bQPImkdTdIXi7e1TwyP83e0WIZBpHqUXqUYfc0tp8KMDGq8ZJBZ72
-  #     roles:
-  #     - USER
-
-
-
