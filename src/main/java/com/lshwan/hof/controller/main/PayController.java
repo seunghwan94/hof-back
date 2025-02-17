@@ -1,5 +1,7 @@
 package com.lshwan.hof.controller.main;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -12,10 +14,12 @@ import com.lshwan.hof.service.pay.IamportService;
 import com.lshwan.hof.service.pay.OrderService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("main/pay")
+@Log4j2
 public class PayController {
 
   private final IamportService iamportService;
@@ -25,6 +29,9 @@ public class PayController {
   public ResponseEntity<?> validatePayment(@RequestBody Map<String, String> payload) {
       String impUid = payload.get("imp_uid");
       String merchantUid = payload.get("merchant_uid");
+
+      log.info("impUid: {}", impUid); 
+      log.info("merchantUid: {}", merchantUid); 
 
       Map<String, Object> paymentData = iamportService.validatePayment(impUid);
 
