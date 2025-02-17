@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master" ] 
 
 env:
   DOCKER_IMAGE_NAME: sounghan94/hof-0.0.1-snapshot
