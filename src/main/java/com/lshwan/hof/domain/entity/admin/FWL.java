@@ -1,6 +1,6 @@
 package com.lshwan.hof.domain.entity.admin;
-import com.lshwan.hof.domain.entity.common.BaseEntityRegDate;
 
+import com.lshwan.hof.domain.entity.BaseEntityRegDate;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.Builder.Default;
