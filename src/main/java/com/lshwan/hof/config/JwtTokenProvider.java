@@ -4,6 +4,8 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 
+import com.lshwan.hof.domain.entity.member.Member.MemberRole;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

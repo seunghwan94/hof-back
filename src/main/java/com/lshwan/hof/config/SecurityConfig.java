@@ -1,7 +1,5 @@
 package com.lshwan.hof.config;
 
-import java.util.Arrays;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.lshwan.hof.security.JwtAuthenticationFilter;
@@ -32,33 +27,29 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
+@ConfigurationProperties(prefix = "custom") // application.yml에서 "custom"으로 시작하는 설정을 매핑
 @Log4j2
 public class SecurityConfig implements WebMvcConfigurer{
 
+  
   @Bean
   public JwtTokenProvider jwtTokenProvider() {
     return new JwtTokenProvider();
+  }
+
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/**")  // 모든 경로에 대해
+        .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
+        .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
+        .allowedHeaders("*")  // 모든 헤더를 허용
+        .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
   }
 
   // 비밀번호 암호화
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("https://hof.lshwan.com","http://localhost:3000"));
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(Arrays.asList("*"));
-    configuration.setExposedHeaders(Arrays.asList("*"));
-    configuration.setAllowCredentials(true);
-    configuration.setMaxAge(3600L);
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
   }
 
   @Bean
@@ -69,27 +60,29 @@ public class SecurityConfig implements WebMvcConfigurer{
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
-      http
-        .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (JWT 사용 시 필요 없음)
+    http
+      .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (JWT 사용 시 필요 없음)
         .sessionManagement(session -> session
-          .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
-        )
-        .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 적용
-        .authorizeHttpRequests(auth -> auth
-          .requestMatchers("/main/**").permitAll()  // ✅ 기존 허용 경로
-          .requestMatchers("/api/v1/main/**").permitAll()  // ✅ 추가된 허용 경로
-          .requestMatchers("/login/**", "/api/v1/login").permitAll()  // ✅ 로그인 API 허용
-          .requestMatchers("/actuator/**").permitAll()  // ✅ Actuator API 허용 (필요 시)
-          .anyRequest().authenticated() // 나머지는 인증 필요
-        )
-        .formLogin(form -> form.disable()) // 폼 로그인 비활성화 (JWT만 사용)
-        .logout(logout -> logout.disable()) // 로그아웃 비활성화 (JWT만 사용)
-        .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider(), userDetailsService(passwordEncoder())), 
-                        UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
-      log.info("SecurityFilterChain 설정 완료!!!");
-      return http.build();
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
+      )
+      .authorizeHttpRequests(auth -> auth
+        .requestMatchers("/admin/**").permitAll()
+        .requestMatchers("/main/**").permitAll()
+        .requestMatchers("/login/**").permitAll()
+        .requestMatchers("/file/**").permitAll()
+        .requestMatchers("/swagger-ui/**").permitAll()
+        .requestMatchers("/actuator/**").permitAll()
+        // .requestMatchers("/actuator/prometheus").permitAll() 
+        // .anyRequest().authenticated() // 인증이 필요한 경우 설정
+        .anyRequest().authenticated()
+      )
+      .formLogin(form -> form.disable()) // 폼 로그인 비활성화 (JWT만 사용)
+      .logout(logout -> logout.disable())
+      // 로그아웃 비활성화 (JWT만 사용)
+      .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider(), userDetailsService(passwordEncoder())), UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
+    log.info("SecurityFilterChain 설정 완료!!!");
+    return http.build();
   }
-
 
   // In-Memory 사용자 인증 설정 (테스트용)
   @Bean
