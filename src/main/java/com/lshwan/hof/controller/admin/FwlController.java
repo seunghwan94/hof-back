@@ -7,12 +7,15 @@ import lombok.AllArgsConstructor;
 import com.lshwan.hof.domain.dto.PageRequestDto;
 import com.lshwan.hof.domain.dto.PageResultDto;
 import com.lshwan.hof.domain.dto.ProdDto;
+import com.lshwan.hof.domain.dto.QnaDto;
 import com.lshwan.hof.domain.dto.SearchRequestDto;
 import com.lshwan.hof.domain.entity.admin.FWL;
+import com.lshwan.hof.domain.entity.common.Qna;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.prod.Prod;
-import com.lshwan.hof.service.MemberService;
+import com.lshwan.hof.service.login.MemberService;
 import com.lshwan.hof.service.admin.FwlService;
+import com.lshwan.hof.service.common.QnaService;
 import com.lshwan.hof.service.prod.ProdService;
 import com.lshwan.hof.service.util.SearchService;
 
@@ -49,6 +52,9 @@ public class FwlController {
     private SearchService searchService;
   @Autowired
   private ProdService prodService;
+
+  @Autowired
+  private QnaService qnaService;
     
 
   @GetMapping("/list")
@@ -119,5 +125,35 @@ public class FwlController {
         .build();
         return ResponseEntity.ok().body(prodService.findList(dto));
     }
+  ///////////////////////qna
+@GetMapping("/qna")
+public ResponseEntity<List<QnaDto>> getQnaList() {
+    List<QnaDto> dtoList = qnaService.findList()
+    .stream()
+    .map(QnaDto::new)
+    .collect(Collectors.toList());
+    return ResponseEntity.ok(dtoList);
+}
+@PostMapping("/qna")
+public ResponseEntity<?> postMethodName(@RequestBody Qna entity) {
+  Long newId = qnaService.add(entity);
+  return ResponseEntity.ok().body("등록 완료: " + newId);
+}
+@PutMapping("/qna/{qno}")
+public ResponseEntity<?> modifyQna(@PathVariable("no") Long qno, @RequestBody Qna entity) {
+    Qna existingQna = qnaService.findBy(qno);
+
+    Long updatedId = qnaService.modify(existingQna);
+
+    return ResponseEntity.ok().body("수정 완료: " + updatedId);
+}
+@DeleteMapping("/qna/{qno}")
+public ResponseEntity<?> deleteQna(@PathVariable("no") Long qno){
+
+  qnaService.remove(qno);
+  return ResponseEntity.ok().body("삭제 완료" );
+}
+
+  
   
 }
