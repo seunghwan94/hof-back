@@ -27,6 +27,7 @@ public class SearchHistoryServiceTests {
     private HistorySearchService service;
 
     @Test
+    @Transactional
     void addTest() {
 
 
@@ -72,6 +73,7 @@ public class SearchHistoryServiceTests {
     }
 
     @Test
+    @Transactional
     void modify() {
         HistorySearch search = HistorySearch.builder()
         .keyword("주옥같네")
@@ -93,18 +95,19 @@ public class SearchHistoryServiceTests {
 
 
     @Test
+    @Transactional
     void remove() {
 
-        // HistorySearch historySearch = HistorySearch.builder()
-        // .mno(7L)
-        // .keyword("가구")
-        // .cno(4L)
-        // .build();
-        // String generatedId = service.add(historySearch);
-        boolean isDeleted = service.remove("67adb13b4b18557ecd04b002");
+        HistorySearch historySearch = HistorySearch.builder()
+        .mno(7L)
+        .keyword("가구자코코테스트용")
+        .cno(4L)
+        .build();
+        String generatedId = service.add(historySearch);
+        boolean isDeleted = service.remove(generatedId);
 
         assertTrue(isDeleted);
-        assertNull(service.findBy("67adb13b4b18557ecd04b002"));
+        assertNull(service.findBy(generatedId));
     }
 
 }

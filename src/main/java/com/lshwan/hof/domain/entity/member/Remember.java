@@ -1,5 +1,6 @@
 package com.lshwan.hof.domain.entity.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lshwan.hof.domain.entity.BaseEntity;
 
 import jakarta.persistence.Entity;
@@ -27,5 +28,6 @@ public class Remember extends BaseEntity{
 
   @OneToOne
   @JoinColumn(name = "mno", nullable = false)
+  @JsonIgnore 
   private Member member;
 }

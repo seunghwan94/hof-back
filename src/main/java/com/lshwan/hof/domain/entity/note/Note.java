@@ -1,5 +1,6 @@
 package com.lshwan.hof.domain.entity.note;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.member.Member;
 
@@ -30,6 +31,7 @@ public class Note extends BaseEntity{
 
   @ManyToOne(fetch = FetchType.LAZY) // 회원 정보와 다대일 관계 설정
   @JoinColumn(name = "mno", nullable = false) // FK 설정
+  @JsonIgnore
   private Member member;
 
   @Column(length = 255, nullable = false)

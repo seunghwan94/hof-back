@@ -13,6 +13,7 @@ import com.lshwan.hof.domain.entity.admin.FWL;
 import com.lshwan.hof.domain.entity.prod.ProdCategory;
 import com.lshwan.hof.domain.entity.prod.ProdCategory.CategoryType;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 
 @SpringBootTest
@@ -21,10 +22,11 @@ public class FwlServiceTests {
   @Autowired
   private FwlService service;
   @Test
+  @Transactional
   public void addTest(){
     // get
     FWL fwl = FWL.builder()
-      .content("개새")
+      .content("개새ㅇ")
       .build();
     // when
     Long fno = service.add(fwl);
@@ -54,10 +56,11 @@ public class FwlServiceTests {
   }
 
   @Test
+  @Transactional
   public void modify(){
     // given
     FWL fwl = FWL.builder()
-    .content("개새zx")
+    .content("개새ㅇ")
       .build();
     Long fno = service.add(fwl);
     assertNotNull(fno);
@@ -77,6 +80,7 @@ public class FwlServiceTests {
   }
 
   @Test
+  @Transactional
   public void remove(){
     // given
     FWL fwl = FWL.builder()

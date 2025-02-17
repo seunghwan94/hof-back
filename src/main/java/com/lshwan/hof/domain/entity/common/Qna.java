@@ -1,5 +1,7 @@
 package com.lshwan.hof.domain.entity.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.member.Member;
 
 import jakarta.persistence.Column;
@@ -24,13 +26,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Qna {
+public class Qna extends BaseEntity{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long no;
 
   @ManyToOne(fetch = FetchType.LAZY)  // 문의한 회원 (FK)
   @JoinColumn(name = "mno", nullable = false)
+  // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private Member member;
 
   @ManyToOne(fetch = FetchType.LAZY)  // 부모 문의 (Self-referencing 관계)

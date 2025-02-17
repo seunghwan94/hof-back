@@ -24,4 +24,5 @@ public class ProdView {
   private String imageUrl; // 대표 이미지 URL
   private double avgStar; // 평균 별점
   private long reviewCount; // 리뷰 개수
+  
 }
