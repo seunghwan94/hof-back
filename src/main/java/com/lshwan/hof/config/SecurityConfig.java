@@ -73,12 +73,10 @@ public class SecurityConfig implements WebMvcConfigurer{
         .sessionManagement(session -> session
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
       )
-      .httpBasic(httpBasic -> httpBasic.disable())
       .authorizeHttpRequests(auth -> auth
         .requestMatchers("/admin/**").permitAll()
         .requestMatchers("/main/**").permitAll()
         .requestMatchers("/login/**").permitAll()
-        .requestMatchers("/api/v1/login").permitAll()
         .requestMatchers("/file/**").permitAll()
         .requestMatchers("/swagger-ui/**").permitAll()
         .requestMatchers("/actuator/**").permitAll()

@@ -1,7 +1,7 @@
 server:
-  forward-headers-strategy: native  
   servlet:
     context-path: /api/v1
+
   tomcat: 
     mbeanregistry:
       enabled: true
@@ -11,7 +11,7 @@ logging:
     name: /app/logs/application.log
   level:
     root: info
-
+    
 spring:
   servlet:
     multipart:
