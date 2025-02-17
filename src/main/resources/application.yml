@@ -6,7 +6,12 @@ server:
     mbeanregistry:
       enabled: true
 
-
+logging:
+  file:
+    name: /app/logs/application.log
+  level:
+    root: info
+    
 spring:
   servlet:
     multipart:

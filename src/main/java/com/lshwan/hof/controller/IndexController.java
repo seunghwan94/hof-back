@@ -11,8 +11,8 @@ import com.lshwan.hof.domain.dto.SearchRequestDto;
 import com.lshwan.hof.domain.entity.admin.FWL;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.prod.Prod;
-import com.lshwan.hof.service.MemberService;
 import com.lshwan.hof.service.admin.FwlService;
+import com.lshwan.hof.service.login.MemberService;
 import com.lshwan.hof.service.prod.ProdService;
 import com.lshwan.hof.service.util.SearchService;
 

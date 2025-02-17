@@ -4,6 +4,8 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 
+import com.lshwan.hof.domain.entity.member.Member.MemberRole;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -25,12 +27,12 @@ public class JwtTokenProvider {
    * @param content - 토큰에 저장할 사용자 정보
    * @return 생성된 JWT 토큰 문자열
    */
-  public String generateToken(String content/*, MemberRole role role추가 */) {
+  public String generateToken(String content/* , MemberRole role */) {
     return Jwts.builder()
       .issuedAt(new Date()) // 토큰 발급 시간 설정
       .expiration(Date.from(ZonedDateTime.now().plusMonths(1L).toInstant())) // 만료 시간 설정 (1개월 후)
       .claim("sub", content) // 사용자 정보 저장 (Subject 클레임 사용)
-      // .claim("roles", List.of(role.name())) /* role추가 */
+      // .claim("role", role.name())/* role추가 */
       .signWith(key) // HMAC SHA 키를 사용한 서명
       .compact();
   }
