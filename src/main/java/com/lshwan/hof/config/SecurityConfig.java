@@ -1,5 +1,7 @@
 package com.lshwan.hof.config;
 
+import java.util.Arrays;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.lshwan.hof.security.JwtAuthenticationFilter;
@@ -37,21 +42,14 @@ public class SecurityConfig implements WebMvcConfigurer{
     return new JwtTokenProvider();
   }
 
-  // @Override
-  // public void addCorsMappings(CorsRegistry registry) {
-  //   registry.addMapping("/**")  // 모든 경로에 대해
-  //       .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
-  //       .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
-  //       .allowedHeaders("*")  // 모든 헤더를 허용
-  //       .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
-  // }
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-      registry.addMapping("/**")
-          .allowedOriginPatterns("*")  // 모든 도메인 허용
-          .allowedMethods("*")  // 모든 HTTP 메서드 허용
-          .allowedHeaders("*")  // 모든 헤더 허용
-          .allowCredentials(true);
+    registry.addMapping("/**")  // 모든 경로에 대해
+        // .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
+        .allowedOrigins("https://hof.lshwan.com")
+        .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
+        .allowedHeaders("*")  // 모든 헤더를 허용
+        .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
   }
 
   // 비밀번호 암호화
@@ -59,6 +57,20 @@ public class SecurityConfig implements WebMvcConfigurer{
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
+  @Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("https://hof.lshwan.com"));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(Arrays.asList("*"));
+    configuration.setExposedHeaders(Arrays.asList("*"));
+    configuration.setAllowCredentials(true);
+    configuration.setMaxAge(3600L);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+}
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -70,17 +82,14 @@ public class SecurityConfig implements WebMvcConfigurer{
   public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
     http
       .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (JWT 사용 시 필요 없음)
-        // .sessionManagement(session -> session
-        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
-      // )
-      .sessionManagement(session -> session.disable())
+        .sessionManagement(session -> session
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
+      )
+      .cors(cors -> cors.configurationSource(corsConfigurationSource()))
       .authorizeHttpRequests(auth -> auth
-        .requestMatchers("/**").permitAll()  
         .requestMatchers("/admin/**").permitAll()
         .requestMatchers("/main/**").permitAll()
         .requestMatchers("/login/**").permitAll()
-        .requestMatchers("/api/v1/login").permitAll()  // 정확한 경로 추가
-
         .requestMatchers("/file/**").permitAll()
         .requestMatchers("/swagger-ui/**").permitAll()
         .requestMatchers("/actuator/**").permitAll()
