@@ -1,11 +1,15 @@
 package com.lshwan.hof.service.common;
 
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lshwan.hof.domain.dto.QnaDto;
 import com.lshwan.hof.domain.entity.common.Qna;
+import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.repository.common.QnaRepository;
 
 import jakarta.transaction.Transactional;
@@ -19,8 +23,9 @@ public class QnaServiceImpl implements QnaService{
   QnaRepository repository;
   @Override
   @Transactional
-  public Long add(Qna qna) {
-      return repository.save(qna).getNo();
+  public Long add(QnaDto dto,Member member,Qna parentQna) {
+    Qna qna = toEntity(dto, member, parentQna); // 부모 Qna 포함하여 엔티티 변환
+    return repository.save(qna).getNo();
   }
 
   @Override
@@ -29,8 +34,8 @@ public class QnaServiceImpl implements QnaService{
   }
 
   @Override
-  public List<Qna> findList() {
-      return repository.findAll();
+  public List<QnaDto> findList() {
+      return repository.findAll().stream().map(this::toDto).collect(Collectors.toList());
   }
 
   @Override
@@ -42,11 +47,15 @@ public class QnaServiceImpl implements QnaService{
   @Override
   @Transactional
   public boolean remove(Long no) {
-      if (repository.existsById(no)) {
-          repository.deleteById(no);
-          return true;
-      }
-      return false;
+    // 자식 Qna(대댓글) 먼저 삭제
+    repository.deleteByParentNo(no);
+    
+    // 부모 Qna 삭제
+    if (repository.existsById(no)) {
+        repository.deleteById(no);
+        return true;
+    }
+    return false;
   }
   
 }

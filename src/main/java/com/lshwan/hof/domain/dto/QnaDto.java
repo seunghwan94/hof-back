@@ -3,6 +3,7 @@ package com.lshwan.hof.domain.dto;
 import com.lshwan.hof.domain.entity.common.Qna;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class QnaDto {
     private Long no;
     private String memberId;  // Member 대신 ID만 사용
@@ -25,4 +27,5 @@ public class QnaDto {
         this.status = qna.getStatus();
         this.parentNo = (qna.getParentQna() != null) ? qna.getParentQna().getNo() : null;
     }
+    
 }

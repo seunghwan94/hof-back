@@ -128,19 +128,25 @@ public class FwlController {
   ///////////////////////qna
 @GetMapping("/qna")
 public ResponseEntity<List<QnaDto>> getQnaList() {
-    List<QnaDto> dtoList = qnaService.findList()
-    .stream()
-    .map(QnaDto::new)
-    .collect(Collectors.toList());
-    return ResponseEntity.ok(dtoList);
+  List<QnaDto> dtoList = qnaService.findList();
+  return ResponseEntity.ok(dtoList);
 }
 @PostMapping("/qna")
-public ResponseEntity<?> postMethodName(@RequestBody Qna entity) {
-  Long newId = qnaService.add(entity);
-  return ResponseEntity.ok().body("등록 완료: " + newId);
+public ResponseEntity<?> registoryQna(@RequestBody QnaDto dto) {
+  Member member = service.findBy(dto.getMemberId()); 
+  if(member == null){
+    member = Member.builder().id("hof").build();
+  }
+
+    Qna parentQna = (dto.getParentNo() != null) ? qnaService.findBy(dto.getParentNo()) : null;
+
+
+    Long newId = qnaService.add(dto, member, parentQna);
+
+    return ResponseEntity.ok("등록 완료: " + newId);
 }
 @PutMapping("/qna/{qno}")
-public ResponseEntity<?> modifyQna(@PathVariable("no") Long qno, @RequestBody Qna entity) {
+public ResponseEntity<?> modifyQna(@PathVariable("qno") Long qno, @RequestBody Qna entity) {
     Qna existingQna = qnaService.findBy(qno);
 
     Long updatedId = qnaService.modify(existingQna);
@@ -148,7 +154,7 @@ public ResponseEntity<?> modifyQna(@PathVariable("no") Long qno, @RequestBody Qn
     return ResponseEntity.ok().body("수정 완료: " + updatedId);
 }
 @DeleteMapping("/qna/{qno}")
-public ResponseEntity<?> deleteQna(@PathVariable("no") Long qno){
+public ResponseEntity<?> deleteQna(@PathVariable("qno") Long qno){
 
   qnaService.remove(qno);
   return ResponseEntity.ok().body("삭제 완료" );
