@@ -3,6 +3,7 @@ package com.lshwan.hof.service.prod;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lshwan.hof.domain.dto.prod.ProdDetailDto;
@@ -11,6 +12,7 @@ import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.domain.entity.prod.ProdOption;
 import com.lshwan.hof.domain.entity.prod.ProdOptionMap;
 import com.lshwan.hof.repository.common.FileMasterRepository;
+import com.lshwan.hof.repository.prod.ProdOptionMapRepository;
 import com.lshwan.hof.repository.prod.ProdOptionRepository;
 import com.lshwan.hof.repository.prod.ProdRepository;
 
@@ -24,6 +26,9 @@ public class ProdDetailServiceImpl implements ProdDetailService {
   private final ProdOptionRepository prodOptionRepository;
   // private final ProdOptionMapRepository productOptionMapRepository;
   private final FileMasterRepository fileMasterRepository;
+
+   @Autowired
+  private ProdOptionMapRepository optionMapRepository;
   
   // @Transactional
   // @Override
@@ -113,4 +118,71 @@ public class ProdDetailServiceImpl implements ProdDetailService {
       .options(optionDtos)
     .build();
   }
+
+  @Override
+  public Long add(ProdDetailDto productDto) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Long modify(ProdDetailDto productDto) {
+    Prod prod = prodRepository.findById(productDto.getPno()).orElseThrow(() -> new RuntimeException("상품이 존재하지않습니다"));
+    prod.setTitle(productDto.getTitle());
+    prod.setContent(productDto.getContent());
+    prod.setPrice(productDto.getPrice());
+    prod.setStock(productDto.getStock());
+
+    prodRepository.save(prod);
+List<ProdOption> existingOptions = prodOptionRepository.findByOptionMapsProdPno(prod.getPno());
+
+
+for (ProdDetailDto.ProdOptionDto newOptionDto : productDto.getOptions()) {
+    boolean isExisting = false;
+
+    // 기존 옵션 리스트에서 같은 옵션이 있는지 확인
+    for (ProdOption existingOption : existingOptions) {
+      if (existingOption.getNo().equals(newOptionDto.getOptionNo())) {
+          // 기존 옵션 업데이트 (수정된 정보를 반영)
+          existingOption = ProdOption.builder()
+                  .no(existingOption.getNo()) // 기존 옵션 유지
+                  .type(newOptionDto.getType())
+                  .value(newOptionDto.getValue())
+                  .addPrice(newOptionDto.getAddPrice())
+                  .optionMaps(existingOption.getOptionMaps()) // 기존 매핑 유지
+                  .build();
+            isExisting = true;
+            break;
+        }
+    }
+
+    // 기존에 없는 새로운 옵션이면 추가
+    if (!isExisting) {
+        ProdOption newOption = ProdOption.builder()
+                .type(newOptionDto.getType())
+                .value(newOptionDto.getValue())
+                .addPrice(newOptionDto.getAddPrice())
+                .build();
+        prodOptionRepository.save(newOption);
+
+        // 브릿지 테이블(ProdOptionMap)도 추가하여 상품과 연결
+        ProdOptionMap optionMap = ProdOptionMap.builder()
+        .prod(prod) // 상품과 연결
+        .option(newOption) // 옵션과 연결
+        .stock(newOptionDto.getStock()) // 재고 설정
+        .build();
+
+        optionMapRepository.save(optionMap);
+    }
+}
+
+    return prod.getPno();
+  }
+
+  @Override
+  public boolean remove(Long pno) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+  
 }
