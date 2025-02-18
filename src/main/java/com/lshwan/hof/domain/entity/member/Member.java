@@ -9,6 +9,7 @@ import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.note.Note;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -39,12 +40,18 @@ public class Member extends BaseEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long mno;
   
+  @Column(unique = true, nullable = false)
   private String id;
+
+  @Column(nullable = false)
   private String pw;
+  
+  @Column(nullable = false)
   private String name;
   
   @Enumerated(EnumType.STRING)  // ENUM 타입 매핑
-  private MemberRole role; 
+  @Builder.Default // 4가지의 role중 user를 기본값으로 설정함
+  private MemberRole role = MemberRole.user; 
 
   public enum MemberRole {
     user, company, admin, master

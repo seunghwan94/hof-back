@@ -1,11 +1,11 @@
-package com.lshwan.hof.domain.dto;
+package com.lshwan.hof.domain.dto.auth;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthRequest {
+public class AuthRequestDto {
   private String username;
   private String password;
 }

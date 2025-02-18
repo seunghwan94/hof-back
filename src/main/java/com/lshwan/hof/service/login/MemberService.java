@@ -6,7 +6,7 @@ import com.lshwan.hof.domain.entity.member.Member;
 
 public interface MemberService {
 
-  Long signUp(Member member); 
+  // Long signUp(Member member); 
 
   Long write(Member member); 
 
