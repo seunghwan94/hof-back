@@ -14,16 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Delivery extends BaseEntity {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long no;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long no;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private DeliveryStatus status;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private DeliveryStatus status;
-
-    public enum DeliveryStatus {
-        상품준비중, 배송대기, 배송중, 배송완료
-    }
+  public enum DeliveryStatus {
+    상품준비중, 배송대기, 배송중, 배송완료
+  }
 }

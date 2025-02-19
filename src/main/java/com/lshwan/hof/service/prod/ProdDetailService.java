@@ -1,7 +1,5 @@
 package com.lshwan.hof.service.prod;
 
-import java.util.List;
-
 import com.lshwan.hof.domain.dto.prod.ProdDetailDto;
 
 

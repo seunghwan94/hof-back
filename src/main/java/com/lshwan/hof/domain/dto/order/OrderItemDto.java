@@ -13,6 +13,7 @@ import lombok.ToString;
 @ToString
 public class OrderItemDto {
   private Long pno;
+  private Long optionNo;
   private int count;
   private int basePrice;
   private int subtotalPrice;

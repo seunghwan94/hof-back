@@ -11,6 +11,7 @@ import com.lshwan.hof.domain.dto.SearchRequestDto;
 import com.lshwan.hof.domain.entity.admin.FWL;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.prod.Prod;
+import com.lshwan.hof.service.CrawlingService;
 import com.lshwan.hof.service.admin.FwlService;
 import com.lshwan.hof.service.login.MemberService;
 import com.lshwan.hof.service.prod.ProdService;
@@ -37,17 +38,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("index")
+@RequestMapping("main/index")
 public class IndexController {
   @Autowired
   private MemberService service;
   @Autowired
   private FwlService fwlService;
-      @Autowired
-    private SearchService searchService;
+  @Autowired
+  private SearchService searchService;
   @Autowired
   private ProdService prodService;
-    
+  @Autowired
+  private CrawlingService crawlingService;
+
+
   @GetMapping("/")
   public ResponseEntity<?> index() {
     return ResponseEntity.ok().body(service.write(Member.builder().build()));
@@ -110,6 +114,12 @@ public class IndexController {
         .keyword(keyword)
         .build();
         return ResponseEntity.ok().body(prodService.findList(dto));
+    }
+
+    @GetMapping("/crawling")
+    public String crawling() {
+      crawlingService.crawling();
+      return "데이터 크롤링 성공";
     }
   
 }

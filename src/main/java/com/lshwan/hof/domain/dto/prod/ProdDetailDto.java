@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,10 +25,12 @@ public class ProdDetailDto {
     private List<ProdOptionDto> options; 
     
 
-    @Data
+    @Getter
+    @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @ToString
     public static class ProdOptionDto {
         private Long optionNo;
         private String type;

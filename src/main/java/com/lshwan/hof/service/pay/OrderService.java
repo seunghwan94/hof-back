@@ -8,5 +8,6 @@ import com.lshwan.hof.domain.entity.order.Order;
 public interface OrderService {
   Order createOrder(OrderDto orderDto);
   Order getOrderById(Long orderNo);
+  Order addDelivery(Long orderNo);
   List<Order> getOrdersByMember(Long mno);
 }
