@@ -16,6 +16,8 @@ import com.lshwan.hof.service.prod.ProdDetailService;
 import com.lshwan.hof.service.prod.view.ProdViewService;
 
 import lombok.AllArgsConstructor;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value.Int;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,8 +59,10 @@ public class ProdController {
   @PutMapping("/{pno}")
     public ResponseEntity<?> updateProduct(@PathVariable("pno") Long pno,@RequestBody ProdDetailDto productDto) {
 
+
         try {
             productDto.setPno(pno); // DTO에 상품번호 설정
+            
             Long updatedPno = prodDetailService.modify(productDto);
             return ResponseEntity.ok("상품 수정 완료 (Pno: " + updatedPno + ")");
         } catch (Exception e) {
