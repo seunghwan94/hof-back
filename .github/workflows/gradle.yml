@@ -41,6 +41,8 @@ jobs:
         export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
         export MONGO_URL=${{ secrets.MONGO_URL }}
         export MONGO_USERNAME=${{ secrets.MONGO_USERNAME }}
+        export IAMPORT_API_KEY=${{ secrets.IAMPORT_API_KEY }}
+        export IAMPORT_API_SECRET=${{ secrets.IAMPORT_API_SECRET }}
         ./gradlew build -x test  # ✅ 테스트 제외하고 빌드 (필요하면 -x test 제거)
 
     - name: Build the Docker image
@@ -88,4 +90,6 @@ jobs:
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e MONGO_URL=${{ secrets.MONGO_URL }} \
             -e MONGO_USERNAME=${{ secrets.MONGO_USERNAME }} \
+            -e IAMPORT_API_KEY=${{ secrets.IAMPORT_API_KEY }} \
+            -e IAMPORT_API_SECRET=${{ secrets.IAMPORT_API_SECRET }} \
             ${{ env.DOCKER_IMAGE_NAME }}:latest
