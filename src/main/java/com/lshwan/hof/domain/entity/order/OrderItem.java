@@ -42,6 +42,19 @@ public class OrderItem extends BaseEntity {
     @Column(nullable = false, columnDefinition = "int default 0")
     private int basePrice = 0;
 
-    @Column(name = "subtotal_price")
+    @Column(name = "subtotal_price", nullable = false)
     private Integer subtotalPrice;
+
+    // 📌 `@PrePersist`를 사용해서 subtotalPrice 자동 계산
+    @PrePersist
+    public void prePersist() {
+        if (this.subtotalPrice == 0) { // subtotalPrice가 설정되지 않았을 때만 계산
+            this.subtotalPrice = this.basePrice * this.count;
+        }
+    }
+    
+    @PreUpdate
+    public void preUpdate() {
+        this.subtotalPrice = this.basePrice * this.count;
+    }
 }

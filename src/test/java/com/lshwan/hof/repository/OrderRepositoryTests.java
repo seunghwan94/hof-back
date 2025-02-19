@@ -17,4 +17,9 @@ public class OrderRepositoryTests {
   public void findAll(){
     repository.findAll();
   }
+
+  @Test
+  public void findByIdTests(){
+    repository.findById(1L);
+  }
 }

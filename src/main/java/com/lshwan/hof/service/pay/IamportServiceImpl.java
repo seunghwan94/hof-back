@@ -1,7 +1,5 @@
 package com.lshwan.hof.service.pay;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.util.HashMap;
 import java.util.Map;
 

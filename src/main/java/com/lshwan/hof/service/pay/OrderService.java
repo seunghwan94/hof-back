@@ -1,8 +1,12 @@
 package com.lshwan.hof.service.pay;
 
+import java.util.List;
+
+import com.lshwan.hof.domain.dto.order.OrderDto;
+import com.lshwan.hof.domain.entity.order.Order;
+
 public interface OrderService {
-  boolean verifyOrderAmount(String merchantUid, int paidAmount);
-  void completeOrder(String merchantUid);
-  int findOrderPriceByUid(String merchantUid);
-  void updateOrderStatus(String merchantUid, String status);
+  Order createOrder(OrderDto orderDto);
+  Order getOrderById(Long orderNo);
+  List<Order> getOrdersByMember(Long mno);
 }
