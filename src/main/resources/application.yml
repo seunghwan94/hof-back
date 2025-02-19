@@ -40,7 +40,22 @@ spring:
     url: jdbc:mariadb://${DB_URL}:3306/hof?connectTimeout=5000&socketTimeout=10000 
     password: ${DB_PASSWORD}
 
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: hhj8159@gmail.com
+    password: xlxd kuoi gmnv pnbg
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 1800000
 
 
       
@@ -58,7 +73,7 @@ spring:
     mongodb:
       uri: ${MONGO_URL}
       username: ${MONGO_USERNAME}
-      
+  
 iamport:
   api-key: ${IAMPORT_API_KEY}
   api-secret: ${IAMPORT_API_SECRET}
@@ -95,3 +110,20 @@ springdoc:
   swagger-ui:
     enabled: true   
     path: /swag  
+    
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: hhj8159@gmail.com
+    password: xlxd kuoi gmnv pnbg
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분

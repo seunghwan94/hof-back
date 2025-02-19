@@ -4,7 +4,6 @@ package com.lshwan.hof.domain.entity.member;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.note.Note;
 
@@ -57,7 +56,7 @@ public class Member extends BaseEntity {
     user, company, admin, master
   }
 
-  @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private MemberDetail memberDetail;
   
   @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
