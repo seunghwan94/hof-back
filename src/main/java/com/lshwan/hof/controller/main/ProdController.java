@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,5 +64,21 @@ public class ProdController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품 수정 실패: " + e.getMessage());
         }
+    }
+    @DeleteMapping("/{ono}")
+    public ResponseEntity<?> deleteOption(@PathVariable("ono") Long optionNo) {
+      boolean isDeleted = prodDetailService.removeOption(optionNo);
+      if (isDeleted) {
+          return ResponseEntity.ok().body("옵션이 삭제되었습니다.");
+      }
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 옵션이 존재하지 않습니다.");
+    }
+    @DeleteMapping("/prod/{pno}")
+    public ResponseEntity<?> deleteprod(@PathVariable("pno") Long pno) {
+      boolean isDeleted = prodDetailService.remove(pno);
+      if (isDeleted) {
+          return ResponseEntity.ok().body("상품이 삭제되었습니다.");
+      }
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 상품이 존재하지 않습니다.");
     }
 }

@@ -16,6 +16,7 @@ import com.lshwan.hof.repository.prod.ProdOptionMapRepository;
 import com.lshwan.hof.repository.prod.ProdOptionRepository;
 import com.lshwan.hof.repository.prod.ProdRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -24,7 +25,7 @@ public class ProdDetailServiceImpl implements ProdDetailService {
     
   private final ProdRepository prodRepository;
   private final ProdOptionRepository prodOptionRepository;
-  // private final ProdOptionMapRepository productOptionMapRepository;
+  private final ProdOptionMapRepository productOptionMapRepository;
   private final FileMasterRepository fileMasterRepository;
 
    @Autowired
@@ -141,21 +142,29 @@ for (ProdDetailDto.ProdOptionDto newOptionDto : productDto.getOptions()) {
     boolean isExisting = false;
 
     // 기존 옵션 리스트에서 같은 옵션이 있는지 확인
+    // for (ProdOption existingOption : existingOptions) {
+    //   if (existingOption.getNo().equals(newOptionDto.getOptionNo())) {
+    //       // 기존 옵션 업데이트 (수정된 정보를 반영)
+    //       existingOption = ProdOption.builder()
+    //               .no(existingOption.getNo()) // 기존 옵션 유지
+    //               .type(newOptionDto.getType())
+    //               .value(newOptionDto.getValue())
+    //               .addPrice(newOptionDto.getAddPrice())
+    //               .optionMaps(existingOption.getOptionMaps()) // 기존 매핑 유지
+    //               .build();
+    //         isExisting = true;
+    //         break;
+    //     }
+    // }
+    // 3. 기존 옵션 수정
     for (ProdOption existingOption : existingOptions) {
       if (existingOption.getNo().equals(newOptionDto.getOptionNo())) {
-          // 기존 옵션 업데이트 (수정된 정보를 반영)
-          existingOption = ProdOption.builder()
-                  .no(existingOption.getNo()) // 기존 옵션 유지
-                  .type(newOptionDto.getType())
-                  .value(newOptionDto.getValue())
-                  .addPrice(newOptionDto.getAddPrice())
-                  .optionMaps(existingOption.getOptionMaps()) // 기존 매핑 유지
-                  .build();
-            isExisting = true;
-            break;
-        }
+          existingOption.updateOption(newOptionDto.getType(), newOptionDto.getValue(), newOptionDto.getAddPrice());
+          isExisting = true;
+          break;
+      }
     }
-
+    
     // 기존에 없는 새로운 옵션이면 추가
     if (!isExisting) {
         ProdOption newOption = ProdOption.builder()
@@ -180,9 +189,38 @@ for (ProdDetailDto.ProdOptionDto newOptionDto : productDto.getOptions()) {
   }
 
   @Override
+  @Transactional
   public boolean remove(Long pno) {
-    // TODO Auto-generated method stub
-    return false;
+
+      // optionMapRepository.deleteByOptionNo(pno);
+
+
+      // prodOptionRepository.deleteOrphanOptions();
+
+
+      // fileMasterRepository.deleteByProdNo(pno);
+
+
+      prodRepository.deleteById(pno);
+
+    return true;
   }
+
+  @Override
+  @Transactional
+  public boolean removeOption(Long ono) {
+      // 1️⃣ 옵션 존재 여부 확인
+      ProdOption option = prodOptionRepository.findById(ono)
+              .orElseThrow(() -> new RuntimeException("옵션이 존재하지 않습니다."));
+  
+      // 2️⃣ 옵션 매핑 테이블에서 해당 옵션을 삭제
+      optionMapRepository.deleteById(ono);
+  
+      // 3️⃣ 옵션 테이블에서 해당 옵션을 삭제
+      prodOptionRepository.deleteById(ono);
+  
+      return true;
+  }
+  
   
 }

@@ -16,5 +16,7 @@ public interface ProdDetailService {
 
   boolean remove(Long pno);
 
+  boolean removeOption(Long ono);
+
   
 }
