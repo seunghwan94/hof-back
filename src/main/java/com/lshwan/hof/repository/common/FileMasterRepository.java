@@ -14,6 +14,7 @@ import com.lshwan.hof.domain.entity.common.FileMaster.FileType;
 import jakarta.transaction.Transactional;
 
 public interface FileMasterRepository extends JpaRepository<FileMaster,String>{
+  
   List<FileMaster> findByProdPnoAndFileType(Long pno, FileType fileType);
 
   @Transactional
@@ -26,4 +27,6 @@ public interface FileMasterRepository extends JpaRepository<FileMaster,String>{
 
   //  fileUrl로 FileMaster 찾기
   Optional<FileMaster> findByUrl(String url);
+    // 다중 URL 조회를 위한 메서드 추가
+    List<FileMaster> findByUrlIn(List<String> urls);
 }

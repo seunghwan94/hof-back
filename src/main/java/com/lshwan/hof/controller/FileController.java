@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.service.S3Service;
+import com.lshwan.hof.service.prod.ProdService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -15,6 +17,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -25,10 +28,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class FileController {
     @Autowired
     private S3Service s3Service;
+    @Autowired
+    private ProdService prodService;
 
     @SuppressWarnings("null")
     @PostMapping("upload")
     public ResponseEntity<?> upload(@RequestParam("file") List<MultipartFile> files) {
+        
          List<String> urls = new ArrayList<>();
         for (MultipartFile file : files) {
             // // S3 업로드
@@ -53,6 +59,20 @@ public class FileController {
             log.error("파일 업로드 실패", e);
             return ResponseEntity.internalServerError().body("파일 업로드 실패");
         }
+    }
+    @PostMapping("upload/{pno}")
+    public ResponseEntity<?> upload(@RequestParam("file") List<MultipartFile> files,@PathVariable("pno") Long pno) {
+        Prod prod = prodService.findBy(pno);
+         List<String> urls = new ArrayList<>();
+        for (MultipartFile file : files) {
+            // // S3 업로드
+            // s3Service.settingFile(file,"uploads");
+
+            String url = s3Service.settingFile(file, "uploads",prod);
+            urls.add(url);
+            
+        }
+        return ResponseEntity.ok().body(urls);
     }
     
 }
