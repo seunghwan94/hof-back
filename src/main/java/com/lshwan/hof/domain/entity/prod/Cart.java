@@ -17,9 +17,11 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "tbl_cart")
 @Builder
 @AllArgsConstructor
