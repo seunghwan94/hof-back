@@ -3,7 +3,7 @@ package com.lshwan.hof.service.pay;
 import com.lshwan.hof.domain.entity.payment.Pay;
 
 public interface PayService {
-  Pay requestPayment(Long orderNo, Pay.PaymentMethod method, int totalPrice);
+  Pay requestPayment(Long orderNo, Pay.PaymentMethod method, int totalPrice, String impUid);
 
   boolean verifyPayment(Long payNo, int verifiedAmount);
 

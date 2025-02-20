@@ -16,8 +16,6 @@ import com.lshwan.hof.service.prod.ProdDetailService;
 import com.lshwan.hof.service.prod.view.ProdViewService;
 
 import lombok.AllArgsConstructor;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value.Int;
-
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -13,6 +13,7 @@ public class PayDto {
     private String method;
     private String status;
     private int totalPrice;
+    private String impUid;
 
     public PayDto(Pay pay) {
         this.no = pay.getNo();
@@ -20,5 +21,6 @@ public class PayDto {
         this.method = pay.getMethod().name();
         this.status = pay.getStatus().name();
         this.totalPrice = pay.getTotalPrice();
+        this.impUid = pay.getImpUid();
     }
 }
