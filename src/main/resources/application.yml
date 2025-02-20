@@ -39,9 +39,7 @@ spring:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     url: ${DB_URL}:3306/hof?connectTimeout=5000&socketTimeout=10000 
     password: ${DB_PASSWORD}
-    hikari:
-      data-source-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      
+
   mail:
     host: smtp.gmail.com
     port: 587
