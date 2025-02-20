@@ -9,6 +9,7 @@ import com.lshwan.hof.service.S3Service;
 
 import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,15 @@ public class FileController {
     @SuppressWarnings("null")
     @PostMapping("upload")
     public ResponseEntity<?> upload(@RequestParam("file") List<MultipartFile> files) {
+         List<String> urls = new ArrayList<>();
         for (MultipartFile file : files) {
-            // S3 업로드
-            s3Service.settingFile(file,"uploads");
+            // // S3 업로드
+            // s3Service.settingFile(file,"uploads");
+
+            String url = s3Service.settingFile(file, "uploads");
+            urls.add(url);
+            
         }
-        return ResponseEntity.ok().body("File(s) uploaded successfully");
+        return ResponseEntity.ok().body(urls);
     }
 }

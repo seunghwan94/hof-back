@@ -19,6 +19,8 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.val;
 
 
 @Entity
@@ -27,6 +29,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class ProdOption extends BaseEntity{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,4 +48,10 @@ public class ProdOption extends BaseEntity{
   // @OneToMany(mappedBy = "prod", cascade = CascadeType.ALL, orphanRemoval = true)
   @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ProdOptionMap> optionMaps; // 옵션 매핑 리스트
+  
+  public void updateOption(String type, String value,int addPrice){
+    this.type = type;
+    this.value = value;
+    this.addPrice = addPrice;
+  }
 }
