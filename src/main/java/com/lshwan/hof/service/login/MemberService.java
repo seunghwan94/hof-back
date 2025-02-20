@@ -10,6 +10,8 @@ public interface MemberService {
 
   Long write(Member member); 
 
+  boolean isIdAvailable(String id);
+
   boolean login(String id, String pw);
 
   Member findBy(String id);
