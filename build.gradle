@@ -121,3 +121,10 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task copyJacocoReport(type: Copy) {
+    from "$buildDir/reports/jacoco/test/html"
+    into "$buildDir/resources/main/static/jacoco"
+}
+
+jacocoTestReport.finalizedBy(copyJacocoReport)
