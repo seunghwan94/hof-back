@@ -11,12 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberDto {
-  private Long mno;
+public class SignupRequestDto {
   private String id;
+  private String pw;
   private String name;
-  private String role;
-  private String regDate;
-  private String modDate;
-
+  private String email;
 }

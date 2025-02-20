@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
@@ -28,7 +29,8 @@ public class AuthController {
   private final AuthenticationManager authenticationManager;
   private final JwtTokenProvider jwtTokenProvider;
   private final MemberService memberService; 
-  private final MemberRepository memberRepository; 
+  private final MemberRepository memberRepository;
+  
 
   /**
    * 로그인 API: 사용자 인증 후 JWT 토큰 발급
@@ -61,13 +63,13 @@ public class AuthController {
 
       // dto변환 pw제외
       MemberDto memberDto = MemberDto.builder()
-          .mno(member.getMno())
-          .id(member.getId())
-          .name(member.getName())
-          .role(member.getRole().name())
-          .regDate(member.getRegDate().toString())
-          .modDate(member.getModDate().toString())
-          .build();
+        .mno(member.getMno())
+        .id(member.getId())
+        .name(member.getName())
+        .role(member.getRole().name())
+        .regDate(member.getRegDate().toString())
+        .modDate(member.getModDate().toString())
+        .build();
 
       // 4️ 응답 객체 생성
       // AuthResponseDto authResponse = new AuthResponseDto(token, "Bearer", memberDto);
@@ -106,9 +108,6 @@ public class AuthController {
       log.error("log.info 회원가입 실패: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패: 다시 시도하세요.");
     }
-    
-
-
    }
 
 
