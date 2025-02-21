@@ -1,7 +1,6 @@
 package com.lshwan.hof.service.prod;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -13,10 +12,10 @@ import com.lshwan.hof.domain.entity.prod.Cart;
 import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.domain.entity.prod.ProdOption;
 import com.lshwan.hof.domain.entity.prod.ProdOptionMap;
+import com.lshwan.hof.mapper.CartMapper;
 import com.lshwan.hof.repository.common.FileMasterRepository;
 import com.lshwan.hof.repository.member.MemberRepository;
 import com.lshwan.hof.repository.prod.CartRepository;
-import com.lshwan.hof.repository.prod.ProdOptionMapRepository;
 import com.lshwan.hof.repository.prod.ProdOptionRepository;
 import com.lshwan.hof.repository.prod.ProdRepository;
 
@@ -34,8 +33,8 @@ public class CartServiceImpl implements CartService {
     private final MemberRepository memberRepository;
     private final ProdRepository prodRepository;
     private final ProdOptionRepository prodOptionRepository;
-    private final ProdOptionMapRepository prodOptionMapRepository;
     private final FileMasterRepository fileMasterRepository;
+    private final CartMapper cartMapper;
 
     /**
      * 1. 장바구니 담기 (옵션 포함)
@@ -69,7 +68,7 @@ public class CartServiceImpl implements CartService {
                 .build();
 
         // 저장
-        Cart savedCart = cartRepository.save(cart);
+        cartRepository.save(cart);
 
         // 이미지 URL 가져오기
         List<FileMaster> images = fileMasterRepository.findByProdPnoAndFileType(prod.getPno(), FileMaster.FileType.prod_main);
@@ -125,13 +124,14 @@ public class CartServiceImpl implements CartService {
       
           // ✅ CartDto 생성 및 반환
           return CartDto.builder()
+                  .cartNo(cart.getNo())
                   .mno(cart.getMember().getMno())
                   .pno(cart.getProd().getPno())
                   .title(cart.getProd().getTitle())
                   .price(cart.getProd().getPrice())
                   .imageUrls(imageUrls)
                   .options(options)
-                  .build();
+                .build();
       }).collect(Collectors.toList());
       
     }
@@ -212,5 +212,27 @@ public class CartServiceImpl implements CartService {
         }
 
         cartRepository.deleteById(cartId);
+    }
+    @Override
+    public void deleteCartItemList(Long mno) {
+        log.info("장바구니 항목 삭제 요청이다 - cartId: {}", mno);
+        cartMapper.deleteByMemberMno(mno);
+    }
+        /**
+     * 5. 장바구니 임시저장
+     */
+    @Override
+    public void saveCartItems(List<CartDto> cartItems) {
+        log.info("장바구니 임시저장 요청: {}", cartItems);
+
+        for (CartDto cartDto : cartItems) {
+            if (cartDto.getCartNo() != null) {
+                // 기존 항목 업데이트
+                updateCartItem(cartDto.getCartNo(), cartDto);
+            } else {
+                // 새로운 항목 추가
+                addToCart(cartDto);
+            }
+        }
     }
 }

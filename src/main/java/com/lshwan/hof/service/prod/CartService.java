@@ -17,4 +17,7 @@ public interface CartService {
 
   // 4. 장바구니 항목 삭제
   void deleteCartItem(Long cartId);
+  void deleteCartItemList(Long cartId);
+
+  void saveCartItems(List<CartDto> cartItems);
 }
