@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lshwan.hof.mapper.OrderItemMapper">
+
+  <!-- ResultMap for OrderItem with associated entities -->
+  <resultMap id="OrderItemFullMap" type="com.lshwan.hof.domain.entity.order.OrderItem">
+    <!-- OrderItem fields -->
+    <id property="no" column="oi_no" />
+    <result property="count" column="oi_count" />
+    <result property="basePrice" column="oi_base_price" />
+    <result property="subtotalPrice" column="oi_subtotal_price" />
+
+    <!-- Association for Prod -->
+    <association property="prod" javaType="com.lshwan.hof.domain.entity.prod.Prod">
+      <id property="pno" column="prod_no" />
+      <result property="title" column="prod_title" />
+      <result property="content" column="prod_content" />
+      <result property="price" column="prod_price" />
+      <result property="stock" column="prod_stock" />
+    </association>
+
+    <!-- Association for Order -->
+    <association property="order" javaType="com.lshwan.hof.domain.entity.order.Order">
+      <id property="no" column="order_no" />
+      <result property="totalPrice" column="order_total_price" />
+
+      <!-- Association for Member within Order -->
+      <association property="member" javaType="com.lshwan.hof.domain.entity.member.Member">
+        <id property="mno" column="member_no" />
+        <result property="name" column="member_name" />
+      </association>
+
+      <!-- Association for Delivery within Order -->
+      <association property="delivery" javaType="com.lshwan.hof.domain.entity.order.Delivery">
+        <id property="no" column="delivery_no" />
+        <result property="status" column="delivery_status" />
+      </association>
+    </association>
+  </resultMap>
+
+  <!-- SQL Query -->
+  <select id="findFullOrderDetails" resultMap="OrderItemFullMap">
+    SELECT 
+      -- OrderItem fields
+      oi.no AS oi_no, oi.count AS oi_count, oi.base_price AS oi_base_price, oi.subtotal_price AS oi_subtotal_price,
+
+      -- Prod fields
+      prod.pno AS prod_no, prod.title AS prod_title, prod.content AS prod_content, prod.price AS prod_price, prod.stock AS prod_stock,
+
+      -- Order fields
+      o.no AS order_no, o.total_price AS order_total_price,
+
+      -- Member fields
+      m.mno AS member_no, m.name AS member_name,
+
+      -- Delivery fields
+      d.no AS delivery_no, d.status AS delivery_status
+
+    FROM tbl_order_item oi
+    JOIN tbl_order o ON oi.order_no = o.no
+    JOIN tbl_delivery d ON o.delivery_no = d.no
+    JOIN tbl_member m ON o.mno = m.mno
+    JOIN tbl_prod prod ON oi.pno = prod.pno
+    JOIN tbl_pay p ON p.order_no = o.no
+    LEFT JOIN tbl_refund r ON r.pay_no = p.no
+    WHERE m.mno = #{mno}
+      AND oi.pno = #{pno}
+      AND p.status = '완료'
+      AND d.status = '배송완료'
+      AND (r.status IS NULL OR r.status = false)
+  </select>
+
+</mapper>

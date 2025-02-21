@@ -8,10 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Builder.Default;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "tbl_review")
 @Builder
 @AllArgsConstructor
@@ -40,6 +42,16 @@ public class Review extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     @Default
     private StarRating star = StarRating.FIVE; 
+
+    // 리뷰 내용 수정 메서드
+    public void updateContent(String newContent) {
+        this.content = newContent;
+    }
+
+    // 별점 수정 메서드
+    public void updateStar(StarRating newStar) {
+        this.star = newStar;
+    }
 
     public enum StarRating {
         ONE(1), TWO(2), THREE(3), FOUR(4), FIVE(5);
