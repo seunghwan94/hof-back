@@ -65,4 +65,8 @@ public class EmailVerification {
               .expiresAt(expiresAt)
               .build();
   }
+
+  public boolean isVerified() {
+    return this.verified;
+}
 }
