@@ -1,6 +1,5 @@
 package com.lshwan.hof.domain.entity.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.member.Member;
 

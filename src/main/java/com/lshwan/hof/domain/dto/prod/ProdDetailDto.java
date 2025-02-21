@@ -21,9 +21,10 @@ public class ProdDetailDto {
     private String content;
     private int price;
     private int stock;
+    private Long cno;
     private List<String> imageUrls; 
     private List<ProdOptionDto> options; 
-    
+    private List<String> thumbnailUrl; 
 
     @Getter
     @Setter

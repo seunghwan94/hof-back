@@ -2,7 +2,6 @@ package com.lshwan.hof.repository.prod;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +17,6 @@ public interface ProdOptionRepository extends JpaRepository<ProdOption,Long>{
   @Transactional
   @Modifying
   @Query("DELETE FROM ProdOption po WHERE NOT EXISTS (SELECT 1 FROM ProdOptionMap pom WHERE pom.option = po)")
-  void deleteOrphanOptions();
+  void deleteOrphanOptions(Long pno);
   
 }

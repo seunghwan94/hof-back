@@ -4,6 +4,7 @@ import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.domain.entity.note.Note;
+import com.lshwan.hof.domain.entity.notice.Notice;
 import com.lshwan.hof.domain.entity.order.Review;
 
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class FileMaster extends BaseEntity {
 
     @Id
@@ -36,9 +39,14 @@ public class FileMaster extends BaseEntity {
     @JoinColumn(name = "pno")
     private Prod prod; // 상품 번호
 
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_no")
     private Review review; // 리뷰 번호
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "notice_no")
+    private Notice notice; // 리뷰 번호
 
     @Column(name = "origin")
     private String origin; // 원본 파일 이름

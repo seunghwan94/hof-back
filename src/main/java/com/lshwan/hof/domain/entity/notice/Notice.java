@@ -32,7 +32,6 @@ public class Notice extends BaseEntity{
   @ManyToOne(fetch = FetchType.LAZY) // 회원 정보와 다대일 관계 설정
   @JoinColumn(name = "mno", nullable = false) // FK 설정
   private Member member;
-
   private String title;
   private String content;
   @Column(name = "click_url")
