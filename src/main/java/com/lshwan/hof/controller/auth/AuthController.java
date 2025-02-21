@@ -97,18 +97,32 @@ public class AuthController {
    */
 
    @PostMapping("/signup")
-   public ResponseEntity<?> signup(@RequestBody Member member) {
-    log.info("회원가입 요청 id: {}, role: {}", member.getId(), member.getRole());
-    
+  public ResponseEntity<?> signup(@RequestBody Member member) {
+    // log.info("회원가입 요청 id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}", member.getId(), member.getRole(), member.getPw(), member.getMemberDetail().getEmail(), member.getMemberDetail().getGender(), member);
+    log.info("회원가입 요청 id: {}, role: {}, pw: {}, member: {}", member.getId(), member.getRole(), member.getPw(), member);
+    if (member.getMemberDetail() == null) {
+      log.error("회원가입 실패: MemberDetail이 null입니다.");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패: 회원 상세 정보를 확인하세요.");
+    }
+  
+    // 로그 찍기 전에 memberDetail이 null이 아닌지 확인
+    log.info("회원가입 요청 id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}", 
+             member.getId(), 
+             member.getRole(), 
+             member.getPw(), 
+             member.getMemberDetail().getEmail(), 
+             member.getMemberDetail().getGender(), 
+             member);
     try {
       Long mno = memberService.write(member);
       log.info("log.info 회원가입 성공 mno: {}", mno);
+      log.info("회원가입멤버인포확인: {}" + member);
       return ResponseEntity.ok("회원가입 성공 mno: {}" + mno);
     } catch(Exception e) {
       log.error("log.info 회원가입 실패: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패: 다시 시도하세요.");
     }
-   }
+  }
 
 
 
