@@ -15,26 +15,27 @@ import lombok.extern.log4j.Log4j2;
 @AllArgsConstructor
 @Log4j2
 public class PayServiceImpl implements PayService{
-    private final PayRepository payRepository;
-    private final OrderRepository orderRepository;
+  private final PayRepository payRepository;
+  private final OrderRepository orderRepository;
 
-    /**
-     * 1️⃣ 결제 요청
-     */
-    @Transactional
-    public Pay requestPayment(Long orderNo, Pay.PaymentMethod method, int totalPrice) {
-        Order order = orderRepository.findById(orderNo)
-                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+  /**
+   * 1️⃣ 결제 요청
+   */
+  @Transactional
+  public Pay requestPayment(Long orderNo, Pay.PaymentMethod method, int totalPrice, String impUid) {
+    Order order = orderRepository.findById(orderNo)
+      .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
 
-        Pay pay = Pay.builder()
-                .order(order)
-                .method(method)
-                .status(Pay.PaymentStatus.실패) // 기본값은 실패로 설정
-                .totalPrice(totalPrice)
-                .build();
+    Pay pay = Pay.builder()
+          .order(order)
+          .method(method)
+          .status(Pay.PaymentStatus.실패) // 기본값은 실패로 설정
+          .totalPrice(totalPrice)
+          .impUid(impUid)
+        .build();
 
-        return payRepository.save(pay);
-    }
+    return payRepository.save(pay);
+  }
 
     /**
      * 2️⃣ 결제 검증 (DB 내 결제 정보와 실제 결제 정보 비교)
@@ -60,7 +61,8 @@ public class PayServiceImpl implements PayService{
                 .method(pay.getMethod())
                 .status(Pay.PaymentStatus.완료) // ✅ 결제 상태 업데이트
                 .totalPrice(pay.getTotalPrice())
-                .build();
+                .impUid(pay.getImpUid())
+              .build();
 
         return payRepository.save(pay);
     }
@@ -79,7 +81,8 @@ public class PayServiceImpl implements PayService{
                 .method(pay.getMethod())
                 .status(Pay.PaymentStatus.실패) // ✅ 결제 실패 처리
                 .totalPrice(pay.getTotalPrice())
-                .build();
+                .impUid(pay.getImpUid())
+              .build();
 
         return payRepository.save(pay);
     }

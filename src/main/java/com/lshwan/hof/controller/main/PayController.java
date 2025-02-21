@@ -42,7 +42,7 @@ public class PayController {
           return ResponseEntity.badRequest().body("잘못된 결제 방법입니다. (지원: 카드)");
       }
 
-      Pay pay = payService.requestPayment(requestDto.getOrderNo(), paymentMethod, requestDto.getTotalPrice());
+      Pay pay = payService.requestPayment(requestDto.getOrderNo(), paymentMethod, requestDto.getTotalPrice(),  requestDto.getImpUid());
       return ResponseEntity.ok(new PayDto(pay));
 
     } catch (Exception e) {

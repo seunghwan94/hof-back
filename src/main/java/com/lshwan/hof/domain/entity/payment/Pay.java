@@ -39,6 +39,9 @@ public class Pay extends BaseEntity {
     @Column(nullable = false)
     private int totalPrice;
 
+    @Column(nullable = false)
+    private String impUid;
+
     public enum PaymentMethod {
         카드, 이체, 무통장
     }
