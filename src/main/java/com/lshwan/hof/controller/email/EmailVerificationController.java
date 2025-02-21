@@ -1,11 +1,12 @@
 package com.lshwan.hof.controller.email;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lshwan.hof.service.login.EmailVerificationService;
@@ -25,14 +26,18 @@ public class EmailVerificationController {
    * @param email 인증할 이메일
    * @return 인증 코드 발송 성공 여부
    */
-  @PostMapping("/send")
-  public ResponseEntity<String> sendVerificationEmail(@RequestParam String email) {
-      try {
-          emailVerificationService.sendVerificationEmail(email);
-          return ResponseEntity.ok("이메일 인증 코드가 발송되었습니다.");
-      } catch (Exception e) {
-          return ResponseEntity.status(400).body("이메일 인증 코드 발송 실패: " + e.getMessage());
-      }
+  @PostMapping("/emailsend")
+  // public ResponseEntity<String> sendVerificationEmail(@RequestParam("email") String email) {
+    public ResponseEntity<String> sendVerificationEmail(@RequestBody Map<String, String> request) {
+      String email = request.get("email");
+  
+    log.info("이메일 인증 요청 받음: " + email);
+    try {
+        emailVerificationService.sendVerificationEmail(email);
+        return ResponseEntity.ok("이메일 인증 코드가 발송되었습니다.");
+    } catch (Exception e) {
+        return ResponseEntity.status(400).body("이메일 인증 코드 발송 실패: " + e.getMessage());
+    }
   }
 
   /**
@@ -40,8 +45,12 @@ public class EmailVerificationController {
    * @param emailToken 인증 토큰
    * @return 인증 성공/실패 여부
    */
-  @GetMapping("/verify")
-  public ResponseEntity<String> verifyEmail(@RequestParam String verificationCode) {
+  // @GetMapping("/verify")
+  @PostMapping("/verify")
+  // public ResponseEntity<String> verifyEmail(@RequestParam String verificationCode) {
+  public ResponseEntity<String> verifyEmail(@RequestBody Map<String, String> request) {
+    String verificationCode = request.get("verificationCode");
+      
     log.info("받은토큰 verification code: {}", verificationCode);
     try {
       // String decodedCode = URLDecoder.decode(verificationCode, StandardCharsets.UTF_8);

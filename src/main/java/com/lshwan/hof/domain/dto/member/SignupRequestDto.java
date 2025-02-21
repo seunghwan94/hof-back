@@ -1,5 +1,7 @@
 package com.lshwan.hof.domain.dto.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +16,11 @@ import lombok.Setter;
 public class SignupRequestDto {
   private String id;
   private String pw;
+
+  @JsonIgnore
+  private String confirmPw;
+
   private String name;
   private String email;
+  
 }
