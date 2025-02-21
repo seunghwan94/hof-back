@@ -202,6 +202,10 @@ for (ProdDetailDto.ProdOptionDto newOptionDto : productDto.getOptions()) {
     //     }
     // }
     // 3. 기존 옵션 수정
+
+
+
+    
     for (ProdOption existingOption : existingOptions) {
       if (existingOption.getNo().equals(newOptionDto.getOptionNo())) {
           existingOption.updateOption(newOptionDto.getType(), newOptionDto.getValue(), newOptionDto.getAddPrice());
