@@ -1,6 +1,5 @@
 package com.lshwan.hof.domain.dto.note;
 
-import com.lshwan.hof.domain.entity.notice.Notice;
 import lombok.*;
 
 @Getter

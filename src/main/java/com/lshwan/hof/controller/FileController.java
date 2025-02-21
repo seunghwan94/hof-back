@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -40,7 +39,7 @@ public class FileController {
             // // S3 업로드
             // s3Service.settingFile(file,"uploads");
 
-            String url = s3Service.settingFile(file, "uploads");
+            String url = s3Service.settingFile(file, "prodDetail");
             urls.add(url);
             
         }
@@ -68,11 +67,26 @@ public class FileController {
             // // S3 업로드
             // s3Service.settingFile(file,"uploads");
 
-            String url = s3Service.settingFile(file, "uploads",prod);
+            String url = s3Service.settingFile(file, "prodDetail",prod);
             urls.add(url);
             
         }
         return ResponseEntity.ok().body(urls);
     }
+    @PostMapping("upload/thumnail")
+    public ResponseEntity<?> uploadSumnail(@RequestParam("file") MultipartFile file) {
+        System.out.println(file);
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("파일이 비어 있습니다.");
+        }
+        try {
+            String url = s3Service.settingFile(file, "prod"); 
+            return ResponseEntity.ok(url); 
+        } catch (Exception e) {
+            log.error("파일 업로드 실패", e);
+            return ResponseEntity.internalServerError().body("파일 업로드 실패");
+        }
+    }
+    
     
 }

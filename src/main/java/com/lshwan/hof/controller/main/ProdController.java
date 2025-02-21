@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+
 
 
 
@@ -83,4 +85,15 @@ public class ProdController {
       }
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 상품이 존재하지 않습니다.");
     }
+    @PostMapping
+    public ResponseEntity<?> postMethodName(@RequestBody ProdDetailDto productDto) {
+      System.out.println(productDto);
+        try { 
+          Long addPno = prodDetailService.add(productDto);
+          return ResponseEntity.ok("상품 등록 완료 (Pno: " + addPno + ")");
+      } catch (Exception e) {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품 등록 실패: " + e.getMessage());
+      }
+    }
+    
 }

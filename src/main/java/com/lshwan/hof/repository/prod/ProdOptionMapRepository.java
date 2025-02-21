@@ -15,6 +15,8 @@ public interface ProdOptionMapRepository extends JpaRepository<ProdOptionMap,Lon
   @Modifying
   @Query("DELETE FROM ProdOptionMap pom WHERE pom.option.no = :ono") 
   void deleteByOptionNo(@Param("ono") Long ono);
+
+  
     
   
 }

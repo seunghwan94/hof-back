@@ -13,7 +13,6 @@ import com.lshwan.hof.domain.entity.common.FileMaster;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.notice.Notice;
 import com.lshwan.hof.repository.common.FileMasterRepository;
-import com.lshwan.hof.repository.member.MemberRepository;
 import com.lshwan.hof.repository.note.NoticeRepository;
 import com.lshwan.hof.service.login.MemberService;
 

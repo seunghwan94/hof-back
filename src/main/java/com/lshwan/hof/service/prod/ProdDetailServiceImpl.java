@@ -1,15 +1,17 @@
 package com.lshwan.hof.service.prod;
 
 import java.util.List;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.lshwan.hof.domain.dto.prod.ProdDetailDto;
 import com.lshwan.hof.domain.entity.common.FileMaster;
 import com.lshwan.hof.domain.entity.prod.Prod;
+import com.lshwan.hof.domain.entity.prod.ProdCategory;
 import com.lshwan.hof.domain.entity.prod.ProdOption;
 import com.lshwan.hof.domain.entity.prod.ProdOptionMap;
 import com.lshwan.hof.repository.common.FileMasterRepository;
@@ -26,19 +28,65 @@ public class ProdDetailServiceImpl implements ProdDetailService {
     
   private final ProdRepository prodRepository;
   private final ProdOptionRepository prodOptionRepository;
-  private final ProdOptionMapRepository productOptionMapRepository;
+
   private final FileMasterRepository fileMasterRepository;
 
-   @Autowired
-  private ProdOptionMapRepository optionMapRepository;
-  
-  // @Transactional
-  // @Override
-  // public Long add(ProdDetailDto productDto) {
-  //     Prod product = dtoToEntity(productDto);
-  //     prodRepository.save(product);
-  //     return product.getPno();
-  // }
+      @Autowired
+      private ProdOptionMapRepository optionMapRepository;
+      
+    @Override
+    @Transactional
+    public Long add(ProdDetailDto productDto) {
+        // 상품 정보 저장
+        Prod prod = Prod.builder()
+            .title(productDto.getTitle())
+            .content(productDto.getContent())
+            .price(productDto.getPrice())
+            .stock(productDto.getStock())
+            .cno(ProdCategory.builder().cno(productDto.getCno()).build())
+            .build();
+
+        prodRepository.save(prod);
+
+        // 옵션 정보 저장 (상품과 연결)
+        if (productDto.getOptions() != null && !productDto.getOptions().isEmpty()) {
+            for (ProdDetailDto.ProdOptionDto optionDto : productDto.getOptions()) {
+                ProdOption newOption = ProdOption.builder()
+                    .type(optionDto.getType())
+                    .value(optionDto.getValue())
+                    .addPrice(optionDto.getAddPrice())
+                    .build();
+
+                prodOptionRepository.save(newOption);
+
+                // 브릿지 테이블로 상품과 옵션 연결
+                ProdOptionMap optionMap = ProdOptionMap.builder()
+                    .prod(prod)  // 상품과 연결
+                    .option(newOption) // 옵션과 연결
+                    .stock(optionDto.getStock()) // 재고 설정
+                    .build();
+
+                optionMapRepository.save(optionMap);
+            }
+        }
+        
+        if (productDto.getThumbnailUrl() != null && !productDto.getThumbnailUrl().isEmpty()) {
+          List<FileMaster> thumbnailFiles = fileMasterRepository.findByUrlIn(productDto.getThumbnailUrl());
+          for (FileMaster file : thumbnailFiles) {
+              file.setProd(prod);
+          }
+          fileMasterRepository.saveAll(thumbnailFiles);
+        }
+
+        if (productDto.getImageUrls() != null && !productDto.getImageUrls().isEmpty()) {
+            List<FileMaster> imageFiles = fileMasterRepository.findByUrlIn(productDto.getImageUrls());
+            for (FileMaster file : imageFiles) {
+                file.setProd(prod);
+            }
+            fileMasterRepository.saveAll(imageFiles);
+        }
+        return prod.getPno();
+    }
 
   @Override
   public ProdDetailDto findBy(Long pno) {
@@ -121,11 +169,7 @@ public class ProdDetailServiceImpl implements ProdDetailService {
     .build();
   }
 
-  @Override
-  public Long add(ProdDetailDto productDto) {
-    // TODO Auto-generated method stub
-    return null;
-  }
+
 
   @Override
   public Long modify(ProdDetailDto productDto) {
@@ -195,13 +239,13 @@ for (ProdDetailDto.ProdOptionDto newOptionDto : productDto.getOptions()) {
   @Transactional
   public boolean remove(Long pno) {
 
-      // optionMapRepository.deleteByOptionNo(pno);
+      optionMapRepository.deleteByOptionNo(pno);
 
 
-      // prodOptionRepository.deleteOrphanOptions();
+      prodOptionRepository.deleteOrphanOptions(pno);
 
 
-      // fileMasterRepository.deleteByProdNo(pno);
+      fileMasterRepository.deleteByProdNo(pno);
 
 
       prodRepository.deleteById(pno);
@@ -212,14 +256,14 @@ for (ProdDetailDto.ProdOptionDto newOptionDto : productDto.getOptions()) {
   @Override
   @Transactional
   public boolean removeOption(Long ono) {
-      // 1️⃣ 옵션 존재 여부 확인
-      ProdOption option = prodOptionRepository.findById(ono)
+    // ProdOption option 
+       prodOptionRepository.findById(ono)
               .orElseThrow(() -> new RuntimeException("옵션이 존재하지 않습니다."));
   
-      // 2️⃣ 옵션 매핑 테이블에서 해당 옵션을 삭제
+
       optionMapRepository.deleteById(ono);
   
-      // 3️⃣ 옵션 테이블에서 해당 옵션을 삭제
+
       prodOptionRepository.deleteById(ono);
   
       return true;
