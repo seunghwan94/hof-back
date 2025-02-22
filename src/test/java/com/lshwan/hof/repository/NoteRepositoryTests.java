@@ -15,8 +15,24 @@ public class NoteRepositoryTests {
   private NoteRepository repository;
 
   @Test
-  public void findAll(){
+  public void findAllTests(){
     log.info(repository.findAll()); 
   }
+  
+  @Test
+  public void findByMemberMnoTests(){
+    log.info(repository.findByMemberMno(24L)); 
+  }
+
+  @Test
+  public void searchByKeywordTests(){
+    log.info(repository.searchByKeyword("수정")); 
+  }
+
+  @Test
+  public void findByIsDeletedFalseTests(){
+    log.info(repository.findByIsDeletedFalse()); 
+  }
+
   
 }

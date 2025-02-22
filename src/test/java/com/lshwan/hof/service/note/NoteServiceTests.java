@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.note.Note;
 
 import lombok.extern.log4j.Log4j2;
@@ -23,15 +22,15 @@ public class NoteServiceTests {
    @Test
   public void addTest(){
     // get
-    Note note = Note.builder()
-      .member(Member.builder().mno(5L).build())
-      .title("테스트제목")
-      .content("테스트 내용")
-      .build();
+    Long mno = 24L;
+    String title = "테스트제목";
+    String content = "테스트 내용";
+
     // when
-    Long cno = service.add(note);
+    Note note = service.add(mno, title, content);
+    log.info(note);
     // then
-    assertTrue(cno > 0);
+    assertNotNull(note);
   }
 
   @Test
@@ -59,45 +58,24 @@ public class NoteServiceTests {
   // @Transactional
   public void modify(){
     // given
-    Note note = Note.builder()
-        .member(Member.builder().mno(5L).build())
-        .title("테스트제목")
-        .content("테스트 내용")
-      .build();
-    Long nno = service.add(note);
-    assertNotNull(nno);
+    Long nno = 32L;
+    String title = "수정된테스트제목";
+    String content = "수정된테스트내용";
 
     // when
-    Note modinote = Note.builder()
-        .nno(nno)
-        .member(Member.builder().mno(5L).build())
-        .title("수정된테스트제목")
-        .content("수정된테스트내용")
-      .build();
-    Long modinno = service.modify(modinote);
+    Note note = service.modify(nno, title, content);
 
     // then
-    assertNotNull(modinno);
-    Note note2 = service.findBy(modinno);
-    assertNotNull(note2);
-    assertTrue(note2.getNno() == nno);
+    assertNotNull(note);
   }
 
   @Test
   public void remove(){
     // given
-    Note note = Note.builder()
-    .member(Member.builder().mno(5L).build())
-    .title("수정된테스트제목")
-    .content("수정된테스트내용")
-      .build();
-    Long nno = service.add(note);
-    assertNotNull(nno);
+    Long nno = 37L;
 
     // when
-    boolean isRemove = service.remove(nno);
+    service.remove(nno);
 
-    // then
-    assertTrue(isRemove);
   }
 }

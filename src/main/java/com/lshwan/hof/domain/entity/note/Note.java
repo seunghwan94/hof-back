@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 @Entity
 @Table(name = "tbl_note")  // 테이블 명 명시
@@ -34,9 +35,21 @@ public class Note extends BaseEntity{
   @JsonIgnore
   private Member member;
 
+
   @Column(length = 255, nullable = false)
   private String title;
   @Column(columnDefinition = "TEXT", nullable = false)
   private String content;
   
+  @Default
+  @Column(name = "is_deleted", nullable = false)
+  private boolean isDeleted = false;
+
+  public void update(String title, String content) {
+    this.title = title;
+    this.content = content;
+  }
+  public void setIsDeleted(boolean isDeleted) {
+    this.isDeleted = isDeleted;
+}
 }

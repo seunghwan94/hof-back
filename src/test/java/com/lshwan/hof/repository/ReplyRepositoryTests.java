@@ -18,4 +18,20 @@ public class ReplyRepositoryTests {
   public void findAll() {
     log.info(repository.findAll());
   }
+  @Test
+  public void findByNoteNnoOrderByReplyOrderAscTests() {
+    log.info(repository.findByNoteNnoOrderByReplyOrderAsc(1L));
+  }
+  @Test
+  public void findByMemberMnoTests() {
+    log.info(repository.findByMemberMno(24L));
+  }
+  @Test
+  public void findByParentReplyNoTests() {
+    log.info(repository.findByParentReplyNo(2L));
+  }
+  @Test
+  public void findByIsDeletedFalseAndNoteNnoTests() {
+    log.info(repository.findByIsDeletedFalseAndNoteNno(1L));
+  }
 }

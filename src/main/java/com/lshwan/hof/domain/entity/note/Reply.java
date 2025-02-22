@@ -37,9 +37,18 @@ public class Reply extends BaseEntity {
     @Column(nullable = false, columnDefinition = "int default 0")
     private int depth = 0; 
 
-    @Column(name = "order")
-    private Integer order; 
+    @Column(name = "reply_order")
+    private Integer replyOrder; 
 
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content; 
+
+    @Default
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+    
 }
