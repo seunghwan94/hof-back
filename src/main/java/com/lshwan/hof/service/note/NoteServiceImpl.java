@@ -1,14 +1,17 @@
 package com.lshwan.hof.service.note;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.lshwan.hof.domain.dto.note.NoteDto;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.note.Note;
 import com.lshwan.hof.repository.member.MemberRepository;
 import com.lshwan.hof.repository.note.NoteRepository;
+import com.lshwan.hof.service.S3Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -17,25 +20,37 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class NoteServiceImpl implements NoteService{
-  @Autowired
   private NoteRepository noteRepository;
-  @Autowired
   private MemberRepository memberRepository;
+  private final S3Service s3Service;
 
   // 게시글 작성
   @Override
   @Transactional
-  public Note add(Long mno, String title, String content) {
-    Member member = memberRepository.findById(mno)
-                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+  public Note add(NoteDto noteDto) {
+    Member member = memberRepository.findById(noteDto.getMno())
+          .orElseThrow(() -> new EntityNotFoundException("Member not found"));
 
+    // Note 생성 및 저장
     Note note = Note.builder()
                   .member(member)
-                  .title(title)
-                  .content(content)
+                  .title(noteDto.getTitle())
+                  .content(noteDto.getContent())
                 .build();
 
-    return noteRepository.save(note);
+    noteRepository.save(note);
+
+    // 이미지 업로드 및 URL 저장
+    if (noteDto.getImages() != null && !noteDto.getImages().isEmpty()) {
+      List<String> uploadedImageUrls = new ArrayList<>();
+      for (MultipartFile image : noteDto.getImages()) {
+        String imageUrl = s3Service.settingFile(image, "note", note);
+        uploadedImageUrls.add(imageUrl);
+      }
+      noteDto.setImageUrls(uploadedImageUrls);  // 업로드된 이미지 URL을 DTO에 저장
+    }
+
+    return note;
   }
 
   // 게시글 조회 (단일)

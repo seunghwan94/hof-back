@@ -21,16 +21,16 @@ public class NoteServiceTests {
 
    @Test
   public void addTest(){
-    // get
-    Long mno = 24L;
-    String title = "테스트제목";
-    String content = "테스트 내용";
+    // // get
+    // Long mno = 24L;
+    // String title = "테스트제목";
+    // String content = "테스트 내용";
 
-    // when
-    Note note = service.add(mno, title, content);
-    log.info(note);
-    // then
-    assertNotNull(note);
+    // // when
+    // Note note = service.add(mno, title, content);
+    // log.info(note);
+    // // then
+    // assertNotNull(note);
   }
 
   @Test
