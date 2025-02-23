@@ -1,7 +1,10 @@
 package com.lshwan.hof.service.common;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
+import com.lshwan.hof.domain.dto.common.LikeDto;
 import com.lshwan.hof.domain.entity.common.Likes;
 import com.lshwan.hof.domain.entity.common.Likes.TargetType;
 import com.lshwan.hof.domain.entity.member.Member;
@@ -20,23 +23,29 @@ public class LikesServiceImpl implements LikesService{
   private final MemberRepository memberRepository;
 
   @Override
-  public void add(Long mno, Long targetNo, TargetType targetType) {
-    Likes.LikesId likesId = new Likes.LikesId(mno, targetNo, targetType);
+  public LikeDto add(Long mno, Long targetNo, TargetType targetType) {
+   Likes.LikesId likesId = new Likes.LikesId(mno, targetNo, targetType);
 
-    // 이미 좋아요가 있는지 확인
-    if (likesRepository.existsById(likesId)) {
-        throw new IllegalStateException("Already liked");
-    }
+        if (likesRepository.existsById(likesId)) {
+            throw new IllegalStateException("Already liked");
+        }
 
-    Member member = memberRepository.findById(mno)
-            .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+        Member member = memberRepository.findById(mno)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
 
-    Likes like = Likes.builder()
-            .id(likesId)
-            .member(member)
-            .build();
+        Likes like = Likes.builder()
+                .id(likesId)
+                .member(member)
+                .build();
 
-    likesRepository.save(like);
+        likesRepository.save(like);
+
+        return LikeDto.builder()
+                .mno(mno)
+                .targetNo(targetNo)
+                .targetType(targetType.name())
+                .likedAt(LocalDateTime.now().toString())
+                .build();
   }
   // 좋아요 수 조회
   @Override

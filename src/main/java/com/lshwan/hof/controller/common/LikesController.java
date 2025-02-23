@@ -5,10 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lshwan.hof.domain.dto.common.LikeDto;
 import com.lshwan.hof.domain.entity.common.Likes;
 import com.lshwan.hof.service.common.LikesService;
 
@@ -22,16 +24,18 @@ public class LikesController {
 
   // 좋아요 추가
   @PostMapping
-  public ResponseEntity<Void> addLike(@RequestParam Long mno,
-                                      @RequestParam Long targetNo,
-                                      @RequestParam Likes.TargetType targetType) {
-    likesService.add(mno, targetNo, targetType);
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+  public ResponseEntity<?> addLike(@RequestBody LikeDto likeDto) {
+    LikeDto createdLike = likesService.add(
+                            likeDto.getMno(),
+                            likeDto.getTargetNo(),
+                            Likes.TargetType.valueOf(likeDto.getTargetType())
+                          );
+    return ResponseEntity.status(HttpStatus.CREATED).body(createdLike);
   }
 
   // 좋아요 취소
   @DeleteMapping
-  public ResponseEntity<Void> removeLike(@RequestParam Long mno,
+  public ResponseEntity<?> removeLike(@RequestParam Long mno,
                                           @RequestParam Long targetNo,
                                           @RequestParam Likes.TargetType targetType) {
     likesService.remove(mno, targetNo, targetType);
@@ -40,7 +44,7 @@ public class LikesController {
 
   // 좋아요 수 조회
   @GetMapping("/count")
-  public ResponseEntity<Long> countLikes(@RequestParam Long targetNo,
+  public ResponseEntity<?> countLikes(@RequestParam Long targetNo,
                                          @RequestParam Likes.TargetType targetType) {
     long count = likesService.countLikes(targetNo, targetType);
     return ResponseEntity.ok(count);

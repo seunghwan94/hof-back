@@ -16,7 +16,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class NoteDto {
+    private Long nno;
     private Long mno; // 작성자 ID
+    private String memberName;
     private String title;
     private String content;
 
@@ -25,4 +27,7 @@ public class NoteDto {
 
     // 저장된 이미지 URL 목록
     private List<String> imageUrls;
+    
+    private int commentCount;  
+    private int likeCount;   
 }

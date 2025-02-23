@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.lshwan.hof.domain.entity.common.FileMaster;
 import com.lshwan.hof.domain.entity.common.FileMaster.FileType;
+import com.lshwan.hof.domain.entity.note.Note;
 
 import jakarta.transaction.Transactional;
 
@@ -29,4 +30,6 @@ public interface FileMasterRepository extends JpaRepository<FileMaster,String>{
   Optional<FileMaster> findByUrl(String url);
     // 다중 URL 조회를 위한 메서드 추가
     List<FileMaster> findByUrlIn(List<String> urls);
+    // 특정 Note에 연결된 이미지 목록 조회
+  List<FileMaster> findByNote(Note note);
 }

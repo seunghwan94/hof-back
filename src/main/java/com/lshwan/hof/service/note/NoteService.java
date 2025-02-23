@@ -7,13 +7,13 @@ import com.lshwan.hof.domain.entity.note.Note;
 
 public interface NoteService {
 
-  Note add(NoteDto noteDto); 
+  NoteDto add(NoteDto noteDto); 
 
-  Note findBy(Long nno);
+  NoteDto findBy(Long nno);
 
-  List<Note> findList();
+  List<NoteDto> findList();
 
-  Note modify(Long nno, String title, String content);
+  NoteDto modify(Long nno, String title, String content);
 
   void remove(Long nno);
 }

@@ -23,43 +23,43 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("main/note")
+@RequestMapping("main/notes")
 public class NoteController {
   private final NoteService noteService;
 
   // 게시글 작성
   @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-  public ResponseEntity<Note> createNote(@ModelAttribute NoteDto noteDto) {
-      Note note = noteService.add(noteDto);
-      return ResponseEntity.status(HttpStatus.CREATED).body(note);
+  public ResponseEntity<?> createNote(@ModelAttribute NoteDto noteDto) {
+      NoteDto CreateNote = noteService.add(noteDto);
+      return ResponseEntity.status(HttpStatus.CREATED).body(CreateNote);
   }
 
   // 게시글 단일 조회
   @GetMapping("/{nno}")
-  public ResponseEntity<Note> getNote(@PathVariable Long nno) {
-      Note note = noteService.findBy(nno);
+  public ResponseEntity<?> getNote(@PathVariable Long nno) {
+      NoteDto note = noteService.findBy(nno);
       return ResponseEntity.ok(note);
   }
 
   // 게시글 목록 조회
   @GetMapping
-  public ResponseEntity<List<Note>> getAllNotes() {
-      List<Note> notes = noteService.findList();
-      return ResponseEntity.ok(notes);
+  public ResponseEntity<List<?>> getAllNotes() {
+    List<NoteDto> notes  = noteService.findList();
+    return ResponseEntity.ok(notes);
   }
 
   // 게시글 수정
   @PutMapping("/{nno}")
-  public ResponseEntity<Note> updateNote(@PathVariable Long nno,
+  public ResponseEntity<?> updateNote(@PathVariable Long nno,
                                           @RequestParam String title,
                                           @RequestParam String content) {
-      Note updatedNote = noteService.modify(nno, title, content);
-      return ResponseEntity.ok(updatedNote);
+    NoteDto updatedNote = noteService.modify(nno, title, content);
+    return ResponseEntity.ok(updatedNote);
   }
 
   // 게시글 삭제 (Soft Delete)
   @DeleteMapping("/{nno}")
-  public ResponseEntity<Void> deleteNote(@PathVariable Long nno) {
+  public ResponseEntity<?> deleteNote(@PathVariable Long nno) {
     noteService.remove(nno);
     return ResponseEntity.noContent().build();
   }
