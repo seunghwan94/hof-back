@@ -1,7 +1,14 @@
 package com.lshwan.hof.service.pay;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.lshwan.hof.domain.dto.QnaDto;
+import com.lshwan.hof.domain.dto.pay.AdminPayDto;
+import com.lshwan.hof.domain.dto.pay.PayDto;
 import com.lshwan.hof.domain.entity.order.Order;
 import com.lshwan.hof.domain.entity.payment.Pay;
 import com.lshwan.hof.repository.order.OrderRepository;
@@ -94,4 +101,15 @@ public class PayServiceImpl implements PayService{
         return payRepository.findByOrder_No(orderNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문에 대한 결제 정보가 없습니다."));
     }
+
+    @Override
+    public List<AdminPayDto> findList() {
+      List<AdminPayDto> dto = payRepository.findAll(Sort.by(Sort.Direction.DESC, "no"))
+      .stream()
+      .map(AdminPayDto::new)
+      .collect(Collectors.toList());
+      // dto.forEach(System.out::println);
+      return dto;
+    }
+    
 }

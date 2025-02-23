@@ -2,10 +2,12 @@ package com.lshwan.hof.service.note;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.lshwan.hof.domain.dto.note.NoticeDto;
@@ -66,7 +68,7 @@ public class NoticeServiceImpl implements NoticeService{
           fileMaster.setNotice(notice); 
           fileMasterRepository.save(fileMaster);
       } else {
-          System.out.println("❌ 파일마스터 없음 (fileUrl: " + noticeDto.getFileUrl() + ")");
+          System.out.println("파일마스터 없음 (fileUrl: " + noticeDto.getFileUrl() + ")");
       }
   }
 
@@ -89,7 +91,7 @@ public class NoticeServiceImpl implements NoticeService{
 
   @Override
   public List<NoticeDto> findList() {
-      return noticeRepository.findAll().stream()
+      return noticeRepository.findAll(Sort.by(Sort.Direction.DESC, "no")).stream()
       .map(notice -> {
            Optional<FileMaster> fileMaster = fileMasterRepository.findByNotice_No(notice.getNo()).stream().findFirst();
            String fileUrl = fileMaster.map(FileMaster::getUrl).orElse(null);
@@ -148,5 +150,15 @@ public class NoticeServiceImpl implements NoticeService{
   }
   return false;
 }
+
+  @Override
+  public NoticeDto findRandom() {
+    List<Notice> allNotices = noticeRepository.findAll();
+    if (allNotices.isEmpty()) return null;
+    
+    Random random = new Random();
+    Notice randomNotice = allNotices.get(random.nextInt(allNotices.size()));
+    return todto(randomNotice);
+  }
   
 }

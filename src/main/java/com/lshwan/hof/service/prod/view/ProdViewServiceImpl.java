@@ -2,6 +2,7 @@ package com.lshwan.hof.service.prod.view;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.lshwan.hof.domain.entity.prod.view.ProdView;
@@ -31,7 +32,7 @@ public class ProdViewServiceImpl implements ProdViewService{
 
   @Override
   public List<ProdView> findList() {
-    return repository.findAll();
+    return repository.findAll(Sort.by(Sort.Direction.DESC, "pno"));
   }  
   
 }

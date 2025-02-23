@@ -1,13 +1,16 @@
 package com.lshwan.hof.controller.main;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lshwan.hof.domain.dto.pay.AdminPayDto;
 import com.lshwan.hof.domain.dto.pay.PayDto;
 import com.lshwan.hof.domain.dto.pay.PayRequestDto;
 import com.lshwan.hof.domain.entity.payment.Pay;
@@ -91,5 +94,10 @@ public class PayController {
       return ResponseEntity.internalServerError().body("서버 오류: 결제 완료 처리 실패");
     }
   }
-
+  @GetMapping
+  public ResponseEntity<?> Paylist() {
+    List<AdminPayDto> pay = payService.findList();
+      return ResponseEntity.ok(pay);
+  }
+  
 }

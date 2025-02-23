@@ -17,6 +17,8 @@ public interface NoticeService {
 
   boolean remove(Long nno);
 
+  NoticeDto findRandom();
+
   default NoticeDto todto(Notice notice,String fileurl) {
         return NoticeDto.builder()
                 .no(notice.getNo())
