@@ -158,7 +158,13 @@ public class NoticeServiceImpl implements NoticeService{
     
     Random random = new Random();
     Notice randomNotice = allNotices.get(random.nextInt(allNotices.size()));
-    return todto(randomNotice);
+    Optional<FileMaster> fileMaster = fileMasterRepository.findByNotice_No(randomNotice.getNo())
+    .stream()
+    .findFirst();
+    String fileUrl = fileMaster.map(FileMaster::getUrl).orElse(null);
+    NoticeDto dto = todto(randomNotice);
+    dto.setFileUrl(fileUrl);
+    return dto;
   }
   
 }
