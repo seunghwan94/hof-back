@@ -3,7 +3,6 @@ package com.lshwan.hof.service.note;
 import java.util.List;
 
 import com.lshwan.hof.domain.dto.note.NoteDto;
-import com.lshwan.hof.domain.entity.note.Note;
 
 public interface NoteService {
 

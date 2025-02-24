@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lshwan.hof.domain.dto.note.NoteDto;
-import com.lshwan.hof.domain.entity.note.Note;
 import com.lshwan.hof.service.note.NoteService;
 
 import lombok.AllArgsConstructor;
@@ -27,25 +26,25 @@ import lombok.AllArgsConstructor;
 public class NoteController {
   private final NoteService noteService;
 
-  // 게시글 작성
-  @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-  public ResponseEntity<?> createNote(@ModelAttribute NoteDto noteDto) {
-      NoteDto CreateNote = noteService.add(noteDto);
-      return ResponseEntity.status(HttpStatus.CREATED).body(CreateNote);
-  }
-
-  // 게시글 단일 조회
-  @GetMapping("/{nno}")
-  public ResponseEntity<?> getNote(@PathVariable Long nno) {
-      NoteDto note = noteService.findBy(nno);
-      return ResponseEntity.ok(note);
-  }
-
   // 게시글 목록 조회
   @GetMapping
   public ResponseEntity<List<?>> getAllNotes() {
     List<NoteDto> notes  = noteService.findList();
     return ResponseEntity.ok(notes);
+  }
+  
+    // 게시글 단일 조회
+    @GetMapping("/{nno}")
+    public ResponseEntity<?> getNote(@PathVariable Long nno) {
+        NoteDto note = noteService.findBy(nno);
+        return ResponseEntity.ok(note);
+    }
+
+  // 게시글 작성
+  @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+  public ResponseEntity<?> createNote(@ModelAttribute NoteDto noteDto) {
+      NoteDto CreateNote = noteService.add(noteDto);
+      return ResponseEntity.status(HttpStatus.CREATED).body(CreateNote);
   }
 
   // 게시글 수정
