@@ -35,7 +35,7 @@ public class NoteController {
   
     // 게시글 단일 조회
     @GetMapping("/{nno}")
-    public ResponseEntity<?> getNote(@PathVariable Long nno) {
+    public ResponseEntity<?> getNote(@PathVariable(name = "nno") Long nno) {
         NoteDto note = noteService.findBy(nno);
         return ResponseEntity.ok(note);
     }
@@ -49,16 +49,16 @@ public class NoteController {
 
   // 게시글 수정
   @PutMapping("/{nno}")
-  public ResponseEntity<?> updateNote(@PathVariable Long nno,
-                                          @RequestParam String title,
-                                          @RequestParam String content) {
+  public ResponseEntity<?> updateNote(@PathVariable(name = "nno") Long nno,
+                                          @RequestParam(name = "title") String title,
+                                          @RequestParam(name = "content") String content) {
     NoteDto updatedNote = noteService.modify(nno, title, content);
     return ResponseEntity.ok(updatedNote);
   }
 
   // 게시글 삭제 (Soft Delete)
   @DeleteMapping("/{nno}")
-  public ResponseEntity<?> deleteNote(@PathVariable Long nno) {
+  public ResponseEntity<?> deleteNote(@PathVariable(name = "nno") Long nno) {
     noteService.remove(nno);
     return ResponseEntity.noContent().build();
   }

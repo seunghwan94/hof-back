@@ -69,7 +69,7 @@ public class OrderServiceImpl implements OrderService{
                   .prodOption(prodOption) // 옵션 설정
                   .count(1)
                   .basePrice(itemDto.getBasePrice())
-                  .subtotalPrice(itemDto.getBasePrice() * itemDto.getCount())
+                  .subtotalPrice(itemDto.getSubtotalPrice())
                 .build();
 
       }).collect(Collectors.toList());
