@@ -26,5 +26,11 @@ public class AdminPayDto {
       this.impUid = pay.getImpUid();
       this.memberName = pay.getOrder().getMember().getName();
       this.memberId = pay.getOrder().getMember().getId();
+
+       if (pay.getOrder().getOrderItems() != null && !pay.getOrder().getOrderItems().isEmpty()) {
+        this.productTitle = pay.getOrder().getOrderItems().get(0).getProd().getTitle();
+      } else {
+        this.productTitle = "상품 정보 없음";
+      }
   }
 }

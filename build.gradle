@@ -115,7 +115,8 @@ dependencies {
 	
 	// mail인증
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-
+	// websocket
+	implementation("org.springframework.boot:spring-boot-starter-websocket:3.4.1")
 }
 
 tasks.named('test') {
