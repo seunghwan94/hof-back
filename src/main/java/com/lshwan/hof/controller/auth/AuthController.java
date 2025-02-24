@@ -106,7 +106,7 @@ public class AuthController {
     }
   
     // 로그 찍기 전에 memberDetail이 null이 아닌지 확인
-    log.info("회원가입 요청 id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}", 
+    log.info("회원가입 요청1 mno: {} id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}",  member.getMno(),
              member.getId(), 
              member.getRole(), 
              member.getPw(), 
@@ -120,6 +120,13 @@ public class AuthController {
       return ResponseEntity.ok("회원가입 성공 mno: {}" + mno);
     } catch(Exception e) {
       log.error("log.info 회원가입 실패: {}", e.getMessage(), e);
+      log.info("회원가입 요청2 mno: {}, id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}", member.getMno(),
+      member.getId(), 
+      member.getRole(), 
+      member.getPw(), 
+      member.getMemberDetail().getEmail(), 
+      member.getMemberDetail().getGender(), 
+      member);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패: 다시 시도하세요.");
     }
   }

@@ -36,7 +36,7 @@ import lombok.Builder.Default;
 public class Member extends BaseEntity {
   
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY) 
   private Long mno;
   
   @Column(unique = true, nullable = false)
@@ -67,6 +67,9 @@ public class Member extends BaseEntity {
 
   @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
   private Company company;
+  
+  @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+  private MemberAddr memberAddr;
 
   @Default
   @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)

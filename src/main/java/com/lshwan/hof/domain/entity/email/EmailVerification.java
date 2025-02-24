@@ -18,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder.Default;
 
 @Entity
 @Table(name = "tbl_email_verification")
@@ -32,7 +33,7 @@ public class EmailVerification {
   private Long no;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "mno", referencedColumnName = "mno")
+  @JoinColumn(name = "mdno")
   private MemberDetail memberDetail;
 
   @Column(nullable = false)
@@ -41,9 +42,11 @@ public class EmailVerification {
   @Column(nullable = false)
   private String verificationCode;  // 인증 코드
 
+  @Default
   @Column(nullable = false)
   private boolean verified = false;  // 인증 여부 (기본값은 false)
-
+  
+  @Default
   @Column(nullable = false)
   private LocalDateTime createdAt = LocalDateTime.now();  // 생성 시간 (기본값은 현재 시간)
 
@@ -57,12 +60,19 @@ public class EmailVerification {
   }
 
   // 이메일 인증 생성자
-  public static EmailVerification createEmailVerification(MemberDetail memberDetail, String email, String verificationCode, LocalDateTime expiresAt) {
+  public static EmailVerification createEmailVerification(MemberDetail memberDetail, String email, String verificationCode, LocalDateTime createdAt, LocalDateTime expiresAt) {
       return EmailVerification.builder()
               .memberDetail(memberDetail)
               .email(email)
               .verificationCode(verificationCode)
+              .createdAt(createdAt)
               .expiresAt(expiresAt)
               .build();
   }
+  // public void setMno(Long mno) {
+  //   if (this.memberDetail == null) {
+  //     this.memberDetail = new MemberDetail();
+  //   }
+  //   this.memberDetail.setMno(mno);
+  // }
 }
