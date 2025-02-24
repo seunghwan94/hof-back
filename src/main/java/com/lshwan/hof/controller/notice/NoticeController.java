@@ -73,5 +73,10 @@ public class NoticeController {
       }
       return ResponseEntity.ok().body("삭제 완료: " + deleteCount + "개 항목");
     }
-    
+    @GetMapping("/random")
+    public ResponseEntity<NoticeDto> getRandomNotice() {
+    NoticeDto randomNotice = noticeService.findRandom();
+    return ResponseEntity.ok(randomNotice);
+    }
+
 }

@@ -49,7 +49,7 @@ public class MemberDetail extends BaseEntity{
   private EmailVerification emailVerification;
 
   public enum MemberGender {
-    // FEMALE, MALE, OTHER
-    male, female, other
+    FEMALE, MALE, OTHER
+    // male, female, other
   }
 }

@@ -2,6 +2,7 @@ package com.lshwan.hof.domain.entity.common;
 
 import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.member.Member;
+import com.lshwan.hof.domain.entity.prod.Prod;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,6 +36,12 @@ public class Qna extends BaseEntity{
   // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private Member member;
 
+
+  @ManyToOne(fetch = FetchType.LAZY)  // 문의한 회원 (FK)
+  @JoinColumn(name = "pno", nullable = false)
+  // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+  private Prod pno;
+
   @ManyToOne(fetch = FetchType.LAZY)  // 부모 문의 (Self-referencing 관계)
   @JoinColumn(name = "parent_no")
   private Qna parentQna;
@@ -47,7 +54,9 @@ public class Qna extends BaseEntity{
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private QnaStatus status;  // 처리 상태 (ENUM)
-
+  public void updateStatus(QnaStatus newStatus) {
+    this.status = newStatus;
+  }
   public enum QnaStatus {
     처리전, 처리후
   }
