@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.email.EmailVerification;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -26,30 +27,34 @@ import lombok.Setter;
 @Getter
 @Builder
 @Setter
-public class MemberDetail extends BaseEntity{
+public class MemberDetail extends BaseEntity {
 
+  // mdno 컬럼을 auto_increment로 설정하여 PRIMARY KEY 역할을 합니다.
   @Id
-  private Long mno;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long mdno;
 
   private String email;
   private boolean privacyConsent;
   private boolean marketingConsent;
   private boolean allowNotification;
 
+  // 성별을 나타내는 enum
   @Enumerated(EnumType.STRING)
   private MemberGender gender;
 
-  @OneToOne
-  @MapsId
-  @JoinColumn(name = "mno", nullable = false)
-   @JsonIgnore  // 🚀 MemberDetail에서 Member 직렬화 제외
+  // Member 엔티티와 1:1 관계, mno는 외래키로 사용
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "mno")
+  @JsonIgnore  // Member 직렬화에서 제외
   private Member member;
 
-  @OneToOne(mappedBy = "memberDetail", cascade = CascadeType.ALL)
+  // EmailVerification과 1:1 관계, cascade를 통해 MemberDetail 저장 시 EmailVerification도 함께 저장
+  @OneToOne(mappedBy = "memberDetail", fetch = FetchType.LAZY)
   private EmailVerification emailVerification;
 
+  // 성별을 나타내는 enum
   public enum MemberGender {
-    FEMALE, MALE, OTHER
-    // male, female, other
+    MALE, FEMALE, OTHER;
   }
 }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.repository.member.MemberRepository;
 
 import jakarta.transaction.Transactional;
@@ -21,5 +22,10 @@ public class MemberRepositoryTests {
     log.info(repository.findAll()); 
   }
 
+  @Test
+  public void findByTests(){
+    Member member = repository.save(Member.builder().build());
+    log.info("test : " + member.getMno()); 
+  }
   
 }

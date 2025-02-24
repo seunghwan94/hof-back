@@ -2,9 +2,12 @@ package com.lshwan.hof.domain.entity.member;
 
 import java.time.LocalDateTime;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -23,14 +26,17 @@ import lombok.NoArgsConstructor;
 public class MemberDeleted {
   
   @Id
-  private Long mno;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long no;
+
   private String id;
   private String email;
   private String reason;
   private LocalDateTime keepUntil;
   private LocalDateTime delDate;
 
-  @OneToOne
-  @JoinColumn(name = "mno", nullable = false)
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "mno")
+  @JsonIgnore
   private Member member;
 }
