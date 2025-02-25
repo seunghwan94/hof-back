@@ -43,6 +43,11 @@ jobs:
         export MONGO_USERNAME=${{ secrets.MONGO_USERNAME }}
         export IAMPORT_API_KEY=${{ secrets.IAMPORT_API_KEY }}
         export IAMPORT_API_SECRET=${{ secrets.IAMPORT_API_SECRET }}
+        export GOOGLE_CLIENT_EMAIL=${{ secrets.GOOGLE_CLIENT_EMAIL }}
+        export GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+        export GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}
+        export GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }}
+        export GOOGLE_PROJECT_ID=${{ secrets.GOOGLE_PROJECT_ID }}
         ./gradlew build -x test  # ✅ 테스트 제외하고 빌드 (필요하면 -x test 제거)
 
     - name: Build the Docker image
@@ -92,4 +97,9 @@ jobs:
             -e MONGO_USERNAME=${{ secrets.MONGO_USERNAME }} \
             -e IAMPORT_API_KEY=${{ secrets.IAMPORT_API_KEY }} \
             -e IAMPORT_API_SECRET=${{ secrets.IAMPORT_API_SECRET }} \
+            -e GOOGLE_CLIENT_EMAIL=${{ secrets.GOOGLE_CLIENT_EMAIL }} \
+            -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+            -e GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} \
+            -e GOOGLE_PRIVATE_KEY_ID=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} \
+            -e GOOGLE_PROJECT_ID=${{ secrets.GOOGLE_PROJECT_ID }} \
             ${{ env.DOCKER_IMAGE_NAME }}:latest
