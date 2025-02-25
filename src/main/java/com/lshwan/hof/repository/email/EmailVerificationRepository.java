@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.lshwan.hof.domain.entity.email.EmailVerification;
-import com.lshwan.hof.domain.entity.member.MemberDetail;
 
 public interface EmailVerificationRepository extends JpaRepository<EmailVerification, Long> {
   EmailVerification findByVerificationCode(String verificationCode);

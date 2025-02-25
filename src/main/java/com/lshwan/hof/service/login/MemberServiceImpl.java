@@ -1,9 +1,7 @@
 package com.lshwan.hof.service.login;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +33,6 @@ public class MemberServiceImpl implements MemberService {
   private EmailVerificationRepository emailVerificationRepository;
   @Autowired
   private PasswordEncoder passwordEncoder;
-  @Autowired
-  private EmailService emailService;
-
-  // private SignupRequestDto signupRequestDto;
-
-    // 랜덤 6자리 숫자 생성 메소드
-  private String generateVerificationCode() {
-    Random random = new Random();
-    int code = 100000 + random.nextInt(900000);  // 6자리 랜덤 숫자 생성
-    return String.valueOf(code);
-  }
 
   private static Pattern ID_PATTERN = Pattern.compile("^[a-z0-9]{5,20}$");
   private static Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");// 영문, 숫자 포함, 8자 이상
@@ -176,7 +163,7 @@ public class MemberServiceImpl implements MemberService {
   // 아이디 중복 체크
   @Override
   public boolean isIdAvailable(String id) {
-      return memberRepository.findByLoginId(id).isEmpty(); // 아이디가 없으면 사용 가능
+    return memberRepository.findByLoginId(id).isEmpty(); // 아이디가 없으면 사용 가능
   }
 
   private boolean isEmailVerified(String email) {
@@ -211,58 +198,17 @@ public class MemberServiceImpl implements MemberService {
       throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
     }
 
-    // Optional<MemberDetail> existingMemberDetail = memberDetailRepository.findByEmail(member.getMemberDetail().getEmail());
-    // if (existingMemberDetail.isPresent()) {
-    //   throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
-    // }
-
-    // // 1. tbl_member_detail 테이블에서 이메일 중복 체크
-    // String email = memberDetail.getEmail();
-    // Optional<MemberDetail> memberDetailEmailCheck = memberDetailRepository.findByEmail(email);
-
-    // // 이메일 인증 여부 확인
-    // Optional<EmailVerification> emailVerification = emailVerificationRepository.findByEmail(memberDetail.getEmail());
-
-    // if (emailVerification.isPresent() && emailVerification.get().isVerified()) {
-    //     // 인증된 이메일을 가진 EmailVerification을 찾음
-    //     EmailVerification verifiedEmailVerification = emailVerification.get();
-        
-    //     // EmailVerification에서 MemberDetail을 가져옴
-    //     MemberDetail memberDetailFromVerification = verifiedEmailVerification.getMemberDetail();
-        
-    //     if (memberDetailFromVerification == null) {
-    //         throw new IllegalArgumentException("기존 회원의 상세 정보가 존재하지 않습니다.");
-    //     }
-       
-    //     // 기존 MemberDetail을 업데이트
-    //     memberDetailFromVerification.setEmail(memberDetail.getEmail());
-    //     memberDetailFromVerification.setPrivacyConsent(memberDetail.isPrivacyConsent());
-    //     memberDetailFromVerification.setMarketingConsent(memberDetail.isMarketingConsent());
-    //     memberDetailFromVerification.setAllowNotification(memberDetail.isAllowNotification());
-    //     memberDetailFromVerification.setGender(memberDetail.getGender());
-    //     memberDetailFromVerification.setRegDate(LocalDateTime.now());
-    //     memberDetailFromVerification.setModDate(LocalDateTime.now());
-
-    //     // MemberDetail 정보 업데이트
-    //     memberDetailRepository.save(memberDetailFromVerification);
-
-    //     // return "회원가입 성공";
-    // } else {
-    //     throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
-    // }
- 
-     
-    }
-    @Override
-@Transactional
-public Long update(Member member) {
+  }
+  @Override
+  @Transactional
+  public Long update(Member member) {
     // 1. 아이디와 이메일 중복 체크
     log.info("member1" + member);
     validateMemberInfo(member, member.getMemberDetail()); // memberDetail을 member에서 가져옵니다.
 
     // 2. 이메일 인증 상태 확인
     if (!isEmailVerified(member.getMemberDetail().getEmail())) {
-        throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다. 인증 후 회원가입을 진행해주세요.");
+      throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다. 인증 후 회원가입을 진행해주세요.");
     }
 
     // 3. 비밀번호 암호화
@@ -272,12 +218,12 @@ public Long update(Member member) {
     // 이메일 인증된 상태의 EmailVerification 찾기
     Optional<EmailVerification> memberEmail = emailVerificationRepository.findByEmail(member.getMemberDetail().getEmail());
     if (!memberEmail.isPresent()) {
-        throw new IllegalArgumentException("잘못된 회원가입 방법 진행중.");
+      throw new IllegalArgumentException("잘못된 회원가입 방법 진행중.");
     }
     Long mdno = memberEmail.get().getMemberDetail().getMdno();
     Optional<MemberDetail> md = memberDetailRepository.findById(mdno);
     if (!md.isPresent()) {
-        throw new IllegalArgumentException("잘못된 회원가입 방법 진행중.");
+      throw new IllegalArgumentException("잘못된 회원가입 방법 진행중.");
     }
     log.info("member3" + member);
     log.info("member.getMemberDetail().getEmail() : " + member.getMemberDetail().getEmail());
@@ -296,5 +242,5 @@ public Long update(Member member) {
     memberDetailRepository.save(memberDetail); // 이미 존재하는 데이터 업데이트
     
     return member.getMno(); // 업데이트된 Member의 mno 반환
-}
+  }
 }

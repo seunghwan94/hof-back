@@ -19,7 +19,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "tbl_member_detail")
@@ -28,7 +27,6 @@ import lombok.ToString;
 @Getter
 @Builder
 @Setter
-// @ToString
 public class MemberDetail extends BaseEntity {
 
   // mdno 컬럼을 auto_increment로 설정하여 PRIMARY KEY 역할을 합니다.

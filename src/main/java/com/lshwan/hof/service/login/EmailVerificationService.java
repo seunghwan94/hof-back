@@ -7,13 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lshwan.hof.domain.entity.email.EmailVerification;
 import com.lshwan.hof.domain.entity.member.MemberDetail;
 import com.lshwan.hof.repository.email.EmailVerificationRepository;
-import com.lshwan.hof.repository.member.MemberDetailRepository;
-
 import lombok.extern.log4j.Log4j2;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @Log4j2
