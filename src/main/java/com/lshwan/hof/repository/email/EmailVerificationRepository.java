@@ -11,5 +11,6 @@ public interface EmailVerificationRepository extends JpaRepository<EmailVerifica
   // Member findByEmail(String email); 
   Optional<EmailVerification> findByEmail(String email); // Optional을 반환
   // MemberDetail findByEmail(String email); 
+  // EmailVerification findByMemberDetail_(String email);
 
 }

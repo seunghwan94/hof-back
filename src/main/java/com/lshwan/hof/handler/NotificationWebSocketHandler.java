@@ -1,5 +1,6 @@
 package com.lshwan.hof.handler;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+@Component
 public class NotificationWebSocketHandler extends TextWebSocketHandler {
 
   private static final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
@@ -19,8 +21,12 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
 
   @Override
   protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-      System.out.println("📩 받은 메시지: " + message.getPayload());
-      broadcast(message.getPayload());
+    for (WebSocketSession s : sessions) {
+        if (s.isOpen()) {
+            s.sendMessage(message);
+        }
+    }  
+    System.out.println("📩 받은 메시지: " + message.getPayload());
   }
 
   @Override
@@ -29,14 +35,12 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
       System.out.println("🚫 WebSocket 연결 종료: " + session.getId());
   }
 
-  public static void broadcast(String message) {
-      for (WebSocketSession session : sessions) {
-          try {
-              session.sendMessage(new TextMessage(message));
-          } catch (IOException e) {
-              e.printStackTrace();
-          }
-      }
-      System.out.println("📢 알림 전송 완료: " + message);
-  }
+  public void sendMessageToAll(String message) throws IOException {
+    for (WebSocketSession session : sessions) {
+        if (session.isOpen()) {
+            session.sendMessage(new TextMessage(message));
+        }
+    }
+    System.out.println("메세지 전송완료 " + message);
+}
 }

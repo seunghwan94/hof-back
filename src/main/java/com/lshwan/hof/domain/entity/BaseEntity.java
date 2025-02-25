@@ -12,11 +12,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @MappedSuperclass
 @EntityListeners(value = AuditingEntityListener.class)
 @Getter
+@Setter
 @ToString
 public abstract class BaseEntity {
   @CreatedDate

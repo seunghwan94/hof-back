@@ -7,9 +7,8 @@ import com.lshwan.hof.domain.entity.member.MemberDetail;
 
 public interface MemberService {
 
-  // Long signUp(Member member); 
-
-  Long write(Member member); 
+  Long write(Member member);
+  // Long write(Member member, MemberDetail memberDetail);
 
   boolean isIdAvailable(String id);
 
@@ -19,8 +18,11 @@ public interface MemberService {
 
   List<Member> findList();
 
-  // boolean remove(String id);
   MemberDetail verificationBefore(String email);
+
+  Long update(Member member);
+  // boolean verifyEmail(String email, String verificationCode);
+  // boolean remove(String id);
 
 
 }
