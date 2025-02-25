@@ -24,6 +24,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.Builder.Default;
 
 @Entity
@@ -33,6 +34,7 @@ import lombok.Builder.Default;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Member extends BaseEntity {
   
   @Id
@@ -56,6 +58,7 @@ public class Member extends BaseEntity {
     user, company, admin, master
   }
 
+  // @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private MemberDetail memberDetail;
   
