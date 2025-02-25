@@ -117,8 +117,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	// websocket
 	implementation("org.springframework.boot:spring-boot-starter-websocket:3.4.1")
+	//Vision API
+	 implementation 'com.google.cloud:google-cloud-vision:3.34.0'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+processResources {
+    from('src/main/resources') {
+        include '**/*.json'
+    }
 }

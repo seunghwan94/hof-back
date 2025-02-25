@@ -35,6 +35,7 @@ spring:
       - s3
       - mongo
       - iamport
+      - vision
 
   datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
@@ -87,6 +88,21 @@ mybatis:
     map-underscore-to-camel-case: true
     aggressive-lazy-loading: false
     default-statement-timeout: 30   
+
+google:
+  vision:
+    credentials:
+      type: service_account
+      project_id: ${GOOGLE_PROJECT_ID}
+      private_key_id: ${GOOGLE_PRIVATE_KEY_ID}
+      private_key: ${GOOGLE_PRIVATE_KEY}  # 환경 변수에서 로드
+      client_email: ${GOOGLE_CLIENT_EMAIL}
+      client_id: ${GOOGLE_CLIENT_ID}
+      auth_uri: https://accounts.google.com/o/oauth2/auth
+      token_uri: https://oauth2.googleapis.com/token
+      auth_provider_x509_cert_url: https://www.googleapis.com/oauth2/v1/certs
+      client_x509_cert_url: https://www.googleapis.com/robot/v1/metadata/x509/${GOOGLE_CLIENT_EMAIL}
+
 
 aws:
   s3:

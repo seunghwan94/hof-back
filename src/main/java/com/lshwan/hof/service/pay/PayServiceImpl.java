@@ -5,10 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import com.lshwan.hof.domain.dto.QnaDto;
 import com.lshwan.hof.domain.dto.pay.AdminPayDto;
-import com.lshwan.hof.domain.dto.pay.PayDto;
+
 import com.lshwan.hof.domain.entity.order.Order;
 import com.lshwan.hof.domain.entity.payment.Pay;
 import com.lshwan.hof.repository.order.OrderRepository;

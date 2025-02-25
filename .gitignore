@@ -40,4 +40,5 @@ application-s3.yml
 application-db.yml
 application-mongo.yml
 application-iamport.yml
+application-vision.yml
 
