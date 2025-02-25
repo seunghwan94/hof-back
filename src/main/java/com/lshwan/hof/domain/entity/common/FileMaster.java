@@ -76,6 +76,16 @@ public class FileMaster extends BaseEntity {
     @Column(name = "file_type")
     private FileType fileType;
 
+    // Getter
+    public String getFileUrl() {
+        return url;
+    }
+
+    // Setter
+    public void setFileUrl(String url) {
+        this.url = url;
+    }
+
     public enum FileType {
         prod_main , prod_detail 
     }

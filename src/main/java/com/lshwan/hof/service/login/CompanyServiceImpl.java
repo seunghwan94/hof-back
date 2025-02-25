@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lshwan.hof.domain.dto.member.CompanyDto;
+import com.lshwan.hof.domain.entity.common.FileMaster;
 import com.lshwan.hof.domain.entity.member.Company;
 import com.lshwan.hof.domain.entity.member.Member;
+import com.lshwan.hof.repository.common.FileMasterRepository;
 import com.lshwan.hof.repository.member.CompanyRepository;
 import com.lshwan.hof.repository.member.MemberRepository;
 import com.lshwan.hof.service.S3Service;
@@ -24,6 +26,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final MemberRepository memberRepository;
+    private final FileMasterRepository fileMasterRepository;
     private final S3Service s3Service;  // 이미지 업로드용 S3 서비스 가정
 
     /**
@@ -39,6 +42,7 @@ public class CompanyServiceImpl implements CompanyService {
         // Company 엔티티 생성
         Company company = Company.builder()
                 .name(companyDto.getName())
+                .title(companyDto.getTitle())
                 .info(companyDto.getInfo())
                 .content(companyDto.getContent())
                 .tel(companyDto.getTel())
@@ -62,13 +66,14 @@ public class CompanyServiceImpl implements CompanyService {
         return CompanyDto.builder()
                 .no(company.getNo())
                 .name(company.getName())
+                .title(company.getTitle())
                 .info(company.getInfo())
                 .content(company.getContent())
                 .tel(company.getTel())
                 .count(company.getCount())
                 .memberNo(member.getMno())
                 .imageUrls(uploadedImageUrls)
-                .build();
+            .build();
     }
 
     /**
@@ -80,17 +85,27 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found"));
 
+        Long memberNo = company.getMember().getMno();
+
+        // FileMaster에서 이미지 조회
+        List<FileMaster> images = fileMasterRepository.findByMember_mno(memberNo);
+        List<String> imageUrls = images.stream()
+                .map(file -> file.getFileUrl()) // getFileUrl 메서드 호출
+                .collect(Collectors.toList());
+
         return CompanyDto.builder()
                 .no(company.getNo())
                 .name(company.getName())
+                .title(company.getTitle())
                 .info(company.getInfo())
                 .content(company.getContent())
                 .tel(company.getTel())
                 .count(company.getCount())
-                .memberNo(company.getMember().getMno())
-                .imageUrls(new ArrayList<>()) // 이미지 URL을 불러오는 로직 추가 가능
-                .build();
+                .memberNo(memberNo)
+                .imageUrls(imageUrls) // 이미지 URL 리스트 추가
+            .build();
     }
+
 
     /**
      * 회사 목록 조회
@@ -100,15 +115,26 @@ public class CompanyServiceImpl implements CompanyService {
     public List<CompanyDto> getAllCompanies() {
         List<Company> companies = companyRepository.findAll();
 
-        return companies.stream().map(company -> CompanyDto.builder()
-                .no(company.getNo())
-                .name(company.getName())
-                .info(company.getInfo())
-                .content(company.getContent())
-                .tel(company.getTel())
-                .count(company.getCount())
-                .memberNo(company.getMember().getMno())
-                .imageUrls(new ArrayList<>()) // 이미지 URL을 불러오는 로직 추가 가능
-              .build()).collect(Collectors.toList());
+        return companies.stream().map(company -> {
+            Long memberNo = company.getMember().getMno();
+
+            // FileMaster에서 이미지 조회
+            List<FileMaster> images = fileMasterRepository.findByMember_mno(memberNo);
+            List<String> imageUrls = images.stream()
+                    .map(FileMaster::getFileUrl) // FileMaster에서 파일 URL을 추출하는 메서드
+                    .collect(Collectors.toList());
+
+                return CompanyDto.builder()
+                        .no(company.getNo())
+                        .name(company.getName())
+                        .title(company.getTitle())
+                        .info(company.getInfo())
+                        .content(company.getContent())
+                        .tel(company.getTel())
+                        .count(company.getCount())
+                        .memberNo(memberNo)
+                        .imageUrls(imageUrls) // 조회한 이미지 URL 리스트 추가
+                        .build();
+        }).collect(Collectors.toList());
     }
 }
