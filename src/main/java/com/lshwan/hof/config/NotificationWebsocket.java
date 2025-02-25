@@ -10,7 +10,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import com.lshwan.hof.handler.NotificationWebSocketHandler;
 
 @Configuration
-@EnableWebSocket 
+@EnableWebSocket
 @EnableWebSecurity
 public class NotificationWebsocket implements  WebSocketConfigurer {
    @Override

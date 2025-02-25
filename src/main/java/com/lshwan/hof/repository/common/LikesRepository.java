@@ -22,4 +22,8 @@ public interface LikesRepository extends JpaRepository<Likes,Likes.LikesId>{
     @Transactional
     @Query("DELETE FROM Likes l WHERE l.id.targetNo = :targetNo AND l.id.targetType = :targetType")
     void deleteByTarget(@Param("targetNo") Long targetNo, @Param("targetType") Likes.TargetType targetType);
+
+    // Native Query로 좋아요 여부 확인
+    @Query(value = "SELECT EXISTS (SELECT 1 FROM tbl_likes WHERE mno = :mno AND target_no = :targetNo AND target_type = :targetType)", nativeQuery = true)
+    Integer existsLike(@Param("mno") Long mno, @Param("targetNo") Long targetNo, @Param("targetType") Likes.TargetType targetType);
 }

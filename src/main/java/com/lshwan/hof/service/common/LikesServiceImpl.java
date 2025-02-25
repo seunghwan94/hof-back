@@ -63,5 +63,11 @@ public class LikesServiceImpl implements LikesService{
 
     likesRepository.delete(like);
   }
+
+  @Override
+  public boolean findBy(Long mno, Long targetNo, TargetType targetType) {
+    Integer result = likesRepository.existsLike(mno, targetNo, targetType);
+    return result != null && result == 1;
+  }
   
 }

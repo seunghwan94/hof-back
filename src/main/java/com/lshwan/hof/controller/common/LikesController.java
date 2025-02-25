@@ -35,18 +35,28 @@ public class LikesController {
 
   // 좋아요 취소
   @DeleteMapping
-  public ResponseEntity<?> removeLike(@RequestParam Long mno,
-                                          @RequestParam Long targetNo,
-                                          @RequestParam Likes.TargetType targetType) {
+  public ResponseEntity<?> removeLike(@RequestParam(name = "mno") Long mno,
+                                      @RequestParam(name = "targetNo") Long targetNo,
+                                      @RequestParam(name = "targetType") Likes.TargetType targetType) {
     likesService.remove(mno, targetNo, targetType);
     return ResponseEntity.noContent().build();
   }
 
   // 좋아요 수 조회
   @GetMapping("/count")
-  public ResponseEntity<?> countLikes(@RequestParam Long targetNo,
-                                         @RequestParam Likes.TargetType targetType) {
+  public ResponseEntity<?> countLikes(@RequestParam(name = "targetNo") Long targetNo,
+                                      @RequestParam(name = "targetType") Likes.TargetType targetType) {
     long count = likesService.countLikes(targetNo, targetType);
     return ResponseEntity.ok(count);
   }
+
+  // 좋아요 내가 누른지 확인
+  @GetMapping("/user-liked")
+  public ResponseEntity<?> userLiked(@RequestParam(name = "mno") Long mno,
+                                     @RequestParam(name = "targetNo") Long targetNo,
+                                     @RequestParam(name = "targetType") Likes.TargetType targetType) {
+      boolean liked = likesService.findBy(mno, targetNo, targetType);
+      return ResponseEntity.ok(liked);
+  }
+
 }
