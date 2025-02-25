@@ -47,6 +47,7 @@ public class SecurityConfig implements WebMvcConfigurer{
         .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
         .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
         .allowedHeaders("*")  // 모든 헤더를 허용
+        .exposedHeaders("Authorization", "Content-Type", "Upgrade", "Connection", "Sec-WebSocket-Accept") // WebSocket 관련 헤더 추가
         .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
   }
 
