@@ -5,11 +5,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lshwan.hof.domain.entity.email.EmailVerification;
+import com.lshwan.hof.domain.entity.member.MemberDetail;
 import com.lshwan.hof.repository.email.EmailVerificationRepository;
+import com.lshwan.hof.repository.member.MemberDetailRepository;
+
 import lombok.extern.log4j.Log4j2;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @Log4j2
@@ -17,6 +21,8 @@ public class EmailVerificationService {
 
   @Autowired
   private EmailVerificationRepository emailVerificationRepository;
+  @Autowired
+  private MemberService memberService;
   @Autowired
   private EmailService emailService;
 
@@ -54,14 +60,18 @@ public class EmailVerificationService {
     String verificationCode = generateVerificationCode();
     LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(500); // 만료 시간 설정 (30분),500qns
 
-    // EmailVerification 엔티티 생성
+    MemberDetail memberDetail = memberService.verificationBefore(email);
+
+    if(!memberDetail.getEmail().equals(email)){
+      throw new RuntimeException("이상한 경로");
+    }
+
     EmailVerification emailVerification = EmailVerification.builder()
-            .email(email)
-            .verificationCode(verificationCode)
-            .expiresAt(expiresAt)
-            .verified(false)  // 초기 인증 상태는 false
-            // .memberDetail(memberDetail)
-            .build();
+      .memberDetail(memberDetail)
+      .email(email)
+      .verificationCode(verificationCode)
+      .expiresAt(expiresAt)
+    .build();
 
     // 이메일 인증 데이터 DB에 저장
     emailVerificationRepository.save(emailVerification);
@@ -69,6 +79,8 @@ public class EmailVerificationService {
     // 인증 토큰을 이메일로 발송 (EmailService 사용)
     emailService.sendEmail(email, "이메일 인증 코드", "인증 코드: " + verificationCode);
   }
+
+
   private String generateVerificationCode() {
     SecureRandom random = new SecureRandom();
     StringBuilder code = new StringBuilder();

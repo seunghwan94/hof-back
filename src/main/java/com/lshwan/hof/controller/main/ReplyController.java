@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lshwan.hof.domain.dto.note.ReplyDto;
-import com.lshwan.hof.domain.entity.note.Reply;
 import com.lshwan.hof.service.note.ReplyService;
 
 import lombok.AllArgsConstructor;
@@ -34,14 +32,14 @@ public class ReplyController {
 
   // 댓글 목록 조회
   @GetMapping("/note/{nno}")
-  public ResponseEntity<List<?>> getRepliesByNote(@PathVariable Long nno) {
+  public ResponseEntity<List<?>> getRepliesByNote(@PathVariable(name = "nno") Long nno) {
     List<ReplyDto> replies = replyService.findList(nno);
     return ResponseEntity.ok(replies);
   }
 
   // 댓글 삭제 (Soft Delete)
   @DeleteMapping("/{replyId}")
-  public ResponseEntity<Void> deleteReply(@PathVariable Long replyId) {
+  public ResponseEntity<Void> deleteReply(@PathVariable(name = "replyId") Long replyId) {
     replyService.remove(replyId);
     return ResponseEntity.noContent().build();
   }

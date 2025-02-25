@@ -11,7 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import com.lshwan.hof.domain.entity.email.EmailVerification;
 import com.lshwan.hof.domain.entity.member.Member;
@@ -21,7 +22,8 @@ import com.lshwan.hof.repository.member.MemberDetailRepository;
 import com.lshwan.hof.repository.member.MemberRepository;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Log4j2
 public class MemberServiceImpl implements MemberService {
 
   @Autowired
@@ -30,8 +32,8 @@ public class MemberServiceImpl implements MemberService {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private EmailVerificationRepository emailVerificationRepository;
-  // @Autowired
-  // private EmailService emailService;
+  @Autowired
+  private EmailService emailService;
   @Autowired
   private MemberDetailRepository memberDetailRepository;
 
@@ -52,150 +54,186 @@ public class MemberServiceImpl implements MemberService {
   @Override
   @Transactional
   public Long write(Member member) { 
-    // 아이디 검증
-    if(!ID_PATTERN.matcher(member.getId()).matches()) {
-        throw new IllegalArgumentException("아이디는 5~10자의 영문 소문자와 숫자만 가능합니다."); 
-    }
-
-    // 비밀번호 검증
-    if (!PASSWORD_PATTERN.matcher(member.getPw()).matches()) {
-        throw new IllegalArgumentException("비밀번호는 영문, 숫자를 포함하여 8자 이상이어야 합니다.");
-    }
-
-    // 이메일 검증
-    if (!EMAIL_PATTERN.matcher(member.getMemberDetail().getEmail()).matches()) {
-        throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다.");
-    }
-
-    // 1. ID 중복 체크
-    if(repository.findByLoginId(member.getId()).isPresent()) {
-        throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
-    }
-
-    // 2. 이메일 인증 상태 확인
-    String email = member.getMemberDetail().getEmail();
-    if (!isEmailVerified(email)) {
-        throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다. 인증 후 회원가입을 진행해주세요.");
-    }
-
-    // 이메일 인증이 완료되었으면, 이메일 중복 여부 확인
-    Optional<MemberDetail> existingMemberDetail = memberDetailRepository.findByEmail(email);
-    if (existingMemberDetail.isPresent()) {
-        // 이미 이메일이 존재하면 이메일을 건너뛰고 회원가입 처리
-        member.setMemberDetail(existingMemberDetail.get());
-    }
-
-    // 비밀번호 암호화
-    member.setPw(passwordEncoder.encode(member.getPw()));
-
-    // 3. 회원 정보 저장
-    Member savedMember = repository.save(member); // 회원 저장 후 mno 값 설정됨
-
-    // 4. 회원의 mno 값 가져오기
-    Long mno = savedMember.getMemberDetail().getMno();
-    if (mno == null) {
-        throw new IllegalStateException("회원의 mno 값이 null입니다. 회원 등록에 실패했습니다.");
-    }
-
-    member.getMemberDetail().setMember(savedMember);  // MemberDetail에 Member 설정
-
-    // 5. 이메일 인증 정보 저장 (이미 존재하는 경우 건너뛰기)
-    emailVerificationRepository.findByEmail(email)
-            .orElseGet(() -> {
-                EmailVerification newEmailVerification = new EmailVerification();
-                newEmailVerification.setEmail(email);
-                newEmailVerification.setVerificationCode(generateVerificationCode());
-                newEmailVerification.setExpiresAt(LocalDateTime.now().plusHours(3)); // 만료 시간 설정
-                newEmailVerification.setVerified(true); // 이미 인증된 상태로 처리
-                newEmailVerification.setMemberDetail(savedMember.getMemberDetail());
-                return emailVerificationRepository.save(newEmailVerification);
-            });
-
-    // 이메일 인증 성공 후 완료
-    return savedMember.getMno();  // 회원의 mno 반환
-}
-  // public Long write(Member member) { 
-  //   // 아이디 
-  //   if(!ID_PATTERN.matcher(member.getId()).matches()) {
-  //     throw new IllegalArgumentException("아이디는 5~10자의 영문 소문자와 숫자만 가능합니다."); 
-  //   }
-  //   // 비밀번호
-  //   if (!PASSWORD_PATTERN.matcher(member.getPw()).matches()) {
-  //     throw new IllegalArgumentException("비밀번호는 영문, 숫자를 포함하여 8자 이상이어야 합니다.");
-  //   }  
-
-  //   // 이메일
-  //   if (!EMAIL_PATTERN.matcher(member.getMemberDetail().getEmail()).matches()) {
-  //     throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다.");
-  //   }
-
-  //   // 1. ID 중복 체크
-  //   if(repository.findByLoginId(member.getId()).isPresent()) {
-  //     throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
-  //   }
-
-  //   // 2. 이메일 중복 체크
-  //   if (memberDetailRepository.findByEmail(member.getMemberDetail().getEmail()).isPresent()) {
-  //     throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
-  //   }
-
-
-  //   // 2. 이메일 인증 상태 확인
-  //   String email = member.getMemberDetail().getEmail();
-  //   if (!isEmailVerified(email)) {
+    return null;
+  //   try {
+  //     // 로그 추가: member 상태 확인
+  //     log.info("회원 객체 상태 확인: mno: {}, id: {}, pw: {}, role: {}, email: {}, gender: {}", member.getMno(), member.getId(), member.getPw(), member.getRole(), member.getMemberDetail().getEmail(), member.getMemberDetail().getGender());
+      
+  //     // 아이디 형식 검사
+  //     if (!ID_PATTERN.matcher(member.getId()).matches()) {
+  //       throw new IllegalArgumentException("아이디는 5~10자의 영문 소문자와 숫자만 가능합니다."); 
+  //     }
+  
+  //     // 비밀번호 형식 검사
+  //     if (!PASSWORD_PATTERN.matcher(member.getPw()).matches()) {
+  //       throw new IllegalArgumentException("비밀번호는 영문, 숫자를 포함하여 8자 이상이어야 합니다.");
+  //     }
+  
+  //     // 이메일 형식 검사
+  //     if (!EMAIL_PATTERN.matcher(member.getMemberDetail().getEmail()).matches()) {
+  //       throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다.");
+  //     }
+  
+  //     // 1. ID 중복 체크
+  //     if (repository.findByLoginId(member.getId()).isPresent()) {
+  //       throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+  //     }
+      
+  //     // 2. 이메일 중복 체크
+  //     if (memberDetailRepository.findByEmail(member.getMemberDetail().getEmail()).isPresent()) {
+  //       throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+  //     }
+  
+  //     // 2. 이메일 인증 상태 확인
+  //     String email = member.getMemberDetail().getEmail();
+  //     if (!isEmailVerified(email)) {
   //       throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다. 인증 후 회원가입을 진행해주세요.");
-  //   }
+  //     }
+  
+  //     // 비밀번호 암호화
+  //     member.setPw(passwordEncoder.encode(member.getPw()));
+  
+  //     log.info("회원 저장 전 객체 상태 확인: mno: {}, id: {}, email: {}", member.getMno(), member.getId(), member.getMemberDetail().getEmail());
+  //     // 7. Member 저장 전, mno 확인 (mno가 null이면 저장하지 않음)
+  //     if (member.getMno() != null) {
+  //       throw new IllegalStateException("멤버 객체의 mno 값이 예상대로 null이 아닙니다.");
+  //     }
 
-  //   // 이메일 인증이 완료되었으면, 이메일 중복 여부 확인
-  //   Optional<MemberDetail> existingMemberDetail = memberDetailRepository.findByEmail(email);
-  //   if (existingMemberDetail.isPresent()) {
-  //       // 이미 이메일이 존재하면 이메일을 건너뛰고 회원가입 처리
-  //       member.setMemberDetail(existingMemberDetail.get());
-  //   }
+  //     // 7. Member 저장
+  //     Member savedMember = repository.save(Member.builder().build());
+  //     log.info("회원 저장 후, mno: {}", savedMember.getMno());
 
-  //   // 3. 비밀번호 암호화
-  //   member.setPw(passwordEncoder.encode(member.getPw()));
+  //     // 8. MemberDetail에 Member 설정 및 mno 설정
+  //     MemberDetail memberDetail = MemberDetail.builder()
+  //                                   .mno(savedMember.getMno())
+  //                                   .member(savedMember)
+  //                                 .build();
 
-  //   // 4. 회원 저장 후 mno 값 확보
-  //   MemberDetail memberDetail = member.getMemberDetail();
-  //   memberDetail.setMember(member);  // MemberDetail에 Member를 설정
+  //     log.info("멤버디테일 설정 후 mno: {}", memberDetail.getMno());
 
-  //   // Member 저장
-  //   Member savedMember = repository.save(member);  // 회원 저장 후 mno 값이 설정됨
+  //     // 9. MemberDetail 저장
+  //     MemberDetail savedMemberDetail = memberDetailRepository.save(memberDetail);
 
-  //   // 5. 이메일 인증 토큰 생성 및 저장
-  //   // String emailToken = UUID.randomUUID().toString();
-  //   String emailVerificationCode = generateVerificationCode();
-  //   LocalDateTime expiresAt = LocalDateTime.now().plusHours(1); // 만료시간 설정
+  //     // // 10. 이메일 인증을 위한 EmailVerification 저장
+  //     // String emailVerificationCode = generateVerificationCode();
 
-  //   // 6. 이메일 인증을 위한 mno 값 설정
-  //   Long mno = savedMember.getMemberDetail().getMno(); 
-  //   // Long mno = savedMember.getMno(); // 디테일테스트
 
-  //   if (mno == null) {
-  //     throw new IllegalStateException("회원의 mno 값이 null입니다. 회원 등록에 실패했습니다.");
-  //   }
+  //     // EmailVerification emailVerification = EmailVerification.builder()
+  //     //                         .memberDetail(savedMemberDetail)
+  //     //                         .email(email)
+  //     //                         .verificationCode(emailVerificationCode)
+  //     //                         .expiresAt(LocalDateTime.now().plusHours(3))
+  //     //                       .build();
 
-  //   // EmailVerification 객체 생성 및 설정
-  //   EmailVerification emailVerification = new EmailVerification();
-  //   emailVerification.setEmail(member.getMemberDetail().getEmail());  // 이메일 설정
-  //   emailVerification.setVerificationCode(emailVerificationCode);
-  //   emailVerification.setExpiresAt(expiresAt);
-  //   emailVerification.setVerified(false);  // 초기 인증 상태는 false
-  //   emailVerification.setMemberDetail(savedMember.getMemberDetail());  // MemberDetail 객체 설정
+  //     // emailVerificationRepository.save(emailVerification);
 
-  //   // 이메일 인증 정보 저장
-  //   emailVerificationRepository.save(emailVerification);  
-
-  //   // 7. 이메일 인증 링크 발송
-  //   // emailService.sendEmail(member.getMemberDetail().getEmail(), "[가구의 집] 이메일 인증 확인", "이메일 인증 링크: " + "http://localhost:8080/api/v1/signup/verify?verificationCode=" + emailToken );
-  //   // 7. 이메일 인증 코드 발송
-  //   emailService.sendEmail(member.getMemberDetail().getEmail(), "[가구의 집] 이메일 인증 확인", "이메일 인증 코드: " + emailVerificationCode);
-
-  //   return savedMember.getMno();  // 회원의 mno 반환
+  //     return savedMember.getMno();
+  // } catch (Exception e) {
+  //     log.error("회원 저장 중 예외 발생: {}", e.getMessage(), e);
+  //     throw e;
   // }
 
+  
+}
 
+
+  @Override
+  @Transactional
+  public MemberDetail verificationBefore(String email) { 
+    try {
+
+
+      // 7. Member 저장
+      Member savedMember = repository.save(Member.builder().build());
+      log.info("회원 저장 후, mno: {}", savedMember.getMno());
+
+      // 8. MemberDetail에 Member 설정 및 mno 설정
+      MemberDetail memberDetail = MemberDetail.builder()
+                                    // .member(savedMember.getMno())
+                                    .email(email)
+                                    .member(savedMember)
+                                  .build();
+
+      // log.info("멤버디테일 설정 후 mno: {}", memberDetail.getMno());
+
+      // 9. MemberDetail 저장
+      MemberDetail savedMemberDetail = memberDetailRepository.save(memberDetail);
+
+      return savedMemberDetail;
+  } catch (Exception e) {
+      log.error("회원 저장 중 예외 발생: {}", e.getMessage(), e);
+      throw e;
+  }
+
+  
+}
+
+//   public Long write(Member member) { 
+//     // 아이디 검증
+//     if (!ID_PATTERN.matcher(member.getId()).matches()) {
+//       throw new IllegalArgumentException("아이디는 5~10자의 영문 소문자와 숫자만 가능합니다.");
+//   }
+
+//   // 비밀번호 검증
+//   if (!PASSWORD_PATTERN.matcher(member.getPw()).matches()) {
+//       throw new IllegalArgumentException("비밀번호는 영문, 숫자를 포함하여 8자 이상이어야 합니다.");
+//   }
+
+//   // 이메일 검증
+//   if (!EMAIL_PATTERN.matcher(member.getMemberDetail().getEmail()).matches()) {
+//       throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다.");
+//   }
+
+//   // 1. ID 중복 체크
+//   if (repository.findByLoginId(member.getId()).isPresent()) {
+//       throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+//   }
+
+//   // 2. 이메일 인증 상태 확인
+//   String email = member.getMemberDetail().getEmail();
+//   if (!isEmailVerified(email)) {
+//       throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다. 인증 후 회원가입을 진행해주세요.");
+//   }
+
+//   // // 3. 이메일 중복 여부 확인 (이메일이 이미 존재하면 이메일을 건너뛰고 회원가입 처리)
+//   // Optional<MemberDetail> existingMemberDetail = memberDetailRepository.findByEmail(email);
+//   // if (existingMemberDetail.isPresent()) {
+//   //     member.setMemberDetail(existingMemberDetail.get());
+//   // }
+
+//   // 비밀번호 암호화
+//   member.setPw(passwordEncoder.encode(member.getPw()));
+
+//   // 3. 회원 정보 저장 (mno 먼저 생성)
+//   log.info("회원정보저장:", member);
+//   Member savedMember = repository.save(member);  // 회원 저장 후 mno 값 설정됨
+//   log.info("회원정보저장:", savedMember);
+
+//   // 회원 저장 후 mno 값 확인
+//   Long mno = savedMember.getMno();
+//   if (mno == null) {
+//       throw new IllegalStateException("회원의 mno 값이 null입니다. 회원 등록에 실패했습니다.");
+//   }
+
+//   // 4. 회원의 mno 값을 설정하여 MemberDetail에 연결
+//   member.getMemberDetail().setMember(savedMember);  // MemberDetail에 Member 설정
+  
+
+//   // 5. 이메일 인증 정보 저장 (이미 존재하는 경우 건너뛰기)
+//   emailVerificationRepository.findByEmail(email)
+//           .orElseGet(() -> {
+//               EmailVerification newEmailVerification = new EmailVerification();
+//               newEmailVerification.setEmail(email);
+//               newEmailVerification.setVerificationCode(generateVerificationCode());
+//               newEmailVerification.setExpiresAt(LocalDateTime.now().plusHours(3));  // 만료 시간 설정
+//               newEmailVerification.setVerified(true);  // 이미 인증된 상태로 처리
+//               newEmailVerification.setMemberDetail(savedMember.getMemberDetail());
+//               return emailVerificationRepository.save(newEmailVerification);
+//           });
+
+//     // 이메일 인증 성공 후 완료
+//     return savedMember.getMno();  // 회원의 mno 반환
+// }
   @Override
   public Member findBy(String id) {    
     return repository.findByLoginId(id).orElse(null);
