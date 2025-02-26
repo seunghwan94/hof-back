@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.note.Note;
+import com.lshwan.hof.domain.entity.social.Social;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -73,7 +74,11 @@ public class Member extends BaseEntity {
   
   @Default
   @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<MemberAddr> memberAddrList = new ArrayList<>(); 
+  private List<MemberAddr> memberAddrList = new ArrayList<>();
+  
+  @Default
+  @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Social> socialList = new ArrayList<>();
 
   @Default
   @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)

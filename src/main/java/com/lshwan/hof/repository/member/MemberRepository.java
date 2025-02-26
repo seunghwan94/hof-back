@@ -18,4 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>{
 
   @EntityGraph(attributePaths = {"memberAddrList"})
   Optional<Member> findWithAddressesByMno(Long mno);
+
+  Optional<Member> findByMemberDetail_email(String email);
 }
