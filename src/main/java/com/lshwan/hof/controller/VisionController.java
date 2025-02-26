@@ -20,6 +20,7 @@ public class VisionController {
     // ✅ POST 요청을 통해 JSON으로 이미지 URL 받기
     @PostMapping("/detect")
     public Map<String, Object> detectUnsafeContent(@RequestBody ImageRequest request) {
+        System.out.println("::::::::::::::::::::::::"+request);
         try {
             log.info(request.getImageUrl());
             return visionService.detectUnsafeContentFromImageUrl(request.getImageUrl());

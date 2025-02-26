@@ -61,6 +61,7 @@ public class FileController {
     }
     @PostMapping("upload/{pno}")
     public ResponseEntity<?> upload(@RequestParam("file") List<MultipartFile> files,@PathVariable("pno") Long pno) {
+        System.out.println(":::::::::::::::::::::::::::::::::::::::잇힝");
         Prod prod = prodService.findBy(pno);
          List<String> urls = new ArrayList<>();
         for (MultipartFile file : files) {
