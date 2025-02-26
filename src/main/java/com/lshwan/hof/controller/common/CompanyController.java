@@ -42,7 +42,7 @@ public class CompanyController {
      * GET /api/v1/companies/{companyId}
      */
     @GetMapping("/{companyId}")
-    public ResponseEntity<CompanyDto> getCompany(@PathVariable Long companyId) {
+    public ResponseEntity<CompanyDto> getCompany(@PathVariable(name = "companyId") Long companyId) {
         CompanyDto companyDto = companyService.getCompany(companyId);
         return ResponseEntity.ok(companyDto);
     }

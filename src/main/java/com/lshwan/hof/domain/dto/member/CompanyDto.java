@@ -16,6 +16,8 @@ public class CompanyDto {
   private Long no;
   private String name;
   private String title;
+  private String tag;
+  private String pointText;
   private String info;
   private String content;
   private String tel;

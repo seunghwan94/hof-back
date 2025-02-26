@@ -58,7 +58,7 @@ public class ReviewController {
    * @return List<Review>
    */
   @GetMapping("/list/{pno}")
-  public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable Long pno) {
+  public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable(name = "pno") Long pno) {
     List<ReviewDto> reviews = reviewService.findList(pno);
     return ResponseEntity.ok(reviews);
   }
@@ -70,7 +70,7 @@ public class ReviewController {
    * @param newStar - 수정할 별점
    */
   @PutMapping("/modify/{reviewId}")
-  public ResponseEntity<String> modifyReview(@PathVariable Long reviewId, @RequestBody ReviewRequest reviewRequest) {
+  public ResponseEntity<String> modifyReview(@PathVariable(name = "reviewId") Long reviewId, @RequestBody ReviewRequest reviewRequest) {
     String newContent = reviewRequest.getContent();
     String newStar = reviewRequest.getStar();
 
@@ -89,7 +89,7 @@ public class ReviewController {
    * @param reviewId - 리뷰 ID
    */
   @DeleteMapping("/remove/{reviewId}")
-  public ResponseEntity<String> deleteReview(@PathVariable Long reviewId) {
+  public ResponseEntity<String> deleteReview(@PathVariable(name = "reviewId") Long reviewId) {
     try {
       reviewService.remove(reviewId);
       return ResponseEntity.ok("리뷰가 성공적으로 삭제되었습니다.");

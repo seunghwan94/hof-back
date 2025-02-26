@@ -2,6 +2,7 @@ package com.lshwan.hof.repository.member;
 
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +16,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>{
   // Optional<Member> findByLoginId(String id);
   boolean existsById(String id);
 
+  @EntityGraph(attributePaths = {"memberAddrList"})
+  Optional<Member> findWithAddressesByMno(Long mno);
 }
