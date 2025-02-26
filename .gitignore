@@ -41,4 +41,5 @@ application-db.yml
 application-mongo.yml
 application-iamport.yml
 application-vision.yml
+application-oauth.yml
 
