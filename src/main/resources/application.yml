@@ -27,6 +27,14 @@ spring:
       name: admin
       password: admin123
       roles: ADMIN
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 49646177178-t0odlifogo8pol3bp6vgl27b9qqobcm7.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+            - email
 
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local} 
@@ -36,6 +44,7 @@ spring:
       - mongo
       - iamport
       - vision
+      # - oauth
 
   datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy

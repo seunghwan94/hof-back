@@ -118,7 +118,12 @@ dependencies {
 	// websocket
 	implementation("org.springframework.boot:spring-boot-starter-websocket:3.4.1")
 	//Vision API
-	 implementation 'com.google.cloud:google-cloud-vision:3.34.0'
+	implementation 'com.google.cloud:google-cloud-vision:3.34.0'
+
+	// oauth2
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.4.3'
+
 }
 
 tasks.named('test') {

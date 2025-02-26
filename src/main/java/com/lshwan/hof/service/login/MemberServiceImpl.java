@@ -75,9 +75,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     memberDetail.setGender(originMember.getMemberDetail().getGender());
-    memberDetail.setPrivacyConsent(true);
-    memberDetail.setMarketingConsent(true);
-    memberDetail.setAllowNotification(true);
+    memberDetail.setPrivacyConsent(originMember.getMemberDetail().isPrivacyConsent());
+    memberDetail.setMarketingConsent(originMember.getMemberDetail().isMarketingConsent());
+    memberDetail.setAllowNotification(originMember.getMemberDetail().isAllowNotification());
 
     member.setMno(memberDetail.getMember().getMno());
     member.setPw(passwordEncoder.encode(originMember.getPw()));

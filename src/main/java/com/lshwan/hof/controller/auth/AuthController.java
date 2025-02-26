@@ -119,14 +119,14 @@ public class AuthController {
       log.info("회원가입멤버인포확인: {}" + member);
       return ResponseEntity.ok("회원가입 성공 mno: {}" + mno);
     } catch(Exception e) {
-      log.error("log.info 회원가입 실패: {}", e.getMessage(), e);
-      log.info("회원가입 요청2 mno: {}, id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}", member.getMno(),
-      member.getId(), 
-      member.getRole(), 
-      member.getPw(), 
-      member.getMemberDetail().getEmail(), 
-      member.getMemberDetail().getGender(), 
-      member);
+        log.error("log.info 회원가입 실패: {}", e.getMessage(), e);
+        log.info("회원가입 요청2 mno: {}, id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}", member.getMno(),
+        member.getId(), 
+        member.getRole(), 
+        member.getPw(), 
+        member.getMemberDetail().getEmail(), 
+        member.getMemberDetail().getGender(), 
+        member);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패: 다시 시도하세요.");
     }
   }
