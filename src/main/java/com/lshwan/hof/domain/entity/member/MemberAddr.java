@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tbl_addr")
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
+@Setter
 public class MemberAddr extends BaseEntity{
 
   @Id
@@ -33,6 +35,6 @@ public class MemberAddr extends BaseEntity{
   private boolean isDefault;  
   
   @ManyToOne(fetch = FetchType.LAZY)  
-  @JoinColumn(name = "mno", insertable = false, updatable = false)
+  @JoinColumn(name = "mno")
   private Member member;
 }
