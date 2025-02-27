@@ -6,4 +6,32 @@
     <select id="findAll" resultType="Member">
         SELECT * FROM tbl_member;
     </select>
+
+      <select id="findAllMembers" resultMap="MemberResultMap">
+        SELECT 
+            m.mno, m.id, m.name, m.role, m.reg_date, m.mod_date,
+            md.email, md.gender, md.privacy_consent, md.marketing_consent, 
+            md.allow_notification,
+            ma.zipcode, ma.road_addr, ma.detail_addr, ma.is_default
+        FROM tbl_member m
+        LEFT JOIN tbl_member_detail md ON m.mno = md.mno
+        LEFT JOIN tbl_addr ma ON m.mno = ma.mno
+    </select>
+    <resultMap id="MemberResultMap" type="com.lshwan.hof.domain.dto.member.AdminMemberDto">
+        <id column="mno" property="mno"/>
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="role" property="role"/>
+        <result column="reg_date" property="regDate"/>
+        <result column="mod_date" property="modDate"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <result column="privacy_consent" property="privacyConsent"/>
+        <result column="marketing_consent" property="marketingConsent"/>
+        <result column="allow_notification" property="allowNotification"/>
+        <result column="zipcode" property="zipcode"/>
+        <result column="road_addr" property="roadAddr"/>
+        <result column="detail_addr" property="detailAddr"/>
+        <result column="is_default" property="isDefault"/>
+    </resultMap>
 </mapper>

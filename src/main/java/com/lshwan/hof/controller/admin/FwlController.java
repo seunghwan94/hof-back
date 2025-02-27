@@ -9,6 +9,7 @@ import com.lshwan.hof.domain.dto.PageResultDto;
 import com.lshwan.hof.domain.dto.ProdDto;
 import com.lshwan.hof.domain.dto.QnaDto;
 import com.lshwan.hof.domain.dto.SearchRequestDto;
+import com.lshwan.hof.domain.dto.member.AdminMemberDto;
 import com.lshwan.hof.domain.entity.admin.FWL;
 import com.lshwan.hof.domain.entity.common.Qna;
 import com.lshwan.hof.domain.entity.member.Member;
@@ -63,8 +64,8 @@ public class FwlController {
 
   @GetMapping("/list")
   @Operation(summary = "회원 리스트 조회📝", description = "등록된 모든 회원을 조회합니다.")
-  public List<Member> listtest() {
-      return service.findList();
+  public List<AdminMemberDto> listtest() {
+      return service.adminMemberList();
   }
   @PostMapping("/search")
     public List<Map<String, Object>> search(@RequestBody SearchRequestDto request) {
