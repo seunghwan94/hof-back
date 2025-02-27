@@ -13,6 +13,7 @@ public interface QnaService {
     List<QnaDto> findList();
     Long modify(Qna qna);
     boolean remove(Long no);
+    List<QnaDto> findByProduct(Long pno);
 
     default QnaDto toDto(Qna qna) {
         return QnaDto.builder()

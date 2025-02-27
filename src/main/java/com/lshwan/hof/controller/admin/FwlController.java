@@ -172,6 +172,12 @@ public ResponseEntity<?> deleteQna(@PathVariable("qno") Long qno){
   return ResponseEntity.ok().body("삭제 완료" );
 }
 
+@GetMapping("/qna/{pno}")
+@Operation(summary = " 특정 상품 문의 조회", description = "상품 상세 페이지에서 특정 상품에 대한 문의만 조회")
+public ResponseEntity<List<QnaDto>> getQnaListByProduct(@PathVariable("pno") Long pno) {
+    List<QnaDto> dtoList = qnaService.findByProduct(pno);
+    return ResponseEntity.ok(dtoList);
+}
   
   
 }

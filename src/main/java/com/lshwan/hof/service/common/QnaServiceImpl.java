@@ -81,5 +81,9 @@ public class QnaServiceImpl implements QnaService{
     }
     return false;
   }
-  
+
+  public List<QnaDto> findByProduct(Long pno) {
+    List<Qna> qnaList = repository.findByPno(pno);
+    return qnaList.stream().map(QnaDto::new).collect(Collectors.toList());
+}
 }
