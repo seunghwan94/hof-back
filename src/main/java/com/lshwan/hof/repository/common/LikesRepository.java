@@ -1,11 +1,14 @@
 package com.lshwan.hof.repository.common;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.lshwan.hof.domain.entity.common.Likes;
+import com.lshwan.hof.domain.entity.prod.view.ProdView;
 
 import jakarta.transaction.Transactional;
 
@@ -24,6 +27,10 @@ public interface LikesRepository extends JpaRepository<Likes,Likes.LikesId>{
     void deleteByTarget(@Param("targetNo") Long targetNo, @Param("targetType") Likes.TargetType targetType);
 
     // Native Query로 좋아요 여부 확인
-    @Query(value = "SELECT EXISTS (SELECT 1 FROM tbl_likes WHERE mno = :mno AND target_no = :targetNo AND target_type = :targetType)", nativeQuery = true)
-    Integer existsLike(@Param("mno") Long mno, @Param("targetNo") Long targetNo, @Param("targetType") Likes.TargetType targetType);
+    @Query(value = "SELECT EXISTS (SELECT 1 FROM tbl_likes WHERE mno = :mno AND target_no = :targetNo AND target_type = BINARY :targetType)", nativeQuery = true)
+    Integer existsLike(@Param("mno") Long mno, @Param("targetNo") Long targetNo, @Param("targetType") String targetType);
+
+    @Query("SELECT p FROM ProdView p WHERE p.pno IN (SELECT l.id.targetNo FROM Likes l WHERE l.id.member = :mno AND l.id.targetType = 'FAV')")
+    List<ProdView> findLikedProducts(@Param("mno") Long mno);
+    
 }

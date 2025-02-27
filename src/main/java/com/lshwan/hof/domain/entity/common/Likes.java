@@ -29,7 +29,7 @@ public class Likes extends BaseEntityRegDate {
         private Long targetNo;
         
         @Enumerated(EnumType.STRING)
-        @Column(name = "target_type", nullable = false)
+        @Column(name = "target_type")
         private TargetType targetType;
     }
 

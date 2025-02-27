@@ -1,13 +1,17 @@
 package com.lshwan.hof.service.common;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.lshwan.hof.domain.dto.common.LikeDto;
+import com.lshwan.hof.domain.dto.common.LikeProdDto;
 import com.lshwan.hof.domain.entity.common.Likes;
 import com.lshwan.hof.domain.entity.common.Likes.TargetType;
 import com.lshwan.hof.domain.entity.member.Member;
+import com.lshwan.hof.domain.entity.prod.view.ProdView;
 import com.lshwan.hof.repository.common.LikesRepository;
 import com.lshwan.hof.repository.member.MemberRepository;
 
@@ -66,8 +70,16 @@ public class LikesServiceImpl implements LikesService{
 
   @Override
   public boolean findBy(Long mno, Long targetNo, TargetType targetType) {
-    Integer result = likesRepository.existsLike(mno, targetNo, targetType);
+    Integer result = likesRepository.existsLike(mno, targetNo, targetType.name());
     return result != null && result == 1;
+  }
+
+  @Override
+  public List<LikeProdDto> getLikedProducts(Long mno) {
+    List<ProdView> likedProducts = likesRepository.findLikedProducts(mno);
+    return likedProducts.stream()
+            .map(LikeProdDto::fromEntity)
+            .collect(Collectors.toList());
   }
   
 }
