@@ -17,6 +17,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.lshwan.hof.security.JwtAuthenticationFilter;
 import com.lshwan.hof.service.login.CustomUserDetailsService;
+// import com.lshwan.hof.service.social.CustomOAuth2UserService;
+// import com.lshwan.hof.service.social.OAuth2UserDetailsService;
 import com.lshwan.hof.service.social.CustomOAuth2UserService;
 
 import lombok.extern.log4j.Log4j2;
@@ -36,10 +38,14 @@ public class SecurityConfig implements WebMvcConfigurer{
     return new JwtTokenProvider();
   }
 
-  private CustomUserDetailsService customUserDetailsService;
 
-  public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
-    this.customUserDetailsService = customUserDetailsService;
+  
+  private CustomUserDetailsService customUserDetailsService;
+  private final CustomOAuth2UserService customOAuth2UserService;
+
+  public SecurityConfig(CustomUserDetailsService customUserDetailsService, CustomOAuth2UserService customOAuth2UserService) {
+      this.customUserDetailsService = customUserDetailsService;
+      this.customOAuth2UserService = customOAuth2UserService;
   }
 
   @Override
@@ -76,7 +82,7 @@ public class SecurityConfig implements WebMvcConfigurer{
         .requestMatchers("/admin/**").permitAll()
         .requestMatchers("/main/**").permitAll()
         .requestMatchers("/login/**").permitAll()
-        .requestMatchers("/oauth2/**").permitAll()
+        .requestMatchers("/oauth2/**", "/login/oauth2/**", "/login/oauth2/code/google").permitAll()
         .requestMatchers("/signup/**","/signup/email/**").permitAll()
         .requestMatchers("/file/**").permitAll()
         .requestMatchers("/swagger-ui/**","/swag/**","/api-docs/**").permitAll()
@@ -88,25 +94,18 @@ public class SecurityConfig implements WebMvcConfigurer{
         // .anyRequest().authenticated() // 인증이 필요한 경우 설정
         .anyRequest().authenticated()
       )
-      .formLogin(form -> form.disable()) // 폼 로그인 비활성화 (JWT만 사용)
-      .logout(logout -> logout.disable())
-      .oauth2Login(oauth2 -> oauth2
-      .loginPage("/login")
-      .defaultSuccessUrl("/")
-      .failureUrl("/login?error=true")
-      .userInfoEndpoint(userInfo -> userInfo
-          .userService(customOAuth2UserService()))
+        .formLogin(form -> form.disable()) // 폼 로그인 비활성화 (JWT만 사용)
+        .logout(logout -> logout.disable())
+        .oauth2Login(oauth2 -> oauth2
+          .loginPage("/login") // 로그인 페이지 설정 (선택적)
+          .userInfoEndpoint(userInfo -> userInfo
+              .userService(customOAuth2UserService))
       )
       // 로그아웃 비활성화 (JWT만 사용)
       // .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider(), userDetailsService(passwordEncoder())), UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
       .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
     log.info("SecurityFilterChain 설정 완료!!!");
     return http.build();
-  }
-
-  @Bean
-  public CustomOAuth2UserService customOAuth2UserService() {
-    return new CustomOAuth2UserService();
   }
 
   @Bean
