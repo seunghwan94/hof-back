@@ -12,9 +12,12 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import com.lshwan.hof.domain.dto.member.AdminMemberDto;
+import com.lshwan.hof.domain.dto.member.MemberDto;
 import com.lshwan.hof.domain.entity.email.EmailVerification;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.member.MemberDetail;
+import com.lshwan.hof.mapper.MemberMapper;
 import com.lshwan.hof.repository.email.EmailVerificationRepository;
 import com.lshwan.hof.repository.member.MemberDetailRepository;
 import com.lshwan.hof.repository.member.MemberRepository;
@@ -31,6 +34,8 @@ public class MemberServiceImpl implements MemberService {
   private MemberDetailRepository memberDetailRepository;
   @Autowired
   private EmailVerificationRepository emailVerificationRepository;
+
+  private final MemberMapper memberMapper;
   @Autowired
   private PasswordEncoder passwordEncoder;
 
@@ -158,7 +163,10 @@ public class MemberServiceImpl implements MemberService {
     return memberRepository.findAll();
   }
 
-
+  @Override
+    public List<AdminMemberDto> adminMemberList() {
+        return memberMapper.findAllMembers();
+    }
 
   // 아이디 중복 체크
   @Override

@@ -1,5 +1,6 @@
 
 package com.lshwan.hof.domain.entity.history.mongo;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
@@ -31,6 +32,8 @@ public class VisitHistory {
 
     @Field("visit_time")
     private LocalDateTime visitTime; 
+    @Field("visit_date")
+    private LocalDate visitDate;
 
     @Field("member_id")
     private Long memberId; // 로그인한 사용자 ID (비회원이면 null)

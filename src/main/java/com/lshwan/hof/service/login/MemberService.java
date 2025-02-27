@@ -2,6 +2,8 @@ package com.lshwan.hof.service.login;
 
 import java.util.List;
 
+import com.lshwan.hof.domain.dto.member.AdminMemberDto;
+import com.lshwan.hof.domain.dto.member.MemberDto;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.member.MemberDetail;
 
@@ -23,6 +25,6 @@ public interface MemberService {
   Long update(Member member);
   // boolean verifyEmail(String email, String verificationCode);
   // boolean remove(String id);
-
+   List<AdminMemberDto> adminMemberList();
 
 }
