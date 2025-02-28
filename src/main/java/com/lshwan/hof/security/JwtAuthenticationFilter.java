@@ -31,15 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
 
     log.info("JwtAuthenticationFilter 실행됨!!! 요청 URL: {}", request.getRequestURI());
-    // if (request.getRequestURI().contains("/signup")) {
-    //   filterChain.doFilter(request, response);
-    //   return;
-    // }
-    // // /check-id 경로인 경우 JWT 토큰을 검증하지 않음
-    // if (request.getRequestURI().contains("/check-id")) {
-    //   filterChain.doFilter(request, response);
-    //   return;
-    // }
   
     // 1 요청 헤더에서 Authorization 값을 가져옴
     String token = getTokenFromRequest(request);

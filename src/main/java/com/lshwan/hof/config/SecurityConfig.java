@@ -1,6 +1,17 @@
 package com.lshwan.hof.config;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.RSAPublicKeySpec;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,8 +22,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.lshwan.hof.security.JwtAuthenticationFilter;
@@ -21,6 +38,10 @@ import com.lshwan.hof.service.login.CustomUserDetailsService;
 // import com.lshwan.hof.service.social.OAuth2UserDetailsService;
 import com.lshwan.hof.service.social.CustomOAuth2UserService;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -31,14 +52,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConfigurationProperties(prefix = "custom") // application.yml에서 "custom"으로 시작하는 설정을 매핑
 @Log4j2
 public class SecurityConfig implements WebMvcConfigurer{
-
   
   @Bean
   public JwtTokenProvider jwtTokenProvider() {
     return new JwtTokenProvider();
   }
-
-
+  // @Autowired
+  private JwtTokenProvider jwtTokenProvider;
   
   private CustomUserDetailsService customUserDetailsService;
   private final CustomOAuth2UserService customOAuth2UserService;
@@ -48,15 +68,6 @@ public class SecurityConfig implements WebMvcConfigurer{
       this.customOAuth2UserService = customOAuth2UserService;
   }
 
-  @Override
-  public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**")  // 모든 경로에 대해
-        .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
-        .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
-        .allowedHeaders("*")  // 모든 헤더를 허용
-        .exposedHeaders("Authorization", "Content-Type", "Upgrade", "Connection", "Sec-WebSocket-Accept") // WebSocket 관련 헤더 추가
-        .allowCredentials(true);  // 쿠키나 인증 정보를 함께 보낼 수 있도록 설정
-  }
 
   // 비밀번호 암호화
   @Bean
@@ -78,11 +89,20 @@ public class SecurityConfig implements WebMvcConfigurer{
         .sessionManagement(session -> session
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
       )
+      .cors(cors -> cors.configurationSource(request -> {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000", "https://hof.lshwan.com"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowCredentials(true);
+        return config;
+        }))
       .authorizeHttpRequests(auth -> auth
         .requestMatchers("/admin/**").permitAll()
         .requestMatchers("/main/**").permitAll()
         .requestMatchers("/login/**").permitAll()
-        .requestMatchers("/oauth2/**", "/login/oauth2/**", "/login/oauth2/code/google").permitAll()
+        .requestMatchers("/login/oauth2/code/google").permitAll()
         .requestMatchers("/signup/**","/signup/email/**").permitAll()
         .requestMatchers("/file/**").permitAll()
         .requestMatchers("/swagger-ui/**","/swag/**","/api-docs/**").permitAll()
@@ -90,15 +110,31 @@ public class SecurityConfig implements WebMvcConfigurer{
         .requestMatchers("/common/**").permitAll()
         .requestMatchers("/jacoco/**").permitAll()
         .requestMatchers("/ws/**").permitAll()
-        .requestMatchers("/search/**").permitAll()
         // .requestMatchers("/actuator/prometheus").permitAll() 
         // .anyRequest().authenticated() // 인증이 필요한 경우 설정
         .anyRequest().authenticated()
       )
         .formLogin(form -> form.disable()) // 폼 로그인 비활성화 (JWT만 사용)
         .logout(logout -> logout.disable())
+
         .oauth2Login(oauth2 -> oauth2
-          .loginPage("/login") // 로그인 페이지 설정 (선택적)
+        .successHandler((request, response, authentication) -> {
+          OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
+      
+          // OAuth2 제공자로부터 받은 유저 ID (Google의 경우 "sub" 필드)
+          String sub = oauthUser.getAttribute("sub");
+          String provider = "google"; // 현재는 Google만 적용
+      
+          // JWT 발급
+          String jwt = jwtTokenProvider.createToken(sub, provider);
+      
+          // 응답 헤더에 JWT 추가
+          response.addHeader("Authorization", "Bearer " + jwt);
+          log.info("OAuth2 로그인 성공: JWT 발급 완료. 사용자 ID={}, Provider={}", sub, provider);
+      
+          // 리디렉션 (프론트엔드로 이동)
+          response.sendRedirect("/dashboard");
+        })
           .userInfoEndpoint(userInfo -> userInfo
               .userService(customOAuth2UserService))
       )
@@ -115,4 +151,18 @@ public class SecurityConfig implements WebMvcConfigurer{
       return new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService);
   }
 
+  @Bean
+  public FilterRegistrationBean<OncePerRequestFilter> coopHeaderFilter() {
+    FilterRegistrationBean<OncePerRequestFilter> filter = new FilterRegistrationBean<>();
+    filter.setFilter(new OncePerRequestFilter() {
+        @Override
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
+                throws ServletException, IOException {
+            response.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+            filterChain.doFilter(request, response);
+        }
+    });
+    filter.setOrder(-101);  // Security FilterChain 앞에서 실행되도록 우선순위 설정
+    return filter;
+  }
 }

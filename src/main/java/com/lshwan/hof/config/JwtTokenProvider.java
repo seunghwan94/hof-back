@@ -25,39 +25,85 @@ public class JwtTokenProvider {
    * @param content - 토큰에 저장할 사용자 정보
    * @return 생성된 JWT 토큰 문자열
    */
-  public String generateToken(String content/* , MemberRole role */) {
+  // public String generateToken(String content, String Provider/* , MemberRole role */) {
+  //   return Jwts.builder()
+  //     .issuedAt(new Date()) // 토큰 발급 시간 설정
+  //     .expiration(Date.from(ZonedDateTime.now().plusMonths(1L).toInstant())) // 만료 시간 설정 (1개월 후)
+  //     .claim("sub", content) // 사용자 정보 저장 (Subject 클레임 사용)
+  //     .signWith(key) // HMAC SHA 키를 사용한 서명
+  //     .compact();
+  // }
+  //--
+  public String generateToken(String content, String provider) {
+    // 자체 로그인일 경우 provider는 LOCAL로 설정
+    if ("LOCAL".equals(provider)) {
+        provider = null;
+    }
+    
     return Jwts.builder()
-      .issuedAt(new Date()) // 토큰 발급 시간 설정
-      .expiration(Date.from(ZonedDateTime.now().plusMonths(1L).toInstant())) // 만료 시간 설정 (1개월 후)
-      .claim("sub", content) // 사용자 정보 저장 (Subject 클레임 사용)
-      // .claim("role", role.name())/* role추가 */
-      .signWith(key) // HMAC SHA 키를 사용한 서명
+      .issuedAt(new Date()) 
+      .expiration(Date.from(ZonedDateTime.now().plusMonths(1L).toInstant()))
+      .claim("sub", content)
+      .claim("provider", provider)  // provider 정보를 추가
+      .signWith(key)
       .compact();
   }
+
 
   /**
    * JWT 토큰 검증 및 내용 추출
    * @param tokenStr - 클라이언트에서 받은 JWT 토큰
    * @return 토큰에서 추출한 사용자 정보 (유효하지 않으면 null 반환)
    */
+  // public String validateExtract(String tokenStr) {
+  //   String contentValue = null;
+    
+  //   try {
+  //     // JWT 파싱 및 검증
+  //     Jws<Claims> defaultJws = Jwts.parser().verifyWith(key).build().parseSignedClaims(tokenStr);
+  //     Claims claims = defaultJws.getPayload();
+  //     log.info("JWT 토큰 해석 성공!!! username: {}", claims.getSubject());
+      
+  //     log.info("Subject: {}", claims.getSubject());
+  //     log.info("Issued At: {}", claims.getIssuedAt());
+  //     log.info("Expiration: {}", claims.getExpiration());
+  //     contentValue = claims.getSubject();
+  //   } catch (Exception e) {
+  //     e.printStackTrace();
+  //     log.info("JWT 검증 실패: {}", e.getMessage());
+  //   }
+  //   return contentValue;
+  // }
+
+  public String createToken(String sub, String provider) {
+    return generateToken(sub, provider);
+  }
+  //--
   public String validateExtract(String tokenStr) {
     String contentValue = null;
     
     try {
-      // JWT 파싱 및 검증
       Jws<Claims> defaultJws = Jwts.parser().verifyWith(key).build().parseSignedClaims(tokenStr);
       Claims claims = defaultJws.getPayload();
       log.info("JWT 토큰 해석 성공!!! username: {}", claims.getSubject());
       
-      log.info("Subject: {}", claims.getSubject());
-      log.info("Issued At: {}", claims.getIssuedAt());
-      log.info("Expiration: {}", claims.getExpiration());
-      contentValue = claims.getSubject();
+      String provider = claims.get("provider", String.class);
+      log.info("Provider: {}", provider);
+
+      // 자체 로그인일 경우 또는 provider가 LOCAL일 경우
+      if (provider == null || "LOCAL".equals(provider)) {
+          log.info("자체 로그인 인증");
+          contentValue = claims.getSubject();
+      } else {
+          log.info("소셜 로그인 인증 - Provider: {}", provider);
+          contentValue = claims.getSubject();
+      }
+      
     } catch (Exception e) {
       e.printStackTrace();
       log.info("JWT 검증 실패: {}", e.getMessage());
     }
     return contentValue;
   }
-  
+
 }

@@ -5,7 +5,9 @@ import com.lshwan.hof.domain.dto.auth.AuthRequestDto;
 import com.lshwan.hof.domain.dto.auth.AuthResponseDto;
 import com.lshwan.hof.domain.dto.member.MemberDto;
 import com.lshwan.hof.domain.entity.member.Member;
+import com.lshwan.hof.domain.entity.social.Social;
 import com.lshwan.hof.repository.member.MemberRepository;
+import com.lshwan.hof.repository.social.SocialRepository;
 import com.lshwan.hof.service.login.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,6 @@ public class AuthController {
   private final JwtTokenProvider jwtTokenProvider;
   private final MemberService memberService; 
   private final MemberRepository memberRepository;
-  
 
   /**
    * 로그인 API: 사용자 인증 후 JWT 토큰 발급
@@ -56,9 +57,24 @@ public class AuthController {
       // 2 db에서 사용자 정보 조회
       Member member = memberRepository.findByLoginId(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("회원정보를 찾을 수 없습니다."));
 
+      // String provider = member.getSocialList().stream()
+      // .findFirst()  // 첫 번째 소셜 계정 선택 (원하는 대로 변경 가능)
+      // .map(social -> social.getType().name())  // SocialType을 String으로 변환
+      // .orElseThrow(() -> new RuntimeException("소셜 로그인 정보가 없습니다."));
+      // --
+      String provider = null;
+      if (member.getSocialList() != null && !member.getSocialList().isEmpty()) {
+          provider = member.getSocialList().stream()
+              .findFirst()
+              .map(social -> social.getType().name())
+              .orElse(null);
+      } else {
+          provider = "LOCAL";  // 자체 로그인일 경우 LOCAL로 설정
+      }
+
       // 3️ JWT 토큰 생성
       // String token = jwtTokenProvider.generateToken(userDetails.getUsername());
-      String token = jwtTokenProvider.generateToken(member.getId());
+      String token = jwtTokenProvider.generateToken(member.getId(), provider);
       log.info("JWT 토큰 생성 완료!!!");      
 
       // dto변환 pw제외
