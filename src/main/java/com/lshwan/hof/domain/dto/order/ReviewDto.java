@@ -18,6 +18,7 @@ public class ReviewDto {
 
     private Long reviewId;
     private String content;
+    private Long mno;
     private String memberName;
     private String prodTitle;
     private StarRating star;
@@ -26,6 +27,7 @@ public class ReviewDto {
     public ReviewDto(Review review) {
         this.reviewId = review.getNo();
         this.content = review.getContent();
+        this.mno = review.getMember().getMno();
         this.memberName = review.getMember().getName();
         this.prodTitle = review.getProd().getTitle();
         this.star = review.getStar();
