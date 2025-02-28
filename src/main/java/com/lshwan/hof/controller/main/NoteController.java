@@ -1,7 +1,9 @@
 package com.lshwan.hof.controller.main;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,19 +15,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lshwan.hof.domain.dto.note.NoteDto;
+import com.lshwan.hof.service.S3Service;
 import com.lshwan.hof.service.note.NoteService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("main/notes")
+@Log4j2
 public class NoteController {
   private final NoteService noteService;
-
   // 게시글 목록 조회
   @GetMapping
   public ResponseEntity<List<?>> getAllNotes() {
@@ -40,12 +46,27 @@ public class NoteController {
         return ResponseEntity.ok(note);
     }
 
-  // 게시글 작성
-  @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-  public ResponseEntity<?> createNote(@ModelAttribute NoteDto noteDto) {
-      NoteDto CreateNote = noteService.add(noteDto);
-      return ResponseEntity.status(HttpStatus.CREATED).body(CreateNote);
-  }
+    // 게시글 작성
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> createNote(
+            @RequestParam(name = "mno") Long mno,
+            @RequestParam(name = "title") String title,
+            @RequestParam(name = "content") String content,
+            @RequestParam(name = "imageUrls", required = false) List<String> imageUrls) {
+    
+        NoteDto noteDto = new NoteDto();
+        noteDto.setMno(mno);
+        noteDto.setTitle(title);
+        noteDto.setContent(content);
+        noteDto.setImageUrls(imageUrls != null ? imageUrls : new ArrayList<>()); // ✅ Null 방지 처리
+    
+        log.info("noteDto : " + noteDto);
+    
+        NoteDto createdNote = noteService.add(noteDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdNote);
+    }
+
+
 
   // 게시글 수정
   @PutMapping("/{nno}")
