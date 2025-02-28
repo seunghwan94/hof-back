@@ -4,6 +4,7 @@ package com.lshwan.hof.domain.entity.member;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lshwan.hof.domain.entity.BaseEntity;
 import com.lshwan.hof.domain.entity.note.Note;
 import com.lshwan.hof.domain.entity.social.Social;
@@ -25,7 +26,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.Builder.Default;
 
 @Entity
@@ -35,7 +35,6 @@ import lombok.Builder.Default;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Member extends BaseEntity {
   
   @Id
@@ -60,27 +59,34 @@ public class Member extends BaseEntity {
   }
 
   // @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JsonIgnore
   @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private MemberDetail memberDetail;
   
+  @JsonIgnore
   @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
   private MemberDeleted memberDeleted;
 
+  @JsonIgnore
   @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
   private Remember remember;
 
+  @JsonIgnore
   @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
   private Company company;
   
   @Default
+  @JsonIgnore
   @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<MemberAddr> memberAddrList = new ArrayList<>();
   
   @Default
+  @JsonIgnore
   @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Social> socialList = new ArrayList<>();
 
   @Default
+  @JsonIgnore
   @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)
   private List<Note> notes = new ArrayList<>();
 

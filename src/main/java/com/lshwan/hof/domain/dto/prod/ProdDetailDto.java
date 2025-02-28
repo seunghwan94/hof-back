@@ -7,14 +7,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Builder
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class ProdDetailDto {
     private Long pno;
     private String title;
@@ -31,7 +29,6 @@ public class ProdDetailDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @ToString
     public static class ProdOptionDto {
         private Long optionNo;
         private String type;

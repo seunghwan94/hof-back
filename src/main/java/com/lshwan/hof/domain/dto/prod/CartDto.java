@@ -7,14 +7,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Builder
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class CartDto {
   private Long cartNo;
   private Long mno;
@@ -30,7 +28,6 @@ public class CartDto {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  @ToString
   public static class ProdOptionDto {
       private Long optionNo;
       private String type;
