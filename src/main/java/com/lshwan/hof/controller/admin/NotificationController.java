@@ -21,7 +21,6 @@ public class NotificationController {
         this.webSocketHandler = webSocketHandler;
     }
   @PostMapping("/send")
-
   public ResponseEntity<String> sendNotification(@RequestParam("message") String message) {
     try {
       webSocketHandler.sendMessageToAll(message);
