@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.lshwan.hof.domain.dto.order.OrderDto;
+import com.lshwan.hof.domain.dto.order.OrderHistoryDto;
 import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.order.Delivery;
 import com.lshwan.hof.domain.entity.order.Order;
@@ -13,6 +14,7 @@ import com.lshwan.hof.domain.entity.order.OrderItem;
 import com.lshwan.hof.domain.entity.order.Delivery.DeliveryStatus;
 import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.domain.entity.prod.ProdOption;
+import com.lshwan.hof.mapper.OrderMapper;
 import com.lshwan.hof.repository.member.MemberRepository;
 import com.lshwan.hof.repository.order.DeliveryRepository;
 import com.lshwan.hof.repository.order.OrderItemRepository;
@@ -35,6 +37,7 @@ public class OrderServiceImpl implements OrderService{
   private final ProdRepository prodRepository;
   private final ProdOptionRepository prodOptionRepository;
   private final DeliveryRepository deliveryRepository;
+  private final OrderMapper mapper;
 
   /**
    * 주문 생성
@@ -114,6 +117,15 @@ public class OrderServiceImpl implements OrderService{
    */
   public List<Order> getOrdersByMember(Long mno) {
     return orderRepository.findByMember_Mno(mno);
+  }
+
+  /**
+   * 회원의 구매내역을 조회하는 메서드
+   * @param memberNo 회원 번호
+   * @return 주문 내역 리스트 (OrderHistoryDto)
+   */
+    public List<OrderHistoryDto> getOrderHistory(Long memberNo) {
+      return mapper.findOrderHistoryByMember(memberNo);
   }
 
 }

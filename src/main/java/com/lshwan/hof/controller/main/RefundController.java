@@ -28,6 +28,8 @@ public class RefundController {
    */
   @PostMapping("/request")
   public ResponseEntity<?> requestRefund(@RequestParam(name = "payNo") Long payNo, @RequestParam(name = "reason") String reason) {
+    log.info("payNo : " + payNo);
+    log.info("reason : " + reason);
     try {
       Refund refund = refundService.processRefund(payNo, reason);
       return ResponseEntity.ok(refund);

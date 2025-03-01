@@ -76,9 +76,9 @@ public class RefundServiceImpl implements RefundService {
         // 6. 결제 상태 업데이트 (환불로 변경)
         pay = Pay.builder()
                 .no(pay.getNo())
+                .impUid(pay.getImpUid())
                 .order(pay.getOrder())
                 .method(pay.getMethod())
-                .status(Pay.PaymentStatus.실패) // 결제 실패로 변경 (환불 처리)
                 .totalPrice(pay.getTotalPrice())
               .build();
         payRepository.save(pay);
