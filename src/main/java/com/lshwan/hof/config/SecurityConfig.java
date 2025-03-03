@@ -19,7 +19,7 @@ import com.lshwan.hof.security.JwtAuthenticationFilter;
 import com.lshwan.hof.service.login.CustomUserDetailsService;
 // import com.lshwan.hof.service.social.CustomOAuth2UserService;
 // import com.lshwan.hof.service.social.OAuth2UserDetailsService;
-import com.lshwan.hof.service.social.CustomOAuth2UserService;
+// import com.lshwan.hof.service.social.CustomOAuth2UserService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -41,11 +41,11 @@ public class SecurityConfig implements WebMvcConfigurer{
 
   
   private CustomUserDetailsService customUserDetailsService;
-  private final CustomOAuth2UserService customOAuth2UserService;
+  // private final CustomOAuth2UserService customOAuth2UserService;
 
-  public SecurityConfig(CustomUserDetailsService customUserDetailsService, CustomOAuth2UserService customOAuth2UserService) {
+  public SecurityConfig(CustomUserDetailsService customUserDetailsService/*, CustomOAuth2UserService customOAuth2UserService */) {
       this.customUserDetailsService = customUserDetailsService;
-      this.customOAuth2UserService = customOAuth2UserService;
+      // this.customOAuth2UserService = customOAuth2UserService;
   }
 
   @Override
@@ -97,11 +97,11 @@ public class SecurityConfig implements WebMvcConfigurer{
       )
         .formLogin(form -> form.disable()) // 폼 로그인 비활성화 (JWT만 사용)
         .logout(logout -> logout.disable())
-        .oauth2Login(oauth2 -> oauth2
-          .loginPage("/login") // 로그인 페이지 설정 (선택적)
-          .userInfoEndpoint(userInfo -> userInfo
-              .userService(customOAuth2UserService))
-      )
+        // .oauth2Login(oauth2 -> oauth2
+        //   .loginPage("/login") // 로그인 페이지 설정 (선택적)
+        //   .userInfoEndpoint(userInfo -> userInfo
+        //       .userService(customOAuth2UserService))
+      // )
       // 로그아웃 비활성화 (JWT만 사용)
       // .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider(), userDetailsService(passwordEncoder())), UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용
       .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터 적용

@@ -57,4 +57,5 @@ public class MemberDetail extends BaseEntity {
   public enum MemberGender {
     MALE, FEMALE, OTHER;
   }
+  
 }

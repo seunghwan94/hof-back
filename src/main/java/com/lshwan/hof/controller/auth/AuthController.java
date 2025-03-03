@@ -1,15 +1,19 @@
 package com.lshwan.hof.controller.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lshwan.hof.config.JwtTokenProvider;
 import com.lshwan.hof.domain.dto.auth.AuthRequestDto;
 import com.lshwan.hof.domain.dto.auth.AuthResponseDto;
 import com.lshwan.hof.domain.dto.member.MemberDto;
 import com.lshwan.hof.domain.entity.member.Member;
+import com.lshwan.hof.domain.entity.member.MemberDetail;
 import com.lshwan.hof.repository.member.MemberRepository;
 import com.lshwan.hof.service.login.MemberService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -96,41 +100,28 @@ public class AuthController {
    * @return 생성된 회원의 mno 반환
    */
 
-   @PostMapping("/signup")
-  public ResponseEntity<?> signup(@RequestBody Member member) {
-    // log.info("회원가입 요청 id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}", member.getId(), member.getRole(), member.getPw(), member.getMemberDetail().getEmail(), member.getMemberDetail().getGender(), member);
-    log.info("회원가입 요청 id: {}, role: {}, pw: {}, member: {}", member.getId(), member.getRole(), member.getPw(), member);
-    if (member.getMemberDetail() == null) {
-      log.error("회원가입 실패: MemberDetail이 null입니다.");
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패: 회원 상세 정보를 확인하세요.");
-    }
-  
-    // 로그 찍기 전에 memberDetail이 null이 아닌지 확인
-    log.info("회원가입 요청1 mno: {} id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}",  member.getMno(),
-             member.getId(), 
-             member.getRole(), 
-             member.getPw(), 
-             member.getMemberDetail().getEmail(), 
-             member.getMemberDetail().getGender(), 
-             member);
+  @PostMapping("/signup")
+  public ResponseEntity<?> signup(@RequestBody Map<String, Object> request) {
+    
+    // Member 객체 생성
+    ObjectMapper objectMapper = new ObjectMapper();
+    Member member = objectMapper.convertValue(request, Member.class);
+
+    if (request.containsKey("memberDetail")) {
+        MemberDetail memberDetail = objectMapper.convertValue(request.get("memberDetail"), MemberDetail.class);
+        member.setMemberDetailJson(memberDetail);
+    } else {
+        log.error("회원가입 실패: MemberDetail이 null입니다.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패: 회원 상세 정보를 확인하세요.");
+
+    } 
     try {
       Long mno = memberService.write(member);
       log.info("log.info 회원가입 성공 mno: {}", mno);
-      log.info("회원가입멤버인포확인: {}" + member);
-      return ResponseEntity.ok("회원가입 성공 mno: {}" + mno);
+      return ResponseEntity.ok("회원가입이 완료되었습니다.");
     } catch(Exception e) {
-        log.error("log.info 회원가입 실패: {}", e.getMessage(), e);
-        log.info("회원가입 요청2 mno: {}, id: {}, role: {}, pw: {}, email: {}, gender: {}, member: {}", member.getMno(),
-        member.getId(), 
-        member.getRole(), 
-        member.getPw(), 
-        member.getMemberDetail().getEmail(), 
-        member.getMemberDetail().getGender(), 
-        member);
+          log.error("log.info 회원가입 실패: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패: 다시 시도하세요.");
     }
   }
-
-
-
 }

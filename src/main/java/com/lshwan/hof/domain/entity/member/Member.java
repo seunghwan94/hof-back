@@ -90,4 +90,7 @@ public class Member extends BaseEntity {
   @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)
   private List<Note> notes = new ArrayList<>();
 
+  public void setMemberDetailJson(MemberDetail memberDetail) {
+    this.memberDetail = memberDetail;
+  }
 }

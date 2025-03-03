@@ -121,10 +121,6 @@ public class MemberServiceImpl implements MemberService {
           throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
       }
 
-      // // 이메일 인증 여부 확인 (이메일이 이미 인증된 경우 예외 처리)
-      // if (emailVerificationRepository.findByEmail(email).isPresent()) {
-      //   throw new IllegalArgumentException("이미 인증 요청한 이메일입니다.");
-      // }
     // 7. Member 저장 (필요한 값 설정 후 저장)
     Member savedMember = memberRepository.save(Member.builder().build());
     log.info("회원 저장 후, mno: {}", savedMember.getMno());

@@ -10,16 +10,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lshwan.hof.service.login.EmailVerificationService;
+import com.lshwan.hof.service.login.MemberService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @RestController
 @RequestMapping("/signup")
+@RequiredArgsConstructor
 @Log4j2
 public class EmailVerificationController {
 
   @Autowired
   private EmailVerificationService emailVerificationService;
+
 
     /**
    * 이메일 인증 코드 발송 API
@@ -28,10 +32,10 @@ public class EmailVerificationController {
    */
   @PostMapping("/emailsend")
   // public ResponseEntity<String> sendVerificationEmail(@RequestParam("email") String email) {
-    public ResponseEntity<String> sendVerificationEmail(@RequestBody Map<String, String> request) {
-      String email = request.get("email");
-  
+  public ResponseEntity<String> sendVerificationEmail(@RequestBody Map<String, String> request) {
+    String email = request.get("email");  
     log.info("이메일 인증 요청 받음: " + email);
+    
     try {
         emailVerificationService.sendVerificationEmail(email);
         return ResponseEntity.ok("이메일 인증 코드가 발송되었습니다.");
@@ -51,16 +55,17 @@ public class EmailVerificationController {
   public ResponseEntity<String> verifyEmail(@RequestBody Map<String, String> request) {
     String verificationCode = request.get("verificationCode");
       
-    log.info("받은토큰 verification code: {}", verificationCode);
+    log.info("받은 인증 코드: {}", verificationCode);
     try {
-      // String decodedCode = URLDecoder.decode(verificationCode, StandardCharsets.UTF_8);
-      // log.info("Decoded token: {}", decodedCode);
-      // emailVerificationService.verifyEmail(decodedCode);
-      emailVerificationService.verifyEmail(verificationCode);
-      return ResponseEntity.ok("이메일 인증 성공");
+        boolean isVerified = emailVerificationService.verifyEmail(verificationCode);
+        if (isVerified) {
+            return ResponseEntity.ok("이메일 인증 성공");
+        } else {
+            return ResponseEntity.badRequest().body("이메일 인증 실패: 인증되지 않은 코드");
+        }
     } catch (IllegalArgumentException e) {
-      log.error("Email verification failed: {}", e.getMessage());
-      return ResponseEntity.status(400).body("이메일 인증 실패: " + e.getMessage());
+        log.error("이메일 인증 실패: {}", e.getMessage());
+        return ResponseEntity.badRequest().body("이메일 인증 실패: " + e.getMessage());
     }
   }
 }
