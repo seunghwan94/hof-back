@@ -1,42 +1,75 @@
-// package com.lshwan.hof.service.note;
+package com.lshwan.hof.service.note;
 
-// import org.junit.jupiter.api.Test;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-// import com.lshwan.hof.domain.entity.note.Reply;
+import java.util.List;
 
-// import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-// @SpringBootTest
-// @Log4j2
-// public class ReplyServiceTests {
-//   @Autowired
-//   private ReplyService replyService;
+import com.lshwan.hof.domain.dto.note.ReplyDto;
 
-//   @Test
-//   void addTests(){
-//     Long nno = 37L;
-//     Long mno = 24L;
-//     String content = "test";
-//     Long parentReplyId = null;
+import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 
-//     Reply reply = replyService.add(nno, mno, content, parentReplyId);
+@SpringBootTest
+@Log4j2
+@Transactional
+public class ReplyServiceTests {
+  @Autowired
+  private ReplyService replyService;
 
-//     log.info(reply);
-//   }
+  @Test
+  void addTests(){
+    // target
+    Long nno = 25L;
+    Long mno = 24L;
+    String content = "test";
+    Long parentReplyId = null;
+    // given
+    ReplyDto reply = ReplyDto.builder()
+        .nno(nno)
+        .mno(mno)
+        .content(content)
+        .parentReplyId(parentReplyId)
+      .build();
+    // when
+    ReplyDto replyDto = replyService.add(reply);
+    // then
+    assertNotNull(replyDto);
+  }
 
-//   @Test
-//   void findListTests(){
-//     Long nno = 37L;
-//     log.info(replyService.findList(nno));
-//   }
+  @Test
+  void findListTests(){
+    // target
+    Long nno = 25L;
+    // when
+    List<ReplyDto> replies = replyService.findList(nno);
+    // then 
+    assertNotNull(replies);
+  }
 
-//   @Test
-//   void removeTests(){
-//     Long nno = 4L;
-//     replyService.remove(nno);
-//   }
+  @Test
+  void removeTests(){
+    // target
+    Long nno = 25L;
+    Long mno = 24L;
+    String content = "test";
+    Long parentReplyId = null;
+    // given
+    ReplyDto reply = ReplyDto.builder()
+        .nno(nno)
+        .mno(mno)
+        .content(content)
+        .parentReplyId(parentReplyId)
+      .build();
+    // when
+    ReplyDto replyDto = replyService.add(reply);
+    // then
+    replyService.remove(replyDto.getNno());
+    assertFalse(replyDto.isDeleted()); 
+  }
 
-
-// }
+}

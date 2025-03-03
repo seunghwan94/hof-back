@@ -22,11 +22,8 @@
 //       @Autowired
 //     private PayServiceImpl payService;
 
-//     /**
-//      * 1️⃣ 결제 요청 테스트
-//      */
 //     @Test
-//     public void 결제_요청_테스트() {
+//     public void requestPaymentTests() {
 //         // Given (결제 요청 데이터 준비)
 //         Long orderNo = 4L; // 실제 존재하는 주문 번호 사용
 //         PaymentMethod method = PaymentMethod.카드;

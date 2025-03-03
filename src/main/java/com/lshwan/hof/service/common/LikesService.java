@@ -15,5 +15,6 @@ public interface LikesService {
   long countLikes(Long targetNo, Likes.TargetType targetType);
   // 내가 누른지 확인
   boolean findBy(Long mno, Long targetNo, Likes.TargetType targetType);
-  public List<LikeProdDto> getLikedProducts(Long mno);
+  
+  List<LikeProdDto> getLikedProducts(Long mno);
 }

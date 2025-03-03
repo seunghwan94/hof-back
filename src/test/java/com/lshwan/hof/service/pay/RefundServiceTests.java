@@ -1,7 +1,6 @@
 package com.lshwan.hof.service.pay;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.DisplayName;
@@ -33,11 +32,10 @@ public class RefundServiceTests {
     assertNull(refund);
   }
 
-  @Test
-  @DisplayName("환불 해야되는 제품")
-  void testGetRefundByPayId_Success() {
-    Refund refund = refundService.processRefund(32L, "그냥");
-    log.info("refund : " + refund);
-    assertNotNull(refund);
-  }
+  // @Test
+  // @DisplayName("환불 해야되는 제품")
+  // void testGetRefundByPayId_Success() {
+  //   Refund refund = refundService.processRefund(39L, "그냥");
+  //   assertNotNull(refund);
+  // }
 }

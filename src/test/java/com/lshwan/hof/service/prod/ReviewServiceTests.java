@@ -1,5 +1,7 @@
 package com.lshwan.hof.service.prod;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.lshwan.hof.domain.dto.order.ReviewDto;
+import com.lshwan.hof.domain.entity.order.Review;
 import com.lshwan.hof.domain.entity.order.Review.StarRating;
 
 import jakarta.transaction.Transactional;
@@ -21,13 +24,14 @@ public class ReviewServiceTests {
 
   @Test
   public void testAddReview() {
-    service.add(24L, 406L, "정말 좋은 제품입니다!","five");
+    Review review = service.add(24L, 406L, "정말 좋은 제품입니다!","five");
+    assertNotNull(review);
   }
 
   @Test
   public void testFindReviews() {
     List<ReviewDto> reviews = service.findList(406L);
-    reviews.forEach(review -> System.out.println(review.getContent()));
+    assertNotNull(reviews);
   }
 
   @Test
