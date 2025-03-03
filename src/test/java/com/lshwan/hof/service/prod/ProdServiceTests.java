@@ -47,7 +47,7 @@ public class ProdServiceTests {
   @Test
   public void findBy(){
     // target
-    Long pno = 1L;
+    Long pno = 408L;
     // get & when
     Prod prod = service.findBy(pno);
     // then

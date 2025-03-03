@@ -12,10 +12,17 @@ import com.lshwan.hof.handler.NotificationWebSocketHandler;
 @Configuration
 @EnableWebSocket
 @EnableWebSecurity
-public class NotificationWebsocket implements  WebSocketConfigurer {
-   @Override
+public class NotificationWebsocket implements WebSocketConfigurer {
+    private final NotificationWebSocketHandler notificationWebSocketHandler;
+
+    // ✅ Spring에서 관리하는 NotificationWebSocketHandler를 주입 받음
+    public NotificationWebsocket(NotificationWebSocketHandler notificationWebSocketHandler) {
+        this.notificationWebSocketHandler = notificationWebSocketHandler;
+    }
+
+    @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new NotificationWebSocketHandler(), "/ws/notify")
+        registry.addHandler(notificationWebSocketHandler, "/ws/notify")
                 .setAllowedOrigins("*"); // 모든 도메인에서 접근 허용
     }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lshwan.hof.mapper.TopSellMapper">
+  
+  <!-- 상품별 판매량 조회 -->
+  <select id="getTopSellingProducts" resultType="map">
+    SELECT 
+        p.pno AS product_id,
+        p.title AS product_name,
+        SUM(oi.count) AS total_sales
+    FROM tbl_order_item oi
+    JOIN tbl_prod p ON oi.pno = p.pno
+    GROUP BY p.pno, p.title
+    ORDER BY total_sales DESC
+    LIMIT 5
+  </select>
+
+</mapper>

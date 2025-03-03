@@ -23,7 +23,7 @@ public class CompanyDto {
   private String tel;
   private int count;
   private Long memberNo;  // 연관된 Member의 식별자
-
+  private String userId; 
   // 저장된 이미지 URL 목록
   private List<String> imageUrls;
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lshwan.hof.mapper.CategorySalesMapper">
+  
+  <!-- 카테고리별 판매량 조회 -->
+  <select id="getCategorySales" resultType="map">
+    SELECT 
+        p.cno AS category,
+        c.type AS category_type,
+        SUM(oi.count) AS total_sales
+    FROM tbl_order_item oi
+    JOIN tbl_prod p ON oi.pno = p.pno
+    JOIN tbl_prod_category c ON p.cno = c.cno
+    GROUP BY p.cno, c.type
+    ORDER BY total_sales DESC
+  </select>
+
+</mapper>

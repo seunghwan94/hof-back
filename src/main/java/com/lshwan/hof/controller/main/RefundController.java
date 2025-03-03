@@ -1,5 +1,7 @@
 package com.lshwan.hof.controller.main;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lshwan.hof.domain.dto.pay.AdminRepundDto;
 import com.lshwan.hof.domain.entity.payment.Refund;
 import com.lshwan.hof.service.pay.RefundService;
 
@@ -59,4 +62,9 @@ public class RefundController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("환불 정보 조회에 실패했습니다.");
     }
   }
+  @GetMapping("/adminlist")
+    public ResponseEntity<List<AdminRepundDto>> getAllRefunds() {
+        List<AdminRepundDto> refunds = refundService.getAllRefundsByAdmin();
+        return ResponseEntity.ok(refunds);
+    }
 }
