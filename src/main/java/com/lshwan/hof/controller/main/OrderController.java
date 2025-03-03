@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody; 
 
 import com.lshwan.hof.domain.dto.order.OrderDto;
+import com.lshwan.hof.domain.dto.order.OrderHistoryDto;
 import com.lshwan.hof.domain.entity.order.Order;
 import com.lshwan.hof.service.pay.OrderService;
 
@@ -56,5 +57,16 @@ public class OrderController {
     public ResponseEntity<List<Order>> getOrdersByMember(@PathVariable Long mno) {
         List<Order> orders = orderService.getOrdersByMember(mno);
         return ResponseEntity.ok(orders);
+    }
+
+    /**
+     * 구매내역 조회 API
+     * @param mno 회원 번호
+     * @return 회원의 구매내역 리스트
+     */
+    @GetMapping("/history/{mno}")
+    public ResponseEntity<List<OrderHistoryDto>> getOrderHistory(@PathVariable(name = "mno") Long mno) {
+        List<OrderHistoryDto> orderHistory = orderService.getOrderHistory(mno);
+        return ResponseEntity.ok(orderHistory);
     }
 }
