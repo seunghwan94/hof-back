@@ -122,8 +122,9 @@ public class CompanyServiceImpl implements CompanyService {
         List<Company> companies = companyRepository.findAll();
 
         return companies.stream().map(company -> {
+            Member member = company.getMember();
             Long memberNo = company.getMember().getMno();
-
+            String userId = member.getId();
             // FileMaster에서 이미지 조회
             List<FileMaster> images = fileMasterRepository.findByMember_mno(memberNo);
             List<String> imageUrls = images.stream()
@@ -141,6 +142,7 @@ public class CompanyServiceImpl implements CompanyService {
                         .tel(company.getTel())
                         .count(company.getCount())
                         .memberNo(memberNo)
+                        .userId(userId)
                         .imageUrls(imageUrls) // 조회한 이미지 URL 리스트 추가
                         .build();
         }).collect(Collectors.toList());

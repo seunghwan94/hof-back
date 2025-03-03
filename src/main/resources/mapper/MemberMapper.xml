@@ -15,7 +15,7 @@
             ma.zipcode, ma.road_addr, ma.detail_addr, ma.is_default
         FROM tbl_member m
         LEFT JOIN tbl_member_detail md ON m.mno = md.mno
-        LEFT JOIN tbl_addr ma ON m.mno = ma.mno
+        LEFT JOIN tbl_addr ma ON m.mno = ma.mno AND ma.is_default = 1
     </select>
     <resultMap id="MemberResultMap" type="com.lshwan.hof.domain.dto.member.AdminMemberDto">
         <id column="mno" property="mno"/>

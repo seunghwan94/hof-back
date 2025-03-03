@@ -3,9 +3,11 @@ package com.lshwan.hof.service.pay;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.lshwan.hof.domain.dto.pay.AdminRepundDto;
 import com.lshwan.hof.domain.entity.order.OrderItem;
 import com.lshwan.hof.domain.entity.payment.Pay;
 import com.lshwan.hof.domain.entity.payment.Refund;
@@ -120,5 +122,12 @@ public class RefundServiceImpl implements RefundService {
         }
       }
       return refund;
+    }
+    @Override
+    public List<AdminRepundDto> getAllRefundsByAdmin() {
+      List<Refund> refunds = refundRepository.findAll();
+        return refunds.stream()
+                .map(AdminRepundDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }

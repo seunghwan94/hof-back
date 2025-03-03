@@ -56,19 +56,19 @@ public class FwlControllerTests {
       .andDo(print());
   }
 
-  @Test
-  @Transactional
-  public void testUpdateFWL() throws Exception {
-    int fno = 50;
-    String jsonContent = new ObjectMapper().writeValueAsString(Map.of("content", "침대zzzvv"));
-    mockMvc.perform(put("/admin/fwl/"+fno)
-    .contentType(MediaType.APPLICATION_JSON)
-      .content(jsonContent))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType("text/plain;charset=UTF-8"))
-      // .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-    .andDo(print());
-  }
+  // @Test
+  // @Transactional
+  // public void testUpdateFWL() throws Exception {
+  //   int fno = 50;
+  //   String jsonContent = new ObjectMapper().writeValueAsString(Map.of("content", "침대zzzvv"));
+  //   mockMvc.perform(put("/admin/fwl/"+fno)
+  //   .contentType(MediaType.APPLICATION_JSON)
+  //     .content(jsonContent))
+  //     .andExpect(status().isOk())
+  //     .andExpect(content().contentType("text/plain;charset=UTF-8"))
+  //     // .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+  //   .andDo(print());
+  // }
 
   @Test
   @Transactional

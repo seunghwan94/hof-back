@@ -16,4 +16,6 @@ public interface CompanyService {
 
   // 회사 리스트 조회 (옵션)
   List<CompanyDto> getAllCompanies();
+
+  
 }
