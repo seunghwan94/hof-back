@@ -67,6 +67,7 @@ public class FwlController {
       return service.adminMemberList();
   }
   @PostMapping("/search")
+  @Operation(summary = "모든테이블 공용검색어", description = "파라미터에따라 원하는조건을 검색합니다.")
     public List<Map<String, Object>> search(@RequestBody SearchRequestDto request) {
         return searchService.search(request);
     }
