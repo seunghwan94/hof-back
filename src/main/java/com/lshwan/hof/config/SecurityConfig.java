@@ -86,6 +86,7 @@ public class SecurityConfig implements WebMvcConfigurer{
         .requestMatchers("/signup/**","/signup/email/**").permitAll()
         .requestMatchers("/file/**").permitAll()
         .requestMatchers("/swagger-ui/**","/swag/**","/api-docs/**").permitAll()
+        .requestMatchers("/v3/**").permitAll()
         .requestMatchers("/actuator/**").permitAll()
         .requestMatchers("/common/**").permitAll()
         .requestMatchers("/jacoco/**").permitAll()
