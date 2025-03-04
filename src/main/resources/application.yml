@@ -130,9 +130,6 @@ management:
     tags:
       application: hof-spring-boot-app
 springdoc:
-  api-docs:
-    enabled: true   
-    path: /api-docs 
   swagger-ui:
     enabled: true   
     path: /swag  
