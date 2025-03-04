@@ -74,6 +74,7 @@ public class SecurityConfig implements WebMvcConfigurer{
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
     http
+      .cors(cors -> cors.disable())
       .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (JWT 사용 시 필요 없음)
         .sessionManagement(session -> session
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
