@@ -2,6 +2,7 @@ package com.lshwan.hof.controller;
 
 import com.lshwan.hof.service.VisionService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class VisionController {
 
     // ✅ POST 요청을 통해 JSON으로 이미지 URL 받기
     @PostMapping("/detect")
+    @Operation(summary = "비전 API", description = "유해이미지인지 아닌지 조회합니다 단계는 1~5단계 까지있으며 4가지의 종류가있습니다")
     public Map<String, Object> detectUnsafeContent(@RequestBody ImageRequest request) {
         System.out.println("::::::::::::::::::::::::"+request);
         try {

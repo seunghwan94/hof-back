@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lshwan.hof.domain.dto.note.NoticeDto;
 import com.lshwan.hof.service.note.NoticeService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -27,6 +28,7 @@ public class NoticeController {
 
 
     @PostMapping
+      @Operation(summary = "팝업등록API", description = "팝업 을 등록합니다")
     public ResponseEntity<Long> createNotice(@RequestBody NoticeDto noticeDto) {
         Long createdId = noticeService.add(noticeDto);
         return ResponseEntity.ok(createdId);
@@ -34,18 +36,21 @@ public class NoticeController {
 
 
     @GetMapping
+    @Operation(summary = "팝업 리스트 조회 API", description = "팝업의 리스트를 조회합니다")
     public ResponseEntity<List<NoticeDto>> getNotices() {
         return ResponseEntity.ok(noticeService.findList());
     }
 
 
     @GetMapping("/{nno}")
+    @Operation(summary = "팝업 상세정보 조회 API", description = "팝업의 상세정보를 조회합니다")
     public ResponseEntity<NoticeDto> getNotice(@PathVariable("nno") Long nno) {
         return ResponseEntity.ok(noticeService.findBy(nno));
     }
 
 
     @PutMapping("/{nno}")
+    @Operation(summary = "팝업 업데이트 API", description = "팝업을 수정시키는 API입니다")
     public ResponseEntity<Long> updateNotice(@PathVariable("nno") Long nno, @RequestBody NoticeDto noticeDto) {
         noticeDto.setNo(nno);
         Long updatedId = noticeService.modify(noticeDto);
@@ -54,6 +59,7 @@ public class NoticeController {
 
 
     @DeleteMapping("/{nno}")
+    @Operation(summary = "팝업 삭제  API", description = "팝업의 정보를 삭제합니다")
     public ResponseEntity<?> deleteNotice(@PathVariable("nno") String nno) {
  // "1,2,3" → [1, 2, 3] 변환
       List<Long> nnoList = Arrays.stream(nno.split(","))
@@ -74,6 +80,7 @@ public class NoticeController {
       return ResponseEntity.ok().body("삭제 완료: " + deleteCount + "개 항목");
     }
     @GetMapping("/random")
+    @Operation(summary = "메인 팝업 노출 API", description = "메인에서 등록된 팝업을 랜덤으로 데이터를 보냅니다")
     public ResponseEntity<NoticeDto> getRandomNotice() {
     NoticeDto randomNotice = noticeService.findRandom();
     return ResponseEntity.ok(randomNotice);

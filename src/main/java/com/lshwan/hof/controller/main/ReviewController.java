@@ -18,6 +18,7 @@ import com.lshwan.hof.domain.entity.order.Review;
 import com.lshwan.hof.domain.entity.order.Review.StarRating;
 import com.lshwan.hof.service.prod.ReviewService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -37,6 +38,7 @@ public class ReviewController {
    * @param content - 리뷰 내용
    */
   @PostMapping("/add")
+    @Operation(summary = "리뷰 등록 API", description = "리뷰의 정보를 등록합니다")
   public ResponseEntity<?> addReview(@RequestBody ReviewRequest reviewRequest) {
     Long mno = reviewRequest.getMno();
     Long pno = reviewRequest.getPno();
@@ -58,6 +60,7 @@ public class ReviewController {
    * @return List<Review>
    */
   @GetMapping("/list/{pno}")
+  @Operation(summary = "리뷰 리스트 정보 API", description = "리뷰의 리스트를 조회합니다")
   public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable(name = "pno") Long pno) {
     List<ReviewDto> reviews = reviewService.findList(pno);
     return ResponseEntity.ok(reviews);
@@ -70,6 +73,7 @@ public class ReviewController {
    * @param newStar - 수정할 별점
    */
   @PutMapping("/modify/{reviewId}")
+  @Operation(summary = "리뷰 수정 API", description = "자신의 리뷰를 수정합니다")
   public ResponseEntity<String> modifyReview(@PathVariable(name = "reviewId") Long reviewId, @RequestBody ReviewRequest reviewRequest) {
     String newContent = reviewRequest.getContent();
     String newStar = reviewRequest.getStar();
@@ -89,6 +93,7 @@ public class ReviewController {
    * @param reviewId - 리뷰 ID
    */
   @DeleteMapping("/remove/{reviewId}")
+  @Operation(summary = "리뷰 삭제 API", description = "자신의 리뷰 정보를 삭제합니다")
   public ResponseEntity<String> deleteReview(@PathVariable(name = "reviewId") Long reviewId) {
     try {
       reviewService.remove(reviewId);

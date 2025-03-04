@@ -15,6 +15,7 @@ import com.lshwan.hof.domain.dto.pay.AdminRepundDto;
 import com.lshwan.hof.domain.entity.payment.Refund;
 import com.lshwan.hof.service.pay.RefundService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -30,6 +31,7 @@ public class RefundController {
    * POST /api/v1/refund/request
    */
   @PostMapping("/request")
+    @Operation(summary = "환불요청API", description = "결제이니시스에 환불을요청합니다")
   public ResponseEntity<?> requestRefund(@RequestParam(name = "payNo") Long payNo, @RequestParam(name = "reason") String reason) {
     log.info("payNo : " + payNo);
     log.info("reason : " + reason);
@@ -50,6 +52,7 @@ public class RefundController {
    * GET /api/v1/refund/{pno}
    */
   @GetMapping("/{payNo}")
+  @Operation(summary = "환불 상세정보 API", description = "환불의 아이디값 을통해 환불정보를 가져옵니다")
   public ResponseEntity<?> getRefundByPayId(@PathVariable Long payNo) {
     try {
       Refund refund = refundService.getRefundByPayId(payNo);
@@ -63,6 +66,7 @@ public class RefundController {
     }
   }
   @GetMapping("/adminlist")
+  @Operation(summary = "환불 리스트 조회 API", description = "관리자페이지에서 환불 리스트를 조회합니다")
     public ResponseEntity<List<AdminRepundDto>> getAllRefunds() {
         List<AdminRepundDto> refunds = refundService.getAllRefundsByAdmin();
         return ResponseEntity.ok(refunds);

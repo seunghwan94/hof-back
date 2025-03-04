@@ -10,6 +10,7 @@ import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.service.S3Service;
 import com.lshwan.hof.service.prod.ProdService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class FileController {
 
     @SuppressWarnings("null")
     @PostMapping("upload")
+      @Operation(summary = "파일 업로드 API", description = "파일을 s3서비스에 업로드를하고 파일마스터 테이블에 등록하고난뒤 s3Url을 반환합니다")
     public ResponseEntity<?> upload(@RequestParam("file") List<MultipartFile> files) {
         
          List<String> urls = new ArrayList<>();
@@ -46,6 +48,7 @@ public class FileController {
         return ResponseEntity.ok().body(urls);
     }
     @PostMapping("popup/upload")
+    @Operation(summary = "파일 업로드 API(팝업)", description = "파일을 s3서비스에 업로드를하고 파일마스터 테이블에 등록하고난뒤 s3Url을 반환합니다")
     public ResponseEntity<String> uploadPopupImage(@RequestPart("file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("파일이 비어 있습니다.");
@@ -60,6 +63,7 @@ public class FileController {
         }
     }
     @PostMapping("upload/{pno}")
+    @Operation(summary = "파일 업로드 API(상품관리)", description = "파일을 s3서비스에 업로드를하고 파일마스터 테이블에 등록하고난뒤 s3Url을 반환합니다")
     public ResponseEntity<?> upload(@RequestParam("file") List<MultipartFile> files,@PathVariable("pno") Long pno) {
         System.out.println(":::::::::::::::::::::::::::::::::::::::잇힝");
         Prod prod = prodService.findBy(pno);
@@ -75,6 +79,7 @@ public class FileController {
         return ResponseEntity.ok().body(urls);
     }
     @PostMapping("upload/thumnail")
+    @Operation(summary = "파일 업로드 API(썸네일)", description = "파일을 s3서비스에 업로드를하고 파일마스터 테이블에 등록하고난뒤 s3Url을 반환합니다")
     public ResponseEntity<?> uploadSumnail(@RequestParam("file") MultipartFile file) {
         System.out.println(file);
         if (file.isEmpty()) {
