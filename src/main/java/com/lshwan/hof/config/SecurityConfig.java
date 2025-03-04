@@ -51,7 +51,7 @@ public class SecurityConfig implements WebMvcConfigurer{
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")  // 모든 경로에 대해
-        .allowedOrigins("http://localhost:3000","https://hof.lshwan.com", "http://localhost:8080")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
+        .allowedOrigins("http://localhost:3000","https://hof.lshwan.com")  // 외부 도메인에서의 요청 허용 (예시: React 앱)
         .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드
         .allowedHeaders("*")  // 모든 헤더를 허용
         .exposedHeaders("Authorization", "Content-Type", "Upgrade", "Connection", "Sec-WebSocket-Accept") // WebSocket 관련 헤더 추가
@@ -74,7 +74,6 @@ public class SecurityConfig implements WebMvcConfigurer{
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
     http
-      .cors(cors -> cors.disable())
       .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (JWT 사용 시 필요 없음)
         .sessionManagement(session -> session
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안 함
@@ -86,7 +85,8 @@ public class SecurityConfig implements WebMvcConfigurer{
         .requestMatchers("/oauth2/**", "/login/oauth2/**", "/login/oauth2/code/google").permitAll()
         .requestMatchers("/signup/**","/signup/email/**").permitAll()
         .requestMatchers("/file/**").permitAll()
-        .requestMatchers("/swagger-ui/**","/swag/**","/api-docs/**","/v3/**", "/api/v1/v3/api-docs/**", "/api/v1/swagger-ui/**"  ).permitAll()
+        .requestMatchers("/swagger-ui/**","/swag/**","/api-docs/**").permitAll()
+        .requestMatchers("/v3/**").permitAll()
         .requestMatchers("/actuator/**").permitAll()
         .requestMatchers("/common/**").permitAll()
         .requestMatchers("/jacoco/**").permitAll()
