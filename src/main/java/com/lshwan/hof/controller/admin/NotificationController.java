@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lshwan.hof.handler.NotificationWebSocketHandler;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 
 @RestController
 @RequestMapping("admin/notify")
@@ -21,6 +23,7 @@ public class NotificationController {
         this.webSocketHandler = webSocketHandler;
     }
   @PostMapping("/send")
+  @Operation(summary = "Notification 알람메시지 전송", description = "자바 웹소켓 연결되어있는 안드로이드 혹은 리액트에 알람메시지를 보냅니다")
   public ResponseEntity<String> sendNotification(@RequestParam("message") String message) {
     try {
       webSocketHandler.sendMessageToAll(message);

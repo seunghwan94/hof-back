@@ -53,6 +53,7 @@ public ResponseEntity<?> registoryQna(@RequestBody QnaDto dto) {
     return ResponseEntity.ok("등록 완료: " + newId);
 }
 @PutMapping("{qno}")
+@Operation(summary = "QNA 수정 api ", description = "Qna를수정합니다")
 public ResponseEntity<?> modifyQna(@PathVariable("qno") Long qno, @RequestBody Qna entity) {
     Qna existingQna = qnaService.findBy(qno);
 

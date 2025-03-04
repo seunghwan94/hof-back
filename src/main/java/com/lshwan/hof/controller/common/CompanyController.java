@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.lshwan.hof.domain.dto.member.CompanyDto;
 import com.lshwan.hof.service.login.CompanyService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -29,6 +30,7 @@ public class CompanyController {
      * POST /api/v1/companies
      */
     @PostMapping(consumes = {"multipart/form-data"})
+      @Operation(summary = "인테리어 등록 ", description = "인테리어 등록 호출 API 입니다")
     public ResponseEntity<CompanyDto> addCompany(
             @Valid @RequestPart("company") CompanyDto companyDto,
             @RequestPart(value = "images", required = false) List<MultipartFile> images) {
@@ -42,6 +44,7 @@ public class CompanyController {
      * GET /api/v1/companies/{companyId}
      */
     @GetMapping("/{companyId}")
+    @Operation(summary = "인테리어 상세정보 ", description = "인테리어 API의 companyID 값에 따른 상세정보 호출입니다")
     public ResponseEntity<CompanyDto> getCompany(@PathVariable(name = "companyId") Long companyId) {
         CompanyDto companyDto = companyService.getCompany(companyId);
         return ResponseEntity.ok(companyDto);
@@ -52,6 +55,7 @@ public class CompanyController {
      * GET /api/v1/companies
      */
     @GetMapping
+    @Operation(summary = "인테리어 리스트", description = "등록된 모든 인테리어를 리스트 데이터값을 반환합니다")
     public ResponseEntity<List<CompanyDto>> getAllCompanies() {
         List<CompanyDto> companies = companyService.getAllCompanies();
         return ResponseEntity.ok(companies);

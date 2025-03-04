@@ -7,16 +7,12 @@ import lombok.AllArgsConstructor;
 import com.lshwan.hof.domain.dto.PageRequestDto;
 import com.lshwan.hof.domain.dto.PageResultDto;
 import com.lshwan.hof.domain.dto.ProdDto;
-import com.lshwan.hof.domain.dto.QnaDto;
 import com.lshwan.hof.domain.dto.SearchRequestDto;
 import com.lshwan.hof.domain.dto.member.AdminMemberDto;
 import com.lshwan.hof.domain.entity.admin.FWL;
-import com.lshwan.hof.domain.entity.common.Qna;
-import com.lshwan.hof.domain.entity.member.Member;
 import com.lshwan.hof.domain.entity.prod.Prod;
 import com.lshwan.hof.service.login.MemberService;
 import com.lshwan.hof.service.admin.FwlService;
-import com.lshwan.hof.service.common.QnaService;
 import com.lshwan.hof.service.prod.ProdService;
 import com.lshwan.hof.service.util.SearchService;
 
@@ -62,7 +58,7 @@ public class FwlController {
     
 
   @GetMapping("/list")
-  @Operation(summary = "회원 리스트 조회📝", description = "등록된 모든 회원을 조회합니다.")
+  @Operation(summary = "회원 리스트 조회", description = "등록된 모든 회원을 조회합니다.")
   public List<AdminMemberDto> listtest() {
       return service.adminMemberList();
   }
@@ -72,7 +68,7 @@ public class FwlController {
         return searchService.search(request);
     }
   @GetMapping
-  @Operation(summary = "금지단어 리스트 조회🚫", description = "등록된 금지단어를 조회합니다.")
+  @Operation(summary = "금지단어 리스트 조회", description = "등록된 금지단어를 조회합니다.")
   public List<FWL> fwlList() {
     return fwlService.findList();
   }
@@ -122,7 +118,7 @@ public class FwlController {
   
 /////////////////////////prod
 @GetMapping("/prod")
-@Operation(summary = "상품 목록 페이징 🛍️", description = "등록된 상품을 조회합니다")
+@Operation(summary = "상품 목록 페이징 ", description = "등록된 상품을 조회합니다")
     public ResponseEntity<PageResultDto<ProdDto, Prod>> getProdList(@RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(required = false) String type,

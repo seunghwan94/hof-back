@@ -18,6 +18,7 @@ import com.lshwan.hof.service.pay.IamportService;
 import com.lshwan.hof.service.pay.OrderService;
 import com.lshwan.hof.service.pay.PayService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -35,6 +36,7 @@ public class PayController {
    * 결제 요청 (Pay 엔티티 생성)
    */
   @PostMapping("/pay")
+  @Operation(summary = "결제 요청 API", description = "결제 정보를 요청합니다")
   public ResponseEntity<?> requestPayment(@RequestBody PayRequestDto requestDto) {
     try {
       // 결제 방법 검증
@@ -58,6 +60,7 @@ public class PayController {
    * 결제 완료 처리 (Iamport 결제 검증 후 Pay 엔티티 업데이트)
    */
   @PostMapping("/complete")
+  @Operation(summary = "결제완료 API", description = "이니시스 결제 API 검증후 Pay 를 업데이트합니다")
   public ResponseEntity<?> completePayment(@RequestBody Map<String, Object> requestData) {
     Long orderNo = requestData.containsKey("orderNo") ? ((Number) requestData.get("orderNo")).longValue() : null;
     String imp_uid = (String) requestData.get("imp_uid");
@@ -95,6 +98,7 @@ public class PayController {
     }
   }
   @GetMapping
+  @Operation(summary = "결제 리스트 조회 API", description = "결제 리스트를 조회합니다")
   public ResponseEntity<?> Paylist() {
     List<AdminPayDto> pay = payService.findList();
       return ResponseEntity.ok(pay);

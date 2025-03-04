@@ -68,7 +68,6 @@
     WHERE m.mno = #{mno}
       AND oi.pno = #{pno}
       AND p.status = '완료'
-      AND d.status = '배송완료'
       AND (r.status IS NULL OR r.status = false)
   </select>
 

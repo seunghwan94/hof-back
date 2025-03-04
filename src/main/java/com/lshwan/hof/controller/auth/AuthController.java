@@ -10,6 +10,7 @@ import com.lshwan.hof.domain.entity.member.MemberDetail;
 import com.lshwan.hof.repository.member.MemberRepository;
 import com.lshwan.hof.service.login.MemberService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -42,6 +43,7 @@ public class AuthController {
    * @return JWT 포함된 JSON 응답
    */
   @PostMapping("/login")
+  @Operation(summary = "토큰 기반 로그인 JWT 인증방식 ", description = "토큰 기반 로그인 로직")
   public ResponseEntity<?> login(@RequestBody AuthRequestDto authRequest) {
     log.info("로그인 요청 받음!!! username: {}", authRequest.getUsername());
     log.info(authRequest);
@@ -101,6 +103,7 @@ public class AuthController {
    */
 
   @PostMapping("/signup")
+  @Operation(summary = "회원가입 ", description = "회원가입 에 필요한 파라미터와 성공여부를 나타냅니다")
   public ResponseEntity<?> signup(@RequestBody Map<String, Object> request) {
     
     // Member 객체 생성

@@ -18,6 +18,7 @@ import com.lshwan.hof.domain.dto.common.LikeDto;
 import com.lshwan.hof.domain.entity.common.Likes;
 import com.lshwan.hof.service.common.LikesService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -30,6 +31,7 @@ public class LikesController {
 
   // 좋아요 추가
   @PostMapping
+    @Operation(summary = "좋아요 혹은 찜하기 등록 ", description = "좋아요 혹은 찜하기를 추가합니다")
   public ResponseEntity<?> addLike(@RequestBody LikeDto likeDto) {
     LikeDto createdLike = likesService.add(
                             likeDto.getMno(),
@@ -41,6 +43,7 @@ public class LikesController {
 
   // 좋아요 취소
   @DeleteMapping
+  @Operation(summary = " 좋아요 혹은 찜하기 취소 ", description = "좋아요 혹은 찜하기를 취소합니다")
   public ResponseEntity<?> removeLike(@RequestParam(name = "mno") Long mno,
                                       @RequestParam(name = "targetNo") Long targetNo,
                                       @RequestParam(name = "targetType") Likes.TargetType targetType) {
@@ -53,6 +56,7 @@ public class LikesController {
 
   // 좋아요 수 조회
   @GetMapping("/count")
+  @Operation(summary = "좋아요 수 조회", description = "targetNo 에따른 좋아요 카운트 를 조회합니다")
   public ResponseEntity<?> countLikes(@RequestParam(name = "targetNo") Long targetNo,
                                       @RequestParam(name = "targetType") Likes.TargetType targetType) {
     long count = likesService.countLikes(targetNo, targetType);
@@ -61,6 +65,7 @@ public class LikesController {
 
   // 좋아요 내가 누른지 확인
   @GetMapping("/user-liked")
+  @Operation(summary = "좋아요 확인", description = "좋아요와 찜하기 확인하는 api 입니다")
   public ResponseEntity<?> userLiked(@RequestParam(name = "mno") Long mno,
                                      @RequestParam(name = "targetNo") Long targetNo,
                                      @RequestParam(name = "targetType") Likes.TargetType targetType) {
@@ -72,6 +77,7 @@ public class LikesController {
   }
   
   @GetMapping("/list")
+  @Operation(summary = "좋아요 ,찜하기 리스트", description = "내정보에서 리스트를 보여줍니다")
   public ResponseEntity<List<LikeProdDto>> getLikedProducts(@RequestParam(name = "mno") Long mno) {
       List<LikeProdDto> likedProducts = likesService.getLikedProducts(mno);
       return ResponseEntity.ok(likedProducts);
