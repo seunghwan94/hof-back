@@ -112,7 +112,9 @@ docker run -d -p 8080:8080 --name hof-backend hof-backend
 
 ### **GitHub Actions - Secrets & Variables**
 프로젝트 보안을 위해 GitHub Actions에서 아래 변수들을 관리
-|Name|Description
+
+#### BackEnd
+|Name|Description|
 |------|---|
 |AWS_ACCESS_KEY_ID|AWS 접근 키|
 |AWS_REGION|	AWS 리전|
@@ -138,6 +140,15 @@ docker run -d -p 8080:8080 --name hof-backend hof-backend
 |IAMPORT_API_SECRET|	IAMPORT 결제 API 비밀 키|
 |MONGO_URL|	MongoDB 연결 URL|
 |MONGO_USERNAME|	MongoDB 사용자명|
+
+#### FrontEnd
+|Name|Description|
+|------|---|
+|DOCKER_HUB_TOKEN|Docker Hub 토큰|
+|DOCKER_USERNAME|Docker 사용자명|
+|EC2_PUBLIC_IP|EC2 퍼블릭 IP|
+|EC2_SSH_PRIVATE_KEY|EC2 SSH 개인 키|
+|TINYMCE_API_KEY|TINYMCE 접근 키|
 
 ### **API 문서 & 시스템 설계**
 [요구 사항 정의서](https://hof-bucket.s3.ap-northeast-2.amazonaws.com/assets/%EC%A0%95%EC%9D%98%EC%84%9C.xlsx) / 
