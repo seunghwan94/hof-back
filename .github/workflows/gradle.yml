@@ -98,8 +98,8 @@ jobs:
           # 새로운 컨테이너 실행
           echo "Starting a new container: $CONTAINER_NAME"
           sudo docker run --name $CONTAINER_NAME -d -p 8081:8080 \
-            --memory="512m" --memory-swap="1g" \  # 최대 메모리 사용 제한
-            -e JAVA_OPTS="-Xms256m -Xmx512m" \  # Java Heap Memory 제한
+            --memory="512m" --memory-swap="1g" \
+            -e JAVA_OPTS="-Xms256m -Xmx512m" \
             -e TZ=Asia/Seoul \
             -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
             -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
